@@ -1,4 +1,247 @@
-"use client"
+"use client";
 
-// display employees with search and pagination
-// able to edit the roles
+import { useState } from "react";
+import { MoreHorizontal, ShieldAlert, ShieldCheck } from "lucide-react";
+import { useFetchEmployees, useUpdateEmployee } from "@/hooks/accounts/actions";
+import { User } from "@/services/accounts";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import toast from "react-hot-toast";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+
+export default function EmployeeManagementPage() {
+  const { data: employeesData, isLoading, refetch } = useFetchEmployees();
+  const { mutateAsync: updateEmployee } = useUpdateEmployee();
+  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [togglingRole, setTogglingRole] = useState<{ user: User, role: keyof User, label: string } | null>(null);
+  const [isToggling, setIsToggling] = useState(false);
+
+  const headers = useAxiosAuth();
+
+  const handleToggleRole = async () => {
+    if (!togglingRole) return;
+    setIsToggling(true);
+    try {
+      // Toggle the specific Boolean role
+      const newValue = !togglingRole.user[togglingRole.role];
+      const payload = {
+        [togglingRole.role]: newValue
+      };
+
+      await updateEmployee({
+        reference: togglingRole.user.reference,
+        data: payload,
+        headers,
+      });
+      
+      toast.success(`${togglingRole.user.first_name}'s ${togglingRole.label} role ${newValue ? 'granted' : 'revoked'}`);
+      refetch();
+    } catch (e: any) {
+      toast.error(e?.response?.data?.detail || "Failed to update employee role");
+    } finally {
+      setIsToggling(false);
+      setTogglingRole(null);
+    }
+  };
+
+  const filteredEmployees = employeesData?.filter((emp) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      emp.first_name?.toLowerCase().includes(searchLower) ||
+      emp.last_name?.toLowerCase().includes(searchLower) ||
+      emp.email?.toLowerCase().includes(searchLower) ||
+      emp.payroll_no?.toLowerCase().includes(searchLower)
+    );
+  }) || [];
+
+  return (
+    <div className="p-8 max-w-7xl mx-auto space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-[#004d40]">Employee Management</h1>
+          <p className="text-zinc-500">View and manage roles for Tamarind Group employees</p>
+        </div>
+        
+        <div className="w-full md:w-72">
+          <Input 
+            placeholder="Search name, email, or payroll no..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="rounded-full bg-white"
+          />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
+        {isLoading ? (
+          <div className="p-6 space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex gap-4">
+                <Skeleton className="h-12 w-full" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-zinc-50">
+                <TableRow>
+                  <TableHead className="w-[15%]">Name</TableHead>
+                  <TableHead className="w-[20%]">Email</TableHead>
+                  <TableHead className="w-[10%]">Payroll No</TableHead>
+                  <TableHead className="w-[40%]">Active Roles</TableHead>
+                  <TableHead className="w-[15%] text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredEmployees.length > 0 ? (
+                  filteredEmployees.map((user: User) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium text-zinc-900">
+                        {user.first_name} {user.last_name}
+                      </TableCell>
+                      <TableCell className="text-zinc-500">
+                        {user.email}
+                      </TableCell>
+                      <TableCell className="text-zinc-500">
+                        {user.payroll_no || "-"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-2">
+                          {user.is_superuser && <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-200 border-none">Superuser</Badge>}
+                          {user.is_hr && <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-none">HR</Badge>}
+                          {user.is_manager && <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-200 border-none">Manager</Badge>}
+                          {user.is_trainer && <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-none">Trainer</Badge>}
+                          {user.is_hod && <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-200 border-none">HOD</Badge>}
+                          {user.is_employee && <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none">Employee</Badge>}
+                          {/* Fallback if no roles */}
+                          {!user.is_superuser && !user.is_hr && !user.is_manager && !user.is_trainer && !user.is_hod && !user.is_employee && (
+                            <span className="text-xs text-zinc-400 italic">No roles assigned</span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuLabel>Manage Roles</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => setTogglingRole({ user, role: 'is_employee', label: 'Employee' })}
+                              className="cursor-pointer font-medium"
+                            >
+                              {user.is_employee ? <ShieldAlert className="mr-2 h-4 w-4 text-red-500" /> : <ShieldCheck className="mr-2 h-4 w-4 text-emerald-500" />}
+                              {user.is_employee ? "Revoke Employee" : "Grant Employee"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setTogglingRole({ user, role: 'is_manager', label: 'Manager' })}
+                              className="cursor-pointer font-medium"
+                            >
+                              {user.is_manager ? <ShieldAlert className="mr-2 h-4 w-4 text-red-500" /> : <ShieldCheck className="mr-2 h-4 w-4 text-emerald-500" />}
+                              {user.is_manager ? "Revoke Manager" : "Grant Manager"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setTogglingRole({ user, role: 'is_trainer', label: 'Trainer' })}
+                              className="cursor-pointer font-medium"
+                            >
+                              {user.is_trainer ? <ShieldAlert className="mr-2 h-4 w-4 text-red-500" /> : <ShieldCheck className="mr-2 h-4 w-4 text-emerald-500" />}
+                              {user.is_trainer ? "Revoke Trainer" : "Grant Trainer"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setTogglingRole({ user, role: 'is_hod', label: 'HOD' })}
+                              className="cursor-pointer font-medium"
+                            >
+                              {user.is_hod ? <ShieldAlert className="mr-2 h-4 w-4 text-red-500" /> : <ShieldCheck className="mr-2 h-4 w-4 text-emerald-500" />}
+                              {user.is_hod ? "Revoke HOD" : "Grant HOD"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setTogglingRole({ user, role: 'is_hr', label: 'HR Admin' })}
+                              className="cursor-pointer font-medium"
+                            >
+                              {user.is_hr ? <ShieldAlert className="mr-2 h-4 w-4 text-red-500" /> : <ShieldCheck className="mr-2 h-4 w-4 text-emerald-500" />}
+                              {user.is_hr ? "Revoke HR Admin" : "Grant HR Admin"}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-32 text-center text-zinc-500">
+                      {searchTerm ? "No employees matched your search." : "No employees found in the system."}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
+
+      {/* Role Toggle Confirmation */}
+      <AlertDialog open={!!togglingRole} onOpenChange={(open) => {
+        if (!isToggling && !open) setTogglingRole(null);
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {togglingRole?.user[togglingRole.role] ? `Revoke ${togglingRole?.label} Role?` : `Grant ${togglingRole?.label} Role?`}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {togglingRole?.user[togglingRole.role] 
+                ? `Are you sure you want to remove the ${togglingRole?.label} privileges from ${togglingRole?.user.first_name}? They will lose access to associated features.`
+                : `Are you sure you want to promote ${togglingRole?.user.first_name} to ${togglingRole?.label}? They will gain new privileges.`
+              }
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isToggling}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleToggleRole}
+              disabled={isToggling}
+              className={togglingRole?.user[togglingRole?.role] ? "bg-red-600 hover:bg-red-700 text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white"}
+            >
+              {isToggling ? "Updating..." : "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}

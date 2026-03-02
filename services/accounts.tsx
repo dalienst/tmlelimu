@@ -75,7 +75,7 @@ interface createBulkEmployeeByHRCSV {
     file: File;
 }
 
-interface updateUserByHR {
+export interface UpdateUserByHRPayload {
     is_employee?: boolean;
     is_manager?: boolean;
     is_trainer?: boolean;
@@ -139,7 +139,7 @@ export const getEmployee = async (reference: string, headers: { headers: { Autho
     return response.data
 }
 
-export const updateUserByHR = async (reference: string, formData: updateUserByHR, headers: { headers: { Authorization: string } }): Promise<User> => {
+export const updateUserByHR = async (reference: string, formData: UpdateUserByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
     const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/employee/${reference}/update/`, formData, headers)
     return response.data
 }
