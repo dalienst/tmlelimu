@@ -35,7 +35,6 @@ export interface CreateHRAccountPayload {
     password_confirmation: string;
 }
 
-
 export interface forgotPassword {
   email: string;
 }
@@ -50,6 +49,13 @@ export interface resetPassword {
 export interface updateUser {
     first_name?: string;
     last_name?: string;
+}
+
+export interface ActivateAccountPayload {
+    uidb64: string; // in the url params
+    token: string; // in the url params
+    password: string;
+    password_confirmation: string;
 }
 
 // HR Roles
@@ -75,6 +81,11 @@ interface updateUserByHR {
     is_trainer?: boolean;
     is_hod?: boolean;
     is_hr?: boolean;
+}
+
+export const activateAccount = async (data: ActivateAccountPayload): Promise<User> => {
+    const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/activate/${data.uidb64}/${data.token}/`, data)
+    return response.data
 }
 
 export const getAccount = async (userId: string, headers: { headers: { Authorization: string } }): Promise<User> => {
