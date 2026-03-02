@@ -2,6 +2,7 @@
 
 import { apiActions, apiMultipartActions } from "@/tools/axios"
 import { AxiosResponse } from "axios";
+import { PaginatedResponse } from "./general";
 
 export interface User {
     id: string;
@@ -130,8 +131,8 @@ export const createBulkEmployeeByHRCSV = async (data: createBulkEmployeeByHRCSV,
 }
 
 export const getEmployees = async (headers: { headers: { Authorization: string } }): Promise<User[]> => {
-    const response: AxiosResponse<User[]> = await apiActions.get(`/api/v1/auth/`, headers)
-    return response.data
+    const response: AxiosResponse<PaginatedResponse<User>> = await apiActions.get(`/api/v1/auth/`, headers)
+    return response.data.results ?? [];
 }
 
 export const getEmployee = async (reference: string, headers: { headers: { Authorization: string } }): Promise<User> => {
