@@ -61,8 +61,7 @@ export interface CreateEmployeeByHRPayload {
     password: string; // not required if email has been provided as an activation email will be sent to the user which will enable them set a password
 }
 
-interface createBulkEmployeeByHR {
-    // usually a list of objects
+export interface CreateBulkEmployeeByHRPayload {
     employees: CreateEmployeeByHRPayload[];
 }
 
@@ -109,7 +108,7 @@ export const createEmployeeByHR = async (data: CreateEmployeeByHRPayload, header
     return response.data
 }
 
-export const createBulkEmployeeByHR = async (data: createBulkEmployeeByHR, headers: { headers: { Authorization: string } }): Promise<User> => {
+export const createBulkEmployeeByHR = async (data: CreateBulkEmployeeByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
     const response: AxiosResponse<User> = await apiActions.post(`/api/v1/auth/employee/bulk/create/`, data, headers)
     return response.data
 }

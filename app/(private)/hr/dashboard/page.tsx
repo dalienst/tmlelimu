@@ -11,11 +11,13 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, MoreHorizontal } from "lucide-react";
 import CreateHR from "@/forms/accounts/CreateHR";
 import CreateEmployee from "@/forms/accounts/CreateEmployee";
+import CreateEmployeesBulk from "@/forms/accounts/CreateEmployeesBulk";
 
 export default function HRDashboard() {
   const { data: sopsData, isLoading } = useFetchAuthSops();
   const [isCreateHROpen, setIsCreateHROpen] = useState(false);
   const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
+  const [isCreateBulkEmployeeOpen, setIsCreateBulkEmployeeOpen] = useState(false);
 
   const { activeSops, inactiveSops } = useMemo(() => {
     if (!sopsData) return { activeSops: 0, inactiveSops: 0 };
@@ -39,30 +41,46 @@ export default function HRDashboard() {
           
           <Dialog open={isCreateHROpen} onOpenChange={setIsCreateHROpen}>
             <Dialog open={isCreateEmployeeOpen} onOpenChange={setIsCreateEmployeeOpen}>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Actions
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>Management Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={() => setIsCreateEmployeeOpen(true)} className="cursor-pointer">
-                    Create Employee
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => setIsCreateHROpen(true)} className="cursor-pointer">
-                    Create HR Account
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
+              <Dialog open={isCreateBulkEmployeeOpen} onOpenChange={setIsCreateBulkEmployeeOpen}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Actions
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>Management Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={() => setIsCreateEmployeeOpen(true)} className="cursor-pointer">
+                      Create Single Employee
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setIsCreateBulkEmployeeOpen(true)} className="cursor-pointer">
+                      Bulk Create Employees
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={() => setIsCreateHROpen(true)} className="cursor-pointer">
+                      Create HR Account
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
+                <DialogContent className="sm:max-w-[800px] md:max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader className="mb-4">
+                    <DialogTitle className="text-xl">Bulk Add Employees</DialogTitle>
+                    <DialogDescription>
+                      Add multiple employees at once to the Tamarind Elimu System. Fill out the rows below.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <CreateEmployeesBulk onSuccess={() => setIsCreateBulkEmployeeOpen(false)} onCancel={() => setIsCreateBulkEmployeeOpen(false)} />
+                </DialogContent>
+              </Dialog>
+
               <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                   <DialogTitle>Create Employee</DialogTitle>
                   <DialogDescription>
-                    Add a new employee to the Tamarind Elimu System.
+                    Add a single employee to the Tamarind Elimu System.
                   </DialogDescription>
                 </DialogHeader>
                 <CreateEmployee onSuccess={() => setIsCreateEmployeeOpen(false)} onCancel={() => setIsCreateEmployeeOpen(false)} />
