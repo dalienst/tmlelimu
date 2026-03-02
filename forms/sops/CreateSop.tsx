@@ -80,7 +80,7 @@ export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
               onBlur={handleBlur}
               value={values.title}
               className={
-                errors.title && touched.title ? "border-red-500" : "border-zinc-300"
+                errors.title && touched.title ? "border-red-500 p-2" : "border-zinc-300 p-2"
               }
             />
             {errors.title && touched.title && (
@@ -102,8 +102,8 @@ export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
               rows={4}
               className={`resize-none ${
                 errors.description && touched.description
-                  ? "border-red-500"
-                  : "border-zinc-300"
+                  ? "border-red-500 p-2"
+                  : "border-zinc-300 p-2"
               }`}
             />
             {errors.description && touched.description && (

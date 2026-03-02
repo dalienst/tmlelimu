@@ -1,13 +1,25 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, MoreHorizontal } from "lucide-react";
+import CreateHR from "@/forms/accounts/CreateHR";
+import CreateEmployee from "@/forms/accounts/CreateEmployee";
+import CreateEmployeesBulk from "@/forms/accounts/CreateEmployeesBulk";
+import CreateEmployeeBulkUpload from "@/forms/accounts/CreateEmployeesBulkUpload";
 
 export default function HRDashboard() {
   const { data: sopsData, isLoading } = useFetchAuthSops();
+  const [isCreateHROpen, setIsCreateHROpen] = useState(false);
+  const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
+  const [isCreateBulkEmployeeOpen, setIsCreateBulkEmployeeOpen] = useState(false);
+  const [isCreateBulkUploadOpen, setIsCreateBulkUploadOpen] = useState(false);
 
   const { activeSops, inactiveSops } = useMemo(() => {
     if (!sopsData) return { activeSops: 0, inactiveSops: 0 };
@@ -24,9 +36,85 @@ export default function HRDashboard() {
           <h1 className="text-3xl font-bold text-[#004d40]">HR Dashboard</h1>
           <p className="text-zinc-500">Tamarind Elimu System Management</p>
         </div>
-        <Badge className="bg-emerald-100 text-[#004d40] border-emerald-200 hover:bg-emerald-100 px-4 py-1.5 rounded-full">
-          HR Administrator
-        </Badge>
+        <div className="flex items-center gap-4">
+          <Badge className="bg-emerald-100 text-[#004d40] border-emerald-200 hover:bg-emerald-100 px-4 py-1.5 rounded-full">
+            HR Administrator
+          </Badge>
+          
+          <Dialog open={isCreateHROpen} onOpenChange={setIsCreateHROpen}>
+            <Dialog open={isCreateEmployeeOpen} onOpenChange={setIsCreateEmployeeOpen}>
+              <Dialog open={isCreateBulkEmployeeOpen} onOpenChange={setIsCreateBulkEmployeeOpen}>
+                <Dialog open={isCreateBulkUploadOpen} onOpenChange={setIsCreateBulkUploadOpen}>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Actions
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-64">
+                      <DropdownMenuLabel>Management Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={() => setIsCreateEmployeeOpen(true)} className="cursor-pointer">
+                        Create Single Employee
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsCreateBulkEmployeeOpen(true)} className="cursor-pointer">
+                        Bulk Create Employees (Manual form)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsCreateBulkUploadOpen(true)} className="cursor-pointer">
+                        Bulk Create Employees (CSV upload)
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={() => setIsCreateHROpen(true)} className="cursor-pointer">
+                        Create HR Account
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>Upload Employees via CSV</DialogTitle>
+                      <DialogDescription>
+                        Upload a CSV file containing employee details. Ensure it matches the required format.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <CreateEmployeeBulkUpload onSuccess={() => setIsCreateBulkUploadOpen(false)} onCancel={() => setIsCreateBulkUploadOpen(false)} />
+                  </DialogContent>
+                </Dialog>
+                
+                <DialogContent className="sm:max-w-[800px] md:max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader className="mb-4">
+                    <DialogTitle className="text-xl">Bulk Add Employees</DialogTitle>
+                    <DialogDescription>
+                      Add multiple employees at once to the Tamarind Elimu System. Fill out the rows below.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <CreateEmployeesBulk onSuccess={() => setIsCreateBulkEmployeeOpen(false)} onCancel={() => setIsCreateBulkEmployeeOpen(false)} />
+                </DialogContent>
+              </Dialog>
+
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Create Employee</DialogTitle>
+                  <DialogDescription>
+                    Add a single employee to the Tamarind Elimu System.
+                  </DialogDescription>
+                </DialogHeader>
+                <CreateEmployee onSuccess={() => setIsCreateEmployeeOpen(false)} onCancel={() => setIsCreateEmployeeOpen(false)} />
+              </DialogContent>
+            </Dialog>
+
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Create HR Account</DialogTitle>
+                <DialogDescription>
+                  Add a new HR Administrator to the system.
+                </DialogDescription>
+              </DialogHeader>
+              <CreateHR onSuccess={() => setIsCreateHROpen(false)} onCancel={() => setIsCreateHROpen(false)} />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
