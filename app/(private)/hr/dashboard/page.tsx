@@ -12,12 +12,14 @@ import { PlusCircle, MoreHorizontal } from "lucide-react";
 import CreateHR from "@/forms/accounts/CreateHR";
 import CreateEmployee from "@/forms/accounts/CreateEmployee";
 import CreateEmployeesBulk from "@/forms/accounts/CreateEmployeesBulk";
+import CreateEmployeeBulkUpload from "@/forms/accounts/CreateEmployeesBulkUpload";
 
 export default function HRDashboard() {
   const { data: sopsData, isLoading } = useFetchAuthSops();
   const [isCreateHROpen, setIsCreateHROpen] = useState(false);
   const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
   const [isCreateBulkEmployeeOpen, setIsCreateBulkEmployeeOpen] = useState(false);
+  const [isCreateBulkUploadOpen, setIsCreateBulkUploadOpen] = useState(false);
 
   const { activeSops, inactiveSops } = useMemo(() => {
     if (!sopsData) return { activeSops: 0, inactiveSops: 0 };
@@ -42,28 +44,43 @@ export default function HRDashboard() {
           <Dialog open={isCreateHROpen} onOpenChange={setIsCreateHROpen}>
             <Dialog open={isCreateEmployeeOpen} onOpenChange={setIsCreateEmployeeOpen}>
               <Dialog open={isCreateBulkEmployeeOpen} onOpenChange={setIsCreateBulkEmployeeOpen}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Actions
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>Management Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={() => setIsCreateEmployeeOpen(true)} className="cursor-pointer">
-                      Create Single Employee
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setIsCreateBulkEmployeeOpen(true)} className="cursor-pointer">
-                      Bulk Create Employees
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={() => setIsCreateHROpen(true)} className="cursor-pointer">
-                      Create HR Account
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Dialog open={isCreateBulkUploadOpen} onOpenChange={setIsCreateBulkUploadOpen}>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Actions
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-64">
+                      <DropdownMenuLabel>Management Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={() => setIsCreateEmployeeOpen(true)} className="cursor-pointer">
+                        Create Single Employee
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsCreateBulkEmployeeOpen(true)} className="cursor-pointer">
+                        Bulk Create Employees (Manual form)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsCreateBulkUploadOpen(true)} className="cursor-pointer">
+                        Bulk Create Employees (CSV upload)
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={() => setIsCreateHROpen(true)} className="cursor-pointer">
+                        Create HR Account
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>Upload Employees via CSV</DialogTitle>
+                      <DialogDescription>
+                        Upload a CSV file containing employee details. Ensure it matches the required format.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <CreateEmployeeBulkUpload onSuccess={() => setIsCreateBulkUploadOpen(false)} onCancel={() => setIsCreateBulkUploadOpen(false)} />
+                  </DialogContent>
+                </Dialog>
                 
                 <DialogContent className="sm:max-w-[800px] md:max-w-4xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader className="mb-4">
