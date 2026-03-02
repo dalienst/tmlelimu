@@ -59,6 +59,7 @@ export default function CreateEmployee({ onSuccess, onCancel }: CreateEmployeePr
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
         <div className="space-y-2">
@@ -70,6 +71,7 @@ export default function CreateEmployee({ onSuccess, onCancel }: CreateEmployeePr
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
       </div>
@@ -83,8 +85,9 @@ export default function CreateEmployee({ onSuccess, onCancel }: CreateEmployeePr
             type="email"
             value={formik.values.email}
             onChange={formik.handleChange}
-            required
+            required={!formik.values.password}
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
         <div className="space-y-2">
@@ -96,21 +99,31 @@ export default function CreateEmployee({ onSuccess, onCancel }: CreateEmployeePr
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Password <span className="text-zinc-400 font-normal text-xs">(Optional - activation email will be sent if blank)</span></Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          disabled={isPending}
-        />
-      </div>
+      {!formik.values.email && (
+        <div className="space-y-2">
+          <Label htmlFor="password">
+            Password 
+            <span className="text-zinc-400 font-normal text-xs ml-1">
+              (Required since no email provided)
+            </span>
+          </Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            required={!formik.values.email}
+            disabled={isPending}
+            className="w-full p-2"
+          />
+        </div>
+      )}
 
       <div className="flex justify-end gap-3 pt-4">
         {onCancel && (

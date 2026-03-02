@@ -60,6 +60,7 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
         <div className="space-y-2">
@@ -71,6 +72,7 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
       </div>
@@ -86,6 +88,7 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
         <div className="space-y-2">
@@ -97,6 +100,7 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
       </div>
@@ -112,6 +116,7 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
         <div className="space-y-2">
@@ -124,6 +129,7 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
             onChange={formik.handleChange}
             required
             disabled={isPending}
+            className="w-full p-2"
           />
         </div>
       </div>
