@@ -26,7 +26,7 @@ export interface User {
     reference: string;
 }
 
-interface createHRAccount {
+export interface CreateHRAccountPayload {
     email: string;
     first_name: string;
     last_name: string;
@@ -53,7 +53,7 @@ export interface updateUser {
 }
 
 // HR Roles
-interface createEmployeeByHR {
+export interface CreateEmployeeByHRPayload {
     email: string;
     first_name: string;
     last_name: string;
@@ -63,7 +63,7 @@ interface createEmployeeByHR {
 
 interface createBulkEmployeeByHR {
     // usually a list of objects
-    employees: createEmployeeByHR[];
+    employees: CreateEmployeeByHRPayload[];
 }
 
 interface createBulkEmployeeByHRCSV {
@@ -99,12 +99,12 @@ export const resetPassword = async (data: resetPassword): Promise<User> => {
 }
 
 // Private Endpoints: created by system admin or existing HR
-export const createHRAccount = async (data: createHRAccount, headers: { headers: { Authorization: string } }): Promise<User> => {
+export const createHRAccount = async (data: CreateHRAccountPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
     const response: AxiosResponse<User> = await apiActions.post(`/api/v1/auth/signup/hr/`, data, headers)
     return response.data
 }
 
-export const createEmployeeByHR = async (data: createEmployeeByHR, headers: { headers: { Authorization: string } }): Promise<User> => {
+export const createEmployeeByHR = async (data: CreateEmployeeByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
     const response: AxiosResponse<User> = await apiActions.post(`/api/v1/auth/employee/create/`, data, headers)
     return response.data
 }

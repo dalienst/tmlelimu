@@ -26,9 +26,7 @@ export default function Navbar() {
   }, []);
 
   // Determine user roles from session (assuming Django backend maps these)
-  // @ts-ignore
   const isHR = session?.user?.is_hr || pathname.startsWith("/hr");
-  // @ts-ignore
   const isEmployee = session?.user?.is_employee || pathname.startsWith("/employee");
 
   // Dynamic navigation links based on role
@@ -49,9 +47,8 @@ export default function Navbar() {
     ];
   }
 
-  const userInitial = session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "U";
-  const userName = session?.user?.name || "Tamarind User";
-  // @ts-ignore
+  const userInitial = session?.user?.first_name ? session.user.first_name.charAt(0).toUpperCase() : "U";
+  const userName = session?.user?.first_name ? `${session.user.first_name} ` : "Tamarind User";
   const userEmail = session?.user?.email || session?.user?.username || "";
 
   return (

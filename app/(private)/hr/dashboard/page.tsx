@@ -1,13 +1,21 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, MoreHorizontal } from "lucide-react";
+import CreateHR from "@/forms/accounts/CreateHR";
+import CreateEmployee from "@/forms/accounts/CreateEmployee";
 
 export default function HRDashboard() {
   const { data: sopsData, isLoading } = useFetchAuthSops();
+  const [isCreateHROpen, setIsCreateHROpen] = useState(false);
+  const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
 
   const { activeSops, inactiveSops } = useMemo(() => {
     if (!sopsData) return { activeSops: 0, inactiveSops: 0 };
@@ -24,9 +32,54 @@ export default function HRDashboard() {
           <h1 className="text-3xl font-bold text-[#004d40]">HR Dashboard</h1>
           <p className="text-zinc-500">Tamarind Elimu System Management</p>
         </div>
-        <Badge className="bg-emerald-100 text-[#004d40] border-emerald-200 hover:bg-emerald-100 px-4 py-1.5 rounded-full">
-          HR Administrator
-        </Badge>
+        <div className="flex items-center gap-4">
+          <Badge className="bg-emerald-100 text-[#004d40] border-emerald-200 hover:bg-emerald-100 px-4 py-1.5 rounded-full">
+            HR Administrator
+          </Badge>
+          
+          <Dialog open={isCreateHROpen} onOpenChange={setIsCreateHROpen}>
+            <Dialog open={isCreateEmployeeOpen} onOpenChange={setIsCreateEmployeeOpen}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Actions
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Management Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={() => setIsCreateEmployeeOpen(true)} className="cursor-pointer">
+                    Create Employee
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setIsCreateHROpen(true)} className="cursor-pointer">
+                    Create HR Account
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Create Employee</DialogTitle>
+                  <DialogDescription>
+                    Add a new employee to the Tamarind Elimu System.
+                  </DialogDescription>
+                </DialogHeader>
+                <CreateEmployee onSuccess={() => setIsCreateEmployeeOpen(false)} onCancel={() => setIsCreateEmployeeOpen(false)} />
+              </DialogContent>
+            </Dialog>
+
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Create HR Account</DialogTitle>
+                <DialogDescription>
+                  Add a new HR Administrator to the system.
+                </DialogDescription>
+              </DialogHeader>
+              <CreateHR onSuccess={() => setIsCreateHROpen(false)} onCancel={() => setIsCreateHROpen(false)} />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
