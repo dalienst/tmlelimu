@@ -119,6 +119,16 @@ export const createBulkEmployeeByHRCSV = async (data: createBulkEmployeeByHRCSV,
     return response.data
 }
 
+export const getEmployees = async (headers: { headers: { Authorization: string } }): Promise<User[]> => {
+    const response: AxiosResponse<User[]> = await apiActions.get(`/api/v1/auth/`, headers)
+    return response.data
+}
+
+export const getEmployee = async (reference: string, headers: { headers: { Authorization: string } }): Promise<User> => {
+    const response: AxiosResponse<User> = await apiActions.get(`/api/v1/auth/${reference}/update/`, headers)
+    return response.data
+}
+
 export const updateUserByHR = async (reference: string, formData: updateUserByHR, headers: { headers: { Authorization: string } }): Promise<User> => {
     const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/employee/${reference}/update/`, formData, headers)
     return response.data
