@@ -123,7 +123,7 @@ export const createEmployeeByHR = async (data: CreateEmployeeByHRPayload, header
 }
 
 export const downloadTemplate = async (headers: { headers: { Authorization: string } }): Promise<Blob> => {
-    const response = await apiActions.get(`/api/v1/auth/signup/employees/bulk/create/template/`, { 
+    const response = await apiActions.get(`/api/v1/auth/signup/employees/bulk/create/csv/template/`, { 
         ...headers,
         responseType: 'blob' 
     });
