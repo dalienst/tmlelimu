@@ -138,7 +138,7 @@ export const getEmployee = async (reference: string, headers: { headers: { Autho
 }
 
 export const updateUserByHR = async (reference: string, formData: UpdateUserByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
-    const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/employee/${reference}/update/`, formData, headers)
+    const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/${reference}/update/`, formData, headers)
     return response.data
 }
 
