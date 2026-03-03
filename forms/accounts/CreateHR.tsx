@@ -23,8 +23,6 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
       last_name: "",
       email: "",
       payroll_no: "",
-      password: "",
-      password_confirmation: "",
     },
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -105,34 +103,7 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            required
-            disabled={isPending}
-            className="w-full p-2"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password_confirmation">Confirm Password</Label>
-          <Input
-            id="password_confirmation"
-            name="password_confirmation"
-            type="password"
-            value={formik.values.password_confirmation}
-            onChange={formik.handleChange}
-            required
-            disabled={isPending}
-            className="w-full p-2"
-          />
-        </div>
-      </div>
+
 
       <div className="flex justify-end gap-3 pt-4">
         {onCancel && (

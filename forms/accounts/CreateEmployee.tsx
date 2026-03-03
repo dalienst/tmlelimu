@@ -23,7 +23,6 @@ export default function CreateEmployee({ onSuccess, onCancel }: CreateEmployeePr
       last_name: "",
       email: "",
       payroll_no: "",
-      password: "",
     },
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -85,7 +84,7 @@ export default function CreateEmployee({ onSuccess, onCancel }: CreateEmployeePr
             type="email"
             value={formik.values.email}
             onChange={formik.handleChange}
-            required={!formik.values.password}
+            required
             disabled={isPending}
             className="w-full p-2"
           />
@@ -104,26 +103,7 @@ export default function CreateEmployee({ onSuccess, onCancel }: CreateEmployeePr
         </div>
       </div>
 
-      {!formik.values.email && (
-        <div className="space-y-2">
-          <Label htmlFor="password">
-            Password 
-            <span className="text-zinc-400 font-normal text-xs ml-1">
-              (Required since no email provided)
-            </span>
-          </Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            required={!formik.values.email}
-            disabled={isPending}
-            className="w-full p-2"
-          />
-        </div>
-      )}
+
 
       <div className="flex justify-end gap-3 pt-4">
         {onCancel && (

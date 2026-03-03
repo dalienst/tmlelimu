@@ -82,7 +82,7 @@ export default function HRDashboard() {
                   </DialogContent>
                 </Dialog>
                 
-                <DialogContent className="sm:max-w-[800px] md:max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="w-[95vw] sm:max-w-[800px] md:max-w-6xl lg:max-w-7xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader className="mb-4">
                     <DialogTitle className="text-xl">Bulk Add Employees</DialogTitle>
                     <DialogDescription>
