@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal, ShieldAlert, ShieldCheck, PlusCircle } from "lucide-react";
-import { useFetchEmployees, useUpdateEmployee } from "@/hooks/accounts/actions";
+import { MoreHorizontal, ShieldAlert, ShieldCheck, PlusCircle, KeyRound } from "lucide-react";
+import { useFetchEmployees, useUpdateEmployee, useResetMemberPassword } from "@/hooks/accounts/actions";
 import { User } from "@/services/accounts";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
@@ -57,6 +57,10 @@ export default function EmployeeManagementPage() {
   const [togglingRole, setTogglingRole] = useState<{ user: User, role: keyof User, label: string } | null>(null);
   const [isToggling, setIsToggling] = useState(false);
 
+  const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
+  const [resetPasswordForm, setResetPasswordForm] = useState({ password: '', password_confirmation: '' });
+  const { mutateAsync: resetPassword } = useResetMemberPassword();
+
   const [isCreateHROpen, setIsCreateHROpen] = useState(false);
   const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
   const [isCreateBulkEmployeeOpen, setIsCreateBulkEmployeeOpen] = useState(false);
@@ -87,6 +91,37 @@ export default function EmployeeManagementPage() {
     } finally {
       setIsToggling(false);
       setTogglingRole(null);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetPasswordUser) return;
+    
+    if (resetPasswordForm.password !== resetPasswordForm.password_confirmation) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (resetPasswordForm.password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+
+    setIsToggling(true);
+    try {
+      await resetPassword({
+        reference: resetPasswordUser.reference,
+        data: resetPasswordForm,
+        headers,
+      });
+      toast.success(`Password reset successfully for ${resetPasswordUser.first_name}`);
+      setResetPasswordUser(null);
+      setResetPasswordForm({ password: '', password_confirmation: '' });
+    } catch (e: any) {
+      toast.error(e?.response?.data?.detail || "Failed to reset password");
+    } finally {
+      setIsToggling(false);
     }
   };
 
@@ -298,6 +333,14 @@ export default function EmployeeManagementPage() {
                               {user.is_hr ? <ShieldAlert className="mr-2 h-4 w-4 text-red-500" /> : <ShieldCheck className="mr-2 h-4 w-4 text-emerald-500" />}
                               {user.is_hr ? "Revoke HR Admin" : "Grant HR Admin"}
                             </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => setResetPasswordUser(user)}
+                              className="cursor-pointer font-medium text-amber-600"
+                            >
+                              <KeyRound className="mr-2 h-4 w-4 text-amber-600" />
+                              Reset Password
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -344,6 +387,63 @@ export default function EmployeeManagementPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Reset Password Dialog */}
+      <Dialog open={!!resetPasswordUser} onOpenChange={(open) => {
+        if (!isToggling && !open) {
+          setResetPasswordUser(null);
+          setResetPasswordForm({ password: '', password_confirmation: '' });
+        }
+      }}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+            <DialogDescription>
+              Set a new password for {resetPasswordUser?.first_name} {resetPasswordUser?.last_name}. They will be able to log in immediately with this new password.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleResetPassword} className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">New Password</label>
+              <Input
+                type="password"
+                required
+                value={resetPasswordForm.password}
+                onChange={(e) => setResetPasswordForm({ ...resetPasswordForm, password: e.target.value })}
+                disabled={isToggling}
+                placeholder="Enter new password"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Confirm Password</label>
+              <Input
+                type="password"
+                required
+                value={resetPasswordForm.password_confirmation}
+                onChange={(e) => setResetPasswordForm({ ...resetPasswordForm, password_confirmation: e.target.value })}
+                disabled={isToggling}
+                placeholder="Confirm new password"
+              />
+            </div>
+            <div className="pt-4 flex justify-end gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setResetPasswordUser(null);
+                  setResetPasswordForm({ password: '', password_confirmation: '' });
+                }}
+                disabled={isToggling}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isToggling} className="bg-amber-600 hover:bg-amber-700 text-white">
+                {isToggling ? "Resetting..." : "Reset Password"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

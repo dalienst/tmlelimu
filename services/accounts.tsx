@@ -81,6 +81,11 @@ export interface UpdateUserByHRPayload {
     is_hr?: boolean;
 }
 
+export interface resetMemberPassword {
+    password: string;
+    password_confirmation: string;
+}
+
 export const activateAccount = async (data: ActivateAccountPayload): Promise<User> => {
     const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/activate/${data.uidb64}/${data.token}/`, data)
     return response.data
@@ -117,6 +122,14 @@ export const createEmployeeByHR = async (data: CreateEmployeeByHRPayload, header
     return response.data
 }
 
+export const downloadTemplate = async (headers: { headers: { Authorization: string } }): Promise<Blob> => {
+    const response = await apiActions.get(`/api/v1/auth/signup/employees/bulk/create/template/`, { 
+        ...headers,
+        responseType: 'blob' 
+    });
+    return response.data;
+}
+
 export const createBulkEmployeeByHR = async (data: CreateBulkEmployeeByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
     const response: AxiosResponse<User> = await apiMultipartActions.post(`/api/v1/auth/signup/employees/bulk/create/`, data, headers)
     return response.data
@@ -142,4 +155,7 @@ export const updateUserByHR = async (reference: string, formData: UpdateUserByHR
     return response.data
 }
 
-
+export const resetMemberPassword = async (reference: string, formData: resetMemberPassword, headers: { headers: { Authorization: string } }): Promise<User> => {
+    const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/password/reset/${reference}/member/`, formData, headers)
+    return response.data
+}
