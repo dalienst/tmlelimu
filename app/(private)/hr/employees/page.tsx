@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal, ShieldAlert, ShieldCheck } from "lucide-react";
+import { MoreHorizontal, ShieldAlert, ShieldCheck, PlusCircle } from "lucide-react";
 import { useFetchEmployees, useUpdateEmployee } from "@/hooks/accounts/actions";
 import { User } from "@/services/accounts";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
@@ -28,6 +28,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import CreateHR from "@/forms/accounts/CreateHR";
+import CreateEmployee from "@/forms/accounts/CreateEmployee";
+import CreateEmployeesBulk from "@/forms/accounts/CreateEmployeesBulk";
+import CreateEmployeeBulkUpload from "@/forms/accounts/CreateEmployeesBulkUpload";
+import {
   Table,
   TableBody,
   TableCell,
@@ -45,6 +56,11 @@ export default function EmployeeManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [togglingRole, setTogglingRole] = useState<{ user: User, role: keyof User, label: string } | null>(null);
   const [isToggling, setIsToggling] = useState(false);
+
+  const [isCreateHROpen, setIsCreateHROpen] = useState(false);
+  const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
+  const [isCreateBulkEmployeeOpen, setIsCreateBulkEmployeeOpen] = useState(false);
+  const [isCreateBulkUploadOpen, setIsCreateBulkUploadOpen] = useState(false);
 
   const headers = useAxiosAuth();
 
@@ -85,20 +101,106 @@ export default function EmployeeManagementPage() {
   }) || [];
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-8 mx-auto space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#004d40]">Employee Management</h1>
           <p className="text-zinc-500">View and manage roles for Tamarind Group employees</p>
         </div>
         
-        <div className="w-full md:w-72">
+        <div className="flex items-center gap-4 w-full md:w-auto">
           <Input 
             placeholder="Search name, email, or payroll no..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="rounded-full bg-white"
+            className="rounded-full bg-white md:w-72 p-2"
           />
+
+          <Dialog open={isCreateHROpen} onOpenChange={setIsCreateHROpen}>
+            <Dialog open={isCreateEmployeeOpen} onOpenChange={setIsCreateEmployeeOpen}>
+              <Dialog open={isCreateBulkEmployeeOpen} onOpenChange={setIsCreateBulkEmployeeOpen}>
+                <Dialog open={isCreateBulkUploadOpen} onOpenChange={setIsCreateBulkUploadOpen}>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Actions
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-64">
+                      <DropdownMenuLabel>Management Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={() => setIsCreateEmployeeOpen(true)} className="cursor-pointer">
+                        Create Single Employee
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsCreateBulkEmployeeOpen(true)} className="cursor-pointer">
+                        Bulk Create Employees (Manual form)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsCreateBulkUploadOpen(true)} className="cursor-pointer">
+                        Bulk Create Employees (CSV upload)
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={() => setIsCreateHROpen(true)} className="cursor-pointer">
+                        Create HR Account
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>Upload Employees via CSV</DialogTitle>
+                      <DialogDescription>
+                        Upload a CSV file containing employee details. Ensure it matches the required format.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <CreateEmployeeBulkUpload 
+                      onSuccess={() => { setIsCreateBulkUploadOpen(false); refetch(); }} 
+                      onCancel={() => setIsCreateBulkUploadOpen(false)} 
+                    />
+                  </DialogContent>
+                </Dialog>
+                
+                <DialogContent className="sm:max-w-[800px] md:max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader className="mb-4">
+                    <DialogTitle className="text-xl">Bulk Add Employees</DialogTitle>
+                    <DialogDescription>
+                      Add multiple employees at once to the Tamarind Elimu System. Fill out the rows below.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <CreateEmployeesBulk 
+                    onSuccess={() => { setIsCreateBulkEmployeeOpen(false); refetch(); }} 
+                    onCancel={() => setIsCreateBulkEmployeeOpen(false)} 
+                  />
+                </DialogContent>
+              </Dialog>
+
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Create Employee</DialogTitle>
+                  <DialogDescription>
+                    Add a single employee to the Tamarind Elimu System.
+                  </DialogDescription>
+                </DialogHeader>
+                <CreateEmployee 
+                  onSuccess={() => { setIsCreateEmployeeOpen(false); refetch(); }} 
+                  onCancel={() => setIsCreateEmployeeOpen(false)} 
+                />
+              </DialogContent>
+            </Dialog>
+
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Create HR Account</DialogTitle>
+                <DialogDescription>
+                  Add a new HR Administrator to the system.
+                </DialogDescription>
+              </DialogHeader>
+              <CreateHR 
+                onSuccess={() => { setIsCreateHROpen(false); refetch(); }} 
+                onCancel={() => setIsCreateHROpen(false)} 
+              />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

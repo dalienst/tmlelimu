@@ -30,7 +30,7 @@ export default function HRDashboard() {
   }, [sopsData]);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-8  mx-auto space-y-8">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-[#004d40]">HR Dashboard</h1>
