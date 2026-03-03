@@ -32,8 +32,6 @@ export interface CreateHRAccountPayload {
     first_name: string;
     last_name: string;
     payroll_no: string;
-    password: string;
-    password_confirmation: string;
 }
 
 export interface forgotPassword {
@@ -65,7 +63,6 @@ export interface CreateEmployeeByHRPayload {
     first_name: string;
     last_name: string;
     payroll_no: string;
-    password: string; // not required if email has been provided as an activation email will be sent to the user which will enable them set a password
 }
 
 export interface CreateBulkEmployeeByHRPayload {
@@ -82,6 +79,11 @@ export interface UpdateUserByHRPayload {
     is_trainer?: boolean;
     is_hod?: boolean;
     is_hr?: boolean;
+}
+
+export interface resetMemberPassword {
+    password: string;
+    password_confirmation: string;
 }
 
 export const activateAccount = async (data: ActivateAccountPayload): Promise<User> => {
@@ -116,17 +118,25 @@ export const createHRAccount = async (data: CreateHRAccountPayload, headers: { h
 }
 
 export const createEmployeeByHR = async (data: CreateEmployeeByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
-    const response: AxiosResponse<User> = await apiActions.post(`/api/v1/auth/employee/create/`, data, headers)
+    const response: AxiosResponse<User> = await apiActions.post(`/api/v1/auth/signup/employees/create/`, data, headers)
     return response.data
 }
 
+export const downloadTemplate = async (headers: { headers: { Authorization: string } }): Promise<Blob> => {
+    const response = await apiActions.get(`/api/v1/auth/signup/employees/bulk/create/csv/template/`, { 
+        ...headers,
+        responseType: 'blob' 
+    });
+    return response.data;
+}
+
 export const createBulkEmployeeByHR = async (data: CreateBulkEmployeeByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
-    const response: AxiosResponse<User> = await apiActions.post(`/api/v1/auth/employee/bulk/create/`, data, headers)
+    const response: AxiosResponse<User> = await apiMultipartActions.post(`/api/v1/auth/signup/employees/bulk/create/`, data, headers)
     return response.data
 }
 
 export const createBulkEmployeeByHRCSV = async (data: createBulkEmployeeByHRCSV, headers: { headers: { Authorization: string } }): Promise<User> => {
-    const response: AxiosResponse<User> = await apiMultipartActions.post(`/api/v1/auth/employee/bulk/create/csv/`, data, headers)
+    const response: AxiosResponse<User> = await apiMultipartActions.post(`/api/v1/auth/signup/employees/bulk/create/csv/`, data, headers)
     return response.data
 }
 
@@ -141,8 +151,11 @@ export const getEmployee = async (reference: string, headers: { headers: { Autho
 }
 
 export const updateUserByHR = async (reference: string, formData: UpdateUserByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
-    const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/employee/${reference}/update/`, formData, headers)
+    const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/${reference}/update/`, formData, headers)
     return response.data
 }
 
-
+export const resetMemberPassword = async (reference: string, formData: resetMemberPassword, headers: { headers: { Authorization: string } }): Promise<User> => {
+    const response: AxiosResponse<User> = await apiActions.patch(`/api/v1/auth/password/reset/${reference}/member/`, formData, headers)
+    return response.data
+}

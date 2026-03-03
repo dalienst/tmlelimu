@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { createBulkEmployeeByHRCSV } from "@/services/accounts";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
-import { Loader2, UploadCloud, FileType2, X } from "lucide-react";
+import { Loader2, UploadCloud, FileType2, X, DownloadCloud } from "lucide-react";
 import { useState, useRef } from "react";
+import { downloadTemplate } from "@/services/accounts";
 
 interface CreateEmployeeBulkUploadProps {
   onSuccess?: () => void;
@@ -18,6 +19,30 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
   const token = useAxiosAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadTemplate = async () => {
+    try {
+      setIsDownloading(true);
+      const blob = await downloadTemplate(token);
+      
+      // Create a blob URL and trigger download
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'employee_bulk_upload_template.csv');
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error("Failed to download template. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -96,7 +121,24 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label>Upload CSV File</Label>
+        <div className="flex items-center justify-between mb-2">
+          <Label>Upload CSV File</Label>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm" 
+            onClick={handleDownloadTemplate}
+            disabled={isDownloading || isPending}
+            className="text-[#004d40] border-[#004d40]/20 hover:bg-emerald-50 h-8 text-xs"
+          >
+            {isDownloading ? (
+              <Loader2 className="w-3 h-3 mr-2 animate-spin" />
+            ) : (
+              <DownloadCloud className="w-3 h-3 mr-2" />
+            )}
+            Download Template
+          </Button>
+        </div>
         
         {!formik.values.file ? (
           <div

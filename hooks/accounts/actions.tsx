@@ -1,6 +1,6 @@
 "use client";
 
-import { getAccount, getEmployee, getEmployees, updateUserByHR, UpdateUserByHRPayload } from "@/services/accounts";
+import { getAccount, getEmployee, getEmployees, updateUserByHR, UpdateUserByHRPayload, resetMemberPassword, resetMemberPassword as ResetMemberPasswordPayload } from "@/services/accounts";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
 import useUserId from "../authentication/useUserId";
@@ -55,6 +55,22 @@ export function useUpdateEmployee() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["employees"] });
+        },
+    });
+}
+
+export function useResetMemberPassword() {
+    return useMutation({
+        mutationFn: async ({
+            reference,
+            data,
+            headers,
+        }: {
+            reference: string;
+            data: ResetMemberPasswordPayload;
+            headers: { headers: { Authorization: string } };
+        }) => {
+            return resetMemberPassword(reference, data, headers);
         },
     });
 }
