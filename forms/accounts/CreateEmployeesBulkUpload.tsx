@@ -39,7 +39,6 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
       window.URL.revokeObjectURL(url);
     } catch (error) {
       toast.error("Failed to download template. Please try again.");
-      console.error(error);
     } finally {
       setIsDownloading(false);
     }
