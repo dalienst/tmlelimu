@@ -118,7 +118,7 @@ export const createEmployeeByHR = async (data: CreateEmployeeByHRPayload, header
 }
 
 export const createBulkEmployeeByHR = async (data: CreateBulkEmployeeByHRPayload, headers: { headers: { Authorization: string } }): Promise<User> => {
-    const response: AxiosResponse<User> = await apiActions.post(`/api/v1/auth/signup/employees/bulk/create/`, data, headers)
+    const response: AxiosResponse<User> = await apiMultipartActions.post(`/api/v1/auth/signup/employees/bulk/create/`, data, headers)
     return response.data
 }
 
