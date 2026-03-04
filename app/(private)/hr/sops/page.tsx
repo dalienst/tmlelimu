@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Plus, Settings2, MoreHorizontal, Pencil, EyeOff, Eye } from "lucide-react";
-import { useUpdateSop, useFetchAuthSops } from "@/hooks/sops/actions";
-import { Sops } from "@/services/sops";
+import { useFetchAuthSops } from "@/hooks/sops/actions";
+import { Sops, updateSops } from "@/services/sops";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
@@ -50,7 +50,6 @@ import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 export default function HRSopsPage() {
   const { data: session } = useSession();
   const { data: sopsData, isLoading, refetch: refetchSops } = useFetchAuthSops();
-  const { mutateAsync: updateSop } = useUpdateSop();
   
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingSop, setEditingSop] = useState<Sops | null>(null);
@@ -67,11 +66,7 @@ export default function HRSopsPage() {
       const formData = new FormData();
       formData.append("is_active", String(!togglingSop.is_active));
       
-      await updateSop({
-        reference: togglingSop.reference,
-        formData,
-        headers,
-      });
+      await updateSops(togglingSop.reference, formData, headers);
       toast.success(`SOP ${togglingSop.is_active ? 'deactivated' : 'activated'} successfully`);
       refetchSops();
     } catch (e: any) {

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, User, LayoutDashboard, FileText, ChevronDown, CheckCircle, Users } from "lucide-react";
+import { Menu, X, LogOut, User, LayoutDashboard, FileText, ChevronDown, CheckCircle, Users, Building2 } from "lucide-react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -36,6 +36,7 @@ export default function Navbar() {
   if (isHR) {
     navLinks = [
       { name: "Dashboard", href: "/hr/dashboard", icon: LayoutDashboard },
+      { name: "Departments", href: "/hr/departments", icon: Building2 },
       { name: "Employees", href: "/hr/employees", icon: Users },
       { name: "SOP Management", href: "/hr/sops", icon: FileText },
     ];
