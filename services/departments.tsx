@@ -39,8 +39,7 @@ interface updateDepartment {
     name?: string;
     email?: string;
     description?: string;
-    head?: string;
-    staff?: string[];
+    is_active?: boolean;
 }
 
 export const getDepartments = async (): Promise<Department[]> => {
