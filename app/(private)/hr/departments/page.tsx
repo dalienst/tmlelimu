@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { PlusCircle, Search, Building2, ChevronRight, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { useFetchDepartments, useDeleteDepartment } from "@/hooks/departments/actions";
-import { Department } from "@/services/departments";
+import { useFetchDepartments } from "@/hooks/departments/actions";
+import { Department, deleteDepartment } from "@/services/departments";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -51,7 +51,6 @@ import UpdateDepartment from "@/forms/departments/UpdateDepartment";
 
 export default function DepartmentsPage() {
   const { data: departments, isLoading, refetch } = useFetchDepartments();
-  const { mutateAsync: deleteDepartment } = useDeleteDepartment();
   const token = useAxiosAuth();
   
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,12 +63,10 @@ export default function DepartmentsPage() {
     if (!departmentToDelete) return;
     setIsDeleting(true);
     try {
-      await deleteDepartment({
-        reference: departmentToDelete.reference,
-        headers: token,
-      });
+      await deleteDepartment(departmentToDelete.reference, token);
       toast.success("Department deleted successfully");
       setDepartmentToDelete(null);
+      refetch();
     } catch (error: any) {
       toast.error(error.response?.data?.detail || "Failed to delete department");
     } finally {
@@ -121,7 +118,7 @@ export default function DepartmentsPage() {
                 </DialogDescription>
               </DialogHeader>
               <CreateDepartment 
-                onSuccess={() => setIsCreateOpen(false)} 
+                onSuccess={() => {setIsCreateOpen(false); refetch();}} 
                 onCancel={() => setIsCreateOpen(false)} 
               />
             </DialogContent>

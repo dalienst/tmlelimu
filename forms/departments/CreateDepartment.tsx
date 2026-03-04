@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateDepartment } from "@/hooks/departments/actions";
+import { createDepartment } from "@/services/departments";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
@@ -17,7 +17,6 @@ interface CreateDepartmentProps {
 
 export default function CreateDepartment({ onSuccess, onCancel }: CreateDepartmentProps) {
   const token = useAxiosAuth();
-  const { mutateAsync: createDepartment, isPending } = useCreateDepartment();
 
   const formik = useFormik({
     initialValues: {
@@ -27,10 +26,7 @@ export default function CreateDepartment({ onSuccess, onCancel }: CreateDepartme
     },
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        await createDepartment({
-          data: values,
-          headers: token,
-        });
+        await createDepartment(values, token);
         toast.success("Department created successfully");
         formik.resetForm();
         if (onSuccess) onSuccess();
@@ -41,6 +37,8 @@ export default function CreateDepartment({ onSuccess, onCancel }: CreateDepartme
       }
     },
   });
+
+  const isPending = formik.isSubmitting;
 
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-4 pt-4">
@@ -55,6 +53,7 @@ export default function CreateDepartment({ onSuccess, onCancel }: CreateDepartme
           required
           disabled={isPending}
           placeholder="e.g. Human Resources"
+          className="w-full p-2"
         />
       </div>
 
@@ -68,6 +67,7 @@ export default function CreateDepartment({ onSuccess, onCancel }: CreateDepartme
           value={formik.values.email}
           disabled={isPending}
           placeholder="hr@tamarind.co.ke"
+          className="w-full p-2"
         />
       </div>
 
@@ -80,7 +80,7 @@ export default function CreateDepartment({ onSuccess, onCancel }: CreateDepartme
           value={formik.values.description}
           disabled={isPending}
           placeholder="Brief description of the department's role..."
-          className="resize-none"
+          className="resize-none w-full p-2"
           rows={3}
         />
       </div>

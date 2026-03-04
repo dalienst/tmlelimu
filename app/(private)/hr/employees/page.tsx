@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { MoreHorizontal, ShieldAlert, ShieldCheck, PlusCircle, KeyRound } from "lucide-react";
-import { useFetchEmployees, useUpdateEmployee, useResetMemberPassword } from "@/hooks/accounts/actions";
-import { User } from "@/services/accounts";
+import { useFetchEmployees } from "@/hooks/accounts/actions";
+import { User, updateUserByHR, resetMemberPassword } from "@/services/accounts";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
 
@@ -51,7 +51,6 @@ import { Input } from "@/components/ui/input";
 
 export default function EmployeeManagementPage() {
   const { data: employeesData, isLoading, refetch } = useFetchEmployees();
-  const { mutateAsync: updateEmployee } = useUpdateEmployee();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [togglingRole, setTogglingRole] = useState<{ user: User, role: keyof User, label: string } | null>(null);
@@ -59,7 +58,6 @@ export default function EmployeeManagementPage() {
 
   const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
   const [resetPasswordForm, setResetPasswordForm] = useState({ password: '', password_confirmation: '' });
-  const { mutateAsync: resetPassword } = useResetMemberPassword();
 
   const [isCreateHROpen, setIsCreateHROpen] = useState(false);
   const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
@@ -78,11 +76,7 @@ export default function EmployeeManagementPage() {
         [togglingRole.role]: newValue
       };
 
-      await updateEmployee({
-        reference: togglingRole.user.reference,
-        data: payload,
-        headers,
-      });
+      await updateUserByHR(togglingRole.user.reference, payload, headers);
       
       toast.success(`${togglingRole.user.first_name}'s ${togglingRole.label} role ${newValue ? 'granted' : 'revoked'}`);
       refetch();
@@ -110,11 +104,7 @@ export default function EmployeeManagementPage() {
 
     setIsToggling(true);
     try {
-      await resetPassword({
-        reference: resetPasswordUser.reference,
-        data: resetPasswordForm,
-        headers,
-      });
+      await resetMemberPassword(resetPasswordUser.reference, resetPasswordForm, headers);
       toast.success(`Password reset successfully for ${resetPasswordUser.first_name}`);
       setResetPasswordUser(null);
       setResetPasswordForm({ password: '', password_confirmation: '' });

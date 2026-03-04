@@ -1,7 +1,7 @@
 "use client";
 
-import { getSops, getSop, createSops, updateSops, deleteSops, getAuthSop, getAuthSops } from "@/services/sops";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getSops, getSop, getAuthSop, getAuthSops } from "@/services/sops";
+import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
 
 interface CreateSopParams {
@@ -35,35 +35,7 @@ export function useFetchSop(reference: string) {
   });
 }
 
-export function useCreateSop() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ formData, headers }: CreateSopParams) => createSops(formData, headers),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sops"] });
-    },
-  });
-}
 
-export function useUpdateSop() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ reference, formData, headers }: UpdateSopParams) => updateSops(reference, formData, headers),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sops"] });
-    },
-  });
-}
-
-export function useDeleteSop() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ reference, headers }: DeleteSopParams) => deleteSops(reference, headers),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sops"] });
-    },
-  });
-}
 
 
 // Authenticated

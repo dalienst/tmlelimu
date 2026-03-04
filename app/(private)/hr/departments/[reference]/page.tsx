@@ -2,7 +2,8 @@
 
 import { useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { useFetchAuthDepartment, useAddHeadToDepartment, useAddStaffToDepartment } from "@/hooks/departments/actions";
+import { useFetchAuthDepartment } from "@/hooks/departments/actions";
+import { addHeadToDepartment, addStaffToDepartment } from "@/services/departments";
 import { useFetchEmployees } from "@/hooks/accounts/actions";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
@@ -37,8 +38,8 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   const { data: department, isLoading: isLoadingDept, refetch: refetchDept } = useFetchAuthDepartment(reference);
   const { data: employees, isLoading: isLoadingEmployees } = useFetchEmployees();
   
-  const { mutateAsync: addHead, isPending: isAddingHead } = useAddHeadToDepartment();
-  const { mutateAsync: addStaff, isPending: isAddingStaff } = useAddStaffToDepartment();
+  const [isAddingHead, setIsAddingHead] = useState(false);
+  const [isAddingStaff, setIsAddingStaff] = useState(false);
 
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedHead, setSelectedHead] = useState<string>("");
@@ -49,31 +50,29 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   // Initialize selected staff when department data loads
   const handleAssignHead = async () => {
     if (!selectedHead) return;
+    setIsAddingHead(true);
     try {
-      await addHead({
-        reference,
-        data: { head: selectedHead },
-        headers: token
-      });
+      await addHeadToDepartment(reference, { head: selectedHead }, token);
       toast.success("Department head updated successfully");
       refetchDept();
       setSelectedHead("");
     } catch (error: any) {
       toast.error(error.response?.data?.detail || "Failed to assign head");
+    } finally {
+      setIsAddingHead(false);
     }
   };
 
   const handleUpdateStaff = async () => {
+    setIsAddingStaff(true);
     try {
-      await addStaff({
-        reference,
-        data: { staff: selectedStaff },
-        headers: token
-      });
+      await addStaffToDepartment(reference, { staff: selectedStaff }, token);
       toast.success("Department staff updated successfully");
       refetchDept();
     } catch (error: any) {
       toast.error(error.response?.data?.detail || "Failed to update staff");
+    } finally {
+      setIsAddingStaff(false);
     }
   };
 

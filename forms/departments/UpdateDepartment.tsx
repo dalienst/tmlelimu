@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useUpdateDepartment } from "@/hooks/departments/actions";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
-import { Department } from "@/services/departments";
+import { Department, updateDepartment } from "@/services/departments";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -20,7 +19,6 @@ interface UpdateDepartmentProps {
 
 export default function UpdateDepartment({ department, onSuccess, onCancel }: UpdateDepartmentProps) {
   const token = useAxiosAuth();
-  const { mutateAsync: updateDepartment, isPending } = useUpdateDepartment();
 
   const formik = useFormik({
     initialValues: {
@@ -31,11 +29,7 @@ export default function UpdateDepartment({ department, onSuccess, onCancel }: Up
     },
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        await updateDepartment({
-          reference: department.reference,
-          data: values,
-          headers: token,
-        });
+        await updateDepartment(department.reference, values, token);
         toast.success("Department updated successfully");
         if (onSuccess) onSuccess();
       } catch (error: any) {
@@ -45,6 +39,8 @@ export default function UpdateDepartment({ department, onSuccess, onCancel }: Up
       }
     },
   });
+
+  const isPending = formik.isSubmitting;
 
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-4 pt-4">
@@ -58,6 +54,7 @@ export default function UpdateDepartment({ department, onSuccess, onCancel }: Up
           value={formik.values.name}
           required
           disabled={isPending}
+          className="w-full p-2"
         />
       </div>
 
@@ -70,6 +67,7 @@ export default function UpdateDepartment({ department, onSuccess, onCancel }: Up
           onChange={formik.handleChange}
           value={formik.values.email}
           disabled={isPending}
+          className="w-full p-2"
         />
       </div>
 
@@ -81,8 +79,9 @@ export default function UpdateDepartment({ department, onSuccess, onCancel }: Up
           onChange={formik.handleChange}
           value={formik.values.description}
           disabled={isPending}
-          className="resize-none"
+          className="resize-none w-full p-2"
           rows={3}
+
         />
       </div>
 
