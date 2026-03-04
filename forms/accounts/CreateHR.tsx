@@ -23,6 +23,8 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
       last_name: "",
       email: "",
       payroll_no: "",
+      password: "",
+      confirm_password: "",
     },
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -95,6 +97,32 @@ export default function CreateHR({ onSuccess, onCancel }: CreateHRProps) {
             id="payroll_no"
             name="payroll_no"
             value={formik.values.payroll_no}
+            onChange={formik.handleChange}
+            required
+            disabled={isPending}
+            className="w-full p-2"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            required
+            disabled={isPending}
+            className="w-full p-2"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="confirm_password">Confirm Password</Label>
+          <Input
+            id="confirm_password"
+            name="confirm_password"
+            type="password"
+            value={formik.values.confirm_password}
             onChange={formik.handleChange}
             required
             disabled={isPending}
