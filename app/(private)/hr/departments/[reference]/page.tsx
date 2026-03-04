@@ -190,7 +190,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
 
             {/* Current Staff List (Read-only view) */}
             <div className="space-y-2">
-              {employees?.filter(e => department.staff?.includes(e.reference)).map(user => (
+              {employees?.filter(e => department.staff?.includes(e.email)).map(user => (
                 <div key={user.reference} className="flex items-center justify-between p-3 rounded-lg border border-zinc-100 bg-zinc-50/50">
                   <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-[#004d40] font-semibold text-sm">
@@ -217,14 +217,14 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
                 {employees?.map(user => (
                   <label key={user.reference} className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-50 cursor-pointer transition-colors">
                     <Checkbox 
-                      checked={selectedStaff.includes(user.reference)}
-                      onCheckedChange={() => toggleStaff(user.reference)}
+                      checked={selectedStaff.includes(user.email)}
+                      onCheckedChange={() => toggleStaff(user.email)}
                     />
                     <div>
                       <p className="font-medium text-sm text-zinc-900">{user.first_name} {user.last_name}</p>
                       <p className="text-xs text-zinc-500">{user.email}</p>
                     </div>
-                    {user.reference === department.head && (
+                    {user.email === department.head && (
                       <Badge variant="outline" className="ml-auto bg-amber-50 text-amber-700 border-amber-200">Department Head</Badge>
                     )}
                   </label>
@@ -278,8 +278,8 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
                       <SelectValue placeholder="Select an employee..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {employees?.map(emp => (
-                        <SelectItem key={emp.reference} value={emp.reference}>
+                      {employees?.filter(emp => emp.is_manager).map(emp => (
+                        <SelectItem key={emp.reference} value={emp.email}>
                           {emp.first_name} {emp.last_name} ({emp.email})
                         </SelectItem>
                       ))}
