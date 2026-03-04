@@ -214,7 +214,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
             <div id="staff-management-panel" className="pt-6 border-t border-zinc-100 space-y-4">
               <h3 className="font-medium text-zinc-900">Add or Remove Staff</h3>
               <div className="max-h-[300px] overflow-y-auto space-y-1 border rounded-lg p-2">
-                {employees?.map(user => (
+                {employees?.filter(emp => emp.email !== department.head && !emp.is_manager).map(user => (
                   <label key={user.reference} className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-50 cursor-pointer transition-colors">
                     <Checkbox 
                       checked={selectedStaff.includes(user.email)}
