@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
+import { useFetchEmployees } from "@/hooks/accounts/actions";
+import { useFetchAuthDepartments } from "@/hooks/departments/actions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -15,7 +17,9 @@ import CreateEmployeesBulk from "@/forms/accounts/CreateEmployeesBulk";
 import CreateEmployeeBulkUpload from "@/forms/accounts/CreateEmployeesBulkUpload";
 
 export default function HRDashboard() {
-  const { data: sopsData, isLoading } = useFetchAuthSops();
+  const { data: sopsData, isLoading: isSopsLoading } = useFetchAuthSops();
+  const { data: employeesData, isLoading: isEmployeesLoading } = useFetchEmployees();
+  const { data: departmentsData, isLoading: isDepartmentsLoading } = useFetchAuthDepartments();
   const [isCreateHROpen, setIsCreateHROpen] = useState(false);
   const [isCreateEmployeeOpen, setIsCreateEmployeeOpen] = useState(false);
   const [isCreateBulkEmployeeOpen, setIsCreateBulkEmployeeOpen] = useState(false);
@@ -120,19 +124,27 @@ export default function HRDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-zinc-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Total Courses</CardTitle>
+            <CardTitle className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Total Departments</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-[#004d40]">24</div>
+            {isDepartmentsLoading ? (
+              <Skeleton className="h-10 w-16" />
+            ) : (
+              <div className="text-4xl font-bold text-[#004d40]">{departmentsData?.length || 0}</div>
+            )}
           </CardContent>
         </Card>
         
         <Card className="border-zinc-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Active Learners</CardTitle>
+            <CardTitle className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Total Employees</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-[#004d40]">156</div>
+            {isEmployeesLoading ? (
+              <Skeleton className="h-10 w-16" />
+            ) : (
+              <div className="text-4xl font-bold text-[#004d40]">{employeesData?.length || 0}</div>
+            )}
           </CardContent>
         </Card>
 
@@ -141,7 +153,7 @@ export default function HRDashboard() {
             <CardTitle className="text-sm font-medium text-zinc-500 uppercase tracking-wider">SOP Library Status</CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {isSopsLoading ? (
               <div className="space-y-3 mt-1">
                 <Skeleton className="h-10 w-24" />
                 <Skeleton className="h-5 w-32" />
