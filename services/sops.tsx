@@ -1,6 +1,6 @@
 "use client"
 
-import { apiActions } from "@/tools/axios";
+import { apiActions, apiMultipartActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 
@@ -51,7 +51,7 @@ export const createSops = async (
   formData: createSops | FormData,
   headers: { headers: { Authorization: string } }
 ): Promise<Sops> => {
-  const response: AxiosResponse<Sops> = await apiActions.post(
+  const response: AxiosResponse<Sops> = await apiMultipartActions.post(
     `/api/v1/sops/`,
     formData,
     headers
@@ -64,7 +64,7 @@ export const updateSops = async (
   formData: updateSops | FormData,
   headers: { headers: { Authorization: string } }
 ): Promise<Sops> => {
-  const response: AxiosResponse<Sops> = await apiActions.patch(
+  const response: AxiosResponse<Sops> = await apiMultipartActions.patch(
     `/api/v1/sops/${reference}/`,
     formData,
     headers
