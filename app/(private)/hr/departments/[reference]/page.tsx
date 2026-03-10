@@ -155,7 +155,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
     if (selectedSops.length === 0) return;
     setIsAddingSops(true);
     try {
-      await addSOPToDepartment(reference, { sop: selectedSops }, token);
+      await addSOPToDepartment(reference, { sops: selectedSops }, token);
       toast.success("SOPs added to department successfully");
       setIsAddSopOpen(false);
       setSelectedSops([]);

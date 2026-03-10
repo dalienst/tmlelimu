@@ -52,7 +52,7 @@ interface updateDepartment {
 }
 
 interface addSOPToDepartment {
-  sop: string[]; // SOP Title
+  sops: string[]; // SOP Title
 }
 
 export const getDepartments = async (
