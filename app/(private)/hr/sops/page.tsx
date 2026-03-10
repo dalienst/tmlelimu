@@ -82,6 +82,7 @@ export default function HRSopsPage() {
       toast.success(`SOP ${togglingSop.is_active ? 'deactivated' : 'activated'} successfully`);
       refetchSops();
     } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast.error((e as any)?.response?.data?.detail || "Failed to update SOP status");
     } finally {
       setIsToggling(false);
@@ -97,6 +98,7 @@ export default function HRSopsPage() {
       toast.success(`Category ${togglingCategory.is_active ? 'deactivated' : 'activated'} successfully`);
       refetchCategories();
     } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast.error((e as any)?.response?.data?.detail || "Failed to update category status");
     } finally {
       setIsToggling(false);
@@ -143,7 +145,7 @@ export default function HRSopsPage() {
             <h2 className="text-xl font-bold text-[#004d40]">All SOPs</h2>
           </div>
           
-          <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
             <SOPSTable 
               data={sopsData?.results} 
               isLoading={isLoading} 
@@ -182,7 +184,7 @@ export default function HRSopsPage() {
                       <div className="flex items-center gap-2 min-w-0">
                         <Link 
                           href={`/hr/sops/${category.reference}`}
-                          className="text-sm font-bold text-[#004d40] hover:underline truncate uppercase tracking-tight"
+                          className="text-sm text-[#004d40] hover:underline truncate uppercase tracking-tight"
                         >
                           {category.name}
                         </Link>

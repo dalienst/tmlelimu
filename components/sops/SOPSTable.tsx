@@ -60,64 +60,77 @@ export default function SOPSTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 px-4 py-2 border-b border-zinc-100">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-zinc-100 bg-zinc-50/30">
         <Search className="w-4 h-4 text-zinc-400" />
         <Input 
           placeholder="Search SOPs by title..." 
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
-          className="border-none shadow-none focus-visible:ring-0 text-sm p-0 h-auto"
+          className="border-none shadow-none focus-visible:ring-0 text-sm p-0 h-auto bg-transparent placeholder:text-zinc-400"
         />
       </div>
 
       <div className="overflow-hidden">
         {isLoading ? (
-          <div className="p-6 space-y-4">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-12 w-full" />
+          <div className="p-8 space-y-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-xl" />
             ))}
           </div>
         ) : (
           <Table>
-            <TableHeader className="bg-zinc-50">
-              <TableRow>
-                <TableHead className="w-[30%]">Title</TableHead>
-                <TableHead className="w-[30%]">Description</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Uploaded</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+            <TableHeader className="bg-zinc-50/50">
+              <TableRow className="hover:bg-transparent border-zinc-100">
+                <TableHead className="w-[30%] px-6 py-4 font-semibold text-zinc-900">Title</TableHead>
+                <TableHead className="w-[35%] px-6 py-4 font-semibold text-zinc-900">Description</TableHead>
+                <TableHead className="px-6 py-4 font-semibold text-zinc-900 text-center">Status</TableHead>
+                <TableHead className="px-6 py-4 font-semibold text-zinc-900">Uploaded</TableHead>
+                <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data && data.length > 0 ? (
                 data.map((sop: Sops) => (
-                  <TableRow key={sop.id}>
-                    <TableCell className="font-medium text-[#004d40]">
-                      {sop.title}
+                  <TableRow key={sop.id} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                    <TableCell className="px-6 py-5 align-top">
+                      <div className="font-bold text-[#004d40] leading-tight mb-1">
+                        {sop.title}
+                      </div>
+                      <div className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">
+                        Ref: {sop.reference.slice(0, 8)}
+                      </div>
                     </TableCell>
-                    <TableCell className="text-zinc-500 truncate max-w-[200px]">
-                      {sop.description}
+                    <TableCell className="px-6 py-5 text-zinc-600 align-top">
+                      <p className="line-clamp-2 text-sm leading-relaxed max-w-[400px]">
+                        {sop.description || "No description provided."}
+                      </p>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="px-6 py-5 text-center align-top">
                       <Badge 
                         variant="outline" 
-                        className={sop.is_active ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"}
+                        className={sop.is_active 
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold" 
+                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold"}
                       >
-                        {sop.is_active ? "Active" : "Inactive"}
+                        {sop.is_active ? "ACTIVE" : "INACTIVE"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-zinc-500 text-sm">
-                      {new Date(sop.created_at).toLocaleDateString()}
+                    <TableCell className="px-6 py-5 text-zinc-500 text-sm align-top font-medium">
+                      {new Date(sop.created_at).toLocaleDateString(undefined, {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                      })}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="px-6 py-5 text-right align-top">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
+                          <Button variant="ghost" className="h-9 w-9 p-0 rounded-full hover:bg-zinc-100 transition-colors">
                             <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="h-5 w-5 text-zinc-500" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end" className="w-48 p-1 rounded-xl shadow-xl border-zinc-200">
                           <DropdownMenuItem
                             onClick={() => onEdit(sop)}
                             className="cursor-pointer font-medium text-zinc-700"

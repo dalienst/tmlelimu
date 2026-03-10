@@ -4,6 +4,8 @@ import { apiActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 
+import { Sops } from "./sops";
+
 export interface Category {
     id: string;
     name: string;
@@ -15,7 +17,7 @@ export interface Category {
     updated_by: string;
     code: string;
     is_active: boolean;
-    sops: string[];
+    sops: Sops[];
 }
 
 interface createCategory {
