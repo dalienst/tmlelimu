@@ -18,6 +18,15 @@ export interface Department {
   code: string;
   is_active: boolean;
   staff: string[];
+  sops: string[];
+    sops_detail: {
+        title: string;
+        code: string;
+        reference: string;
+        is_active: boolean;
+        created_at: string;
+        updated_at: string;
+    }[]
 }
 
 // step by step creation
@@ -43,7 +52,7 @@ interface updateDepartment {
 }
 
 interface addSOPToDepartment {
-  sop: string[];
+  sops: string[]; // SOP Title
 }
 
 export const getDepartments = async (
@@ -100,6 +109,19 @@ export const addStaffToDepartment = async (
     headers
   );
   return response.data;
+};
+
+export const addSOPToDepartment = async (
+    reference: string,
+    formData: addSOPToDepartment | FormData,
+    headers: { headers: { Authorization: string } }
+): Promise<Department> => {
+    const response: AxiosResponse<Department> = await apiActions.patch(
+        `/api/v1/departments/${reference}/`,
+        formData,
+        headers
+    );
+    return response.data;
 };
 
 export const updateDepartment = async (
