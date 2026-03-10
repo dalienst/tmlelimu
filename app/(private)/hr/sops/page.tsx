@@ -110,7 +110,7 @@ export default function HRSopsPage() {
     <div className="p-8 mx-auto space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#004d40]">SOP & Category Management</h1>
+          <h1 className="text-xl font-bold text-[#004d40]">SOP & Category Management</h1>
           <p className="text-zinc-500">Manage Standard Operating Procedures and Categories for Tamarind Group</p>
         </div>
         
@@ -183,7 +183,7 @@ export default function HRSopsPage() {
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <div className="flex items-center gap-2 min-w-0">
                         <Link 
-                          href={`/hr/sops/${category.reference}`}
+                          href={`/hr/sops/category/${category.reference}`}
                           className="text-sm text-[#004d40] hover:underline truncate uppercase tracking-tight"
                         >
                           {category.name}

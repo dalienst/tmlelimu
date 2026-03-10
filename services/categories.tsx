@@ -17,8 +17,17 @@ export interface Category {
     updated_by: string;
     code: string;
     is_active: boolean;
-    sops: Sops[];
+    sops: string[];
+    sops_detail: {
+        title: string;
+        code: string;
+        reference: string;
+        is_active: boolean;
+        created_at: string;
+        updated_at: string;
+    }[]
 }
+
 
 interface createCategory {
     name: string;
