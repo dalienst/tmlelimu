@@ -124,7 +124,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
     return (
       <div className="p-8 mx-auto text-center space-y-4">
         <Folder className="mx-auto h-12 w-12 text-zinc-300" />
-        <h2 className="text-2xl font-bold text-zinc-700">Category Not Found</h2>
+        <h2 className="text-2xl font-semibold text-zinc-700">Category Not Found</h2>
         <Button onClick={() => router.back()} variant="outline">Go Back</Button>
       </div>
     );
@@ -159,7 +159,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-semibold text-[#004d40] uppercase tracking-tight">{category.name}</h1>
-            <Badge variant="outline" className={category.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 uppercase text-[10px] font-bold px-2.5 py-0.5 rounded-full' : 'bg-red-50 text-red-700 border-red-200 uppercase text-[10px] font-bold px-2.5 py-0.5 rounded-full'}>
+            <Badge variant="outline" className={category.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 uppercase text-[10px] font-semibold px-2.5 py-0.5 rounded-full' : 'bg-red-50 text-red-700 border-red-200 uppercase text-[10px] font-semibold px-2.5 py-0.5 rounded-full'}>
               {category.is_active ? 'Active' : 'Inactive'}
             </Badge>
           </div>
@@ -187,21 +187,21 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
             
             <div className="space-y-4">
               <div>
-                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Description</h3>
+                <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Description</h3>
                 <p className="text-zinc-700 leading-relaxed font-medium">
                   {category.description || "No description provided for this category."}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-6 pt-6 border-t border-zinc-100">
                 <div>
-                  <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1 text-center">Reference Code</h3>
-                  <p className="text-zinc-900 font-mono font-bold text-center bg-zinc-50 py-2 rounded-lg border border-zinc-100">
+                  <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 text-center">Reference Code</h3>
+                  <p className="text-zinc-900 font-mono font-semibold text-center bg-zinc-50 py-2 rounded-lg border border-zinc-100">
                     {category.code || "UNCATEGORIZED"}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1 text-center">Creation Date</h3>
-                  <p className="text-[#004d40] font-bold text-center bg-emerald-50/50 py-2 rounded-lg border border-emerald-100">
+                  <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 text-center">Creation Date</h3>
+                  <p className="text-[#004d40] font-semibold text-center bg-emerald-50/50 py-2 rounded-lg border border-emerald-100">
                     {new Date(category.created_at).toLocaleDateString(undefined, {
                       day: 'numeric',
                       month: 'long',
@@ -240,7 +240,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
         {/* Sidebar */}
         <div className="space-y-8">
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 space-y-6">
-            <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
               <Settings2 className="h-5 w-5 text-amber-600" />
               Management
             </h2>
@@ -252,7 +252,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
               
               <Button 
                 onClick={() => setIsAddSopOpen(true)}
-                className="w-full bg-[#004d40] hover:bg-[#00332b] text-white rounded-full font-bold shadow-md shadow-emerald-200/50"
+                className="w-full bg-[#004d40] hover:bg-[#00332b] text-white rounded-full font-semibold shadow-md shadow-emerald-200/50"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add SOP to Category
@@ -261,8 +261,8 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
 
             <div className="pt-4 border-t border-zinc-100">
               <div className="text-center p-4 rounded-xl bg-zinc-50 border border-transparent">
-                 <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Created By</p>
-                 <p className="text-sm font-bold text-zinc-800">{category.created_by || "System Admin"}</p>
+                 <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Created By</p>
+                 <p className="text-sm font-semibold text-zinc-800">{category.created_by || "System Admin"}</p>
               </div>
             </div>
           </div>
@@ -273,7 +273,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       <Dialog open={isAddSopOpen} onOpenChange={setIsAddSopOpen}>
         <DialogContent className="sm:max-w-md rounded-2xl border-none shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-[#004d40]">Add SOPs to {category.name}</DialogTitle>
+            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Add SOPs to {category.name}</DialogTitle>
             <DialogDescription className="font-medium">
               Select available SOPs to associate with this category.
             </DialogDescription>
@@ -308,7 +308,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
                     />
                     <Label 
                       htmlFor={`sop-${sop.id}`}
-                      className="text-sm font-bold text-zinc-700 leading-none cursor-pointer flex-1 py-1"
+                      className="text-sm font-semibold text-zinc-700 leading-none cursor-pointer flex-1 py-1"
                     >
                       {sop.title}
                     </Label>
@@ -317,7 +317,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
               ) : (
                 <div className="py-12 text-center space-y-2">
                   <Files className="mx-auto h-8 w-8 text-zinc-300" />
-                  <p className="text-zinc-500 font-bold text-sm">
+                  <p className="text-zinc-500 font-semibold text-sm">
                     {allSopsData ? "No matching available SOPs found." : "Loading availability..."}
                   </p>
                 </div>
@@ -326,11 +326,11 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="ghost" onClick={() => setIsAddSopOpen(false)} className="rounded-full font-bold">Cancel</Button>
+            <Button variant="ghost" onClick={() => setIsAddSopOpen(false)} className="rounded-full font-semibold">Cancel</Button>
             <Button 
               onClick={handleAddSopsToCategory}
               disabled={selectedSops.length === 0 || isAddingSops}
-              className="bg-[#004d40] hover:bg-[#00332b] text-white rounded-full font-bold px-8 shadow-lg shadow-emerald-200/50"
+              className="bg-[#004d40] hover:bg-[#00332b] text-white rounded-full font-semibold px-8 shadow-lg shadow-emerald-200/50"
             >
               {isAddingSops && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isAddingSops ? "Adding..." : `Add Selected (${selectedSops.length})`}
@@ -343,7 +343,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
         <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-[#004d40]">Edit SOP Details</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-[#004d40]">Edit SOP Details</DialogTitle>
             <DialogDescription className="font-medium">
               Update information for &quot;{editingSop?.title}&quot;
             </DialogDescription>
@@ -364,7 +364,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-[#004d40]">Edit Category Details</DialogTitle>
+            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Edit Category Details</DialogTitle>
             <DialogDescription className="font-medium">
               Update general information for {category.name}.
             </DialogDescription>
@@ -382,7 +382,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       }}>
         <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-xl font-bold text-zinc-900">
+            <AlertDialogTitle className="text-xl font-semibold text-zinc-900">
               {togglingSop?.is_active ? "Deactivate SOP?" : "Activate SOP?"}
             </AlertDialogTitle>
             <AlertDialogDescription className="font-medium">
@@ -392,13 +392,13 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel disabled={isToggling} className="rounded-full border-zinc-200 font-bold">Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isToggling} className="rounded-full border-zinc-200 font-semibold">Cancel</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleToggleActive}
               disabled={isToggling}
               className={togglingSop?.is_active 
-                ? "bg-amber-600 hover:bg-amber-700 text-white rounded-full font-bold px-8 shadow-lg shadow-amber-200/50" 
-                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-bold px-8 shadow-lg shadow-emerald-200/50"}
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded-full font-semibold px-8 shadow-lg shadow-amber-200/50" 
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-semibold px-8 shadow-lg shadow-emerald-200/50"}
             >
               {isToggling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isToggling ? "Updating..." : "Confirm"}
