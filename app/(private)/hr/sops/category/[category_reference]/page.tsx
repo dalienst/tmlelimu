@@ -136,12 +136,17 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
     .map(sop => ({
       id: sop.reference,
       title: sop.title,
-      description: "", // Missing in summary
-      file: "", // Missing in summary
+      description: "", 
+      file: "", 
       is_active: sop.is_active,
       created_at: sop.created_at,
       updated_at: sop.updated_at,
       reference: sop.reference,
+      created_by: "",
+      updated_by: "",
+      code: sop.code || "",
+      departments: [],
+      categories: [],
     }));
 
   return (
