@@ -5,52 +5,61 @@ import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 
 export interface Department {
-    id: string;
-    name: string;
-    email: string;
-    description: string;
-    head: string;
-    created_at: string;
-    updated_at: string;
-    reference: string;
-    created_by: string;
-    updated_by: string;
-    code: string;
-    is_active: boolean;
-    staff: string[];
+  id: string;
+  name: string;
+  email: string;
+  description: string;
+  head: string;
+  created_at: string;
+  updated_at: string;
+  reference: string;
+  created_by: string;
+  updated_by: string;
+  code: string;
+  is_active: boolean;
+  staff: string[];
 }
 
 // step by step creation
 interface createDepartment {
-    name: string;
-    email: string;
-    description: string;
+  name: string;
+  email: string;
+  description: string;
 }
 
 interface addHeadToDepartment {
-    head: string;
+  head: string;
 }
 
 interface addStaffToDepartment {
-    staff: string[];
+  staff: string[];
 }
 
 interface updateDepartment {
-    name?: string;
-    email?: string;
-    description?: string;
-    is_active?: boolean;
+  name?: string;
+  email?: string;
+  description?: string;
+  is_active?: boolean;
 }
 
-export const getDepartments = async (): Promise<Department[]> => {
+interface addSOPToDepartment {
+  sop: string[];
+}
+
+export const getDepartments = async (
+  headers: { headers: { Authorization: string } }
+): Promise<Department[]> => {
   const response: AxiosResponse<PaginatedResponse<Department>> =
-    await apiActions.get(`/api/v1/departments/`);
+    await apiActions.get(`/api/v1/departments/`, headers);
   return response.data.results ?? [];
 };
 
-export const getDepartment = async (reference: string): Promise<Department> => {
+export const getDepartment = async (
+  reference: string,
+  headers: { headers: { Authorization: string } }
+): Promise<Department> => {
   const response: AxiosResponse<Department> =
-    await apiActions.get(`/api/v1/departments/${reference}/`);
+    await apiActions.get(`/api/v1/departments/${reference}/`, headers);
   return response.data;
 };
 

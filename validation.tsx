@@ -62,4 +62,12 @@ const UpdateSopSchema = Yup.object().shape({
     file: Yup.mixed().nullable(), // Optional for updates
 });
 
-export { RegistrationSchema, ProfileSchema, LoginSchema, ForgotPasswordSchema, ResetPasswordSchema, CreateSopSchema, UpdateSopSchema };
+export { 
+    RegistrationSchema, 
+    ProfileSchema, 
+    LoginSchema, 
+    ForgotPasswordSchema, 
+    ResetPasswordSchema, 
+    CreateSopSchema, 
+    UpdateSopSchema
+};
