@@ -3,6 +3,8 @@
 import { apiActions, apiMultipartActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
+import { Department } from "./departments";
+import { Category } from "./categories";
 
 export interface Sops {
     id: string;
@@ -16,6 +18,8 @@ export interface Sops {
     updated_by: string;
     code: string;
     is_active: boolean;
+    departments: Department[];
+    categories: Category[];
 }
 
 interface createSops {
@@ -82,10 +86,23 @@ export const deleteSops = async (
 };
 
 
-export const getAuthSops = async (headers: { headers: { Authorization: string } }): Promise<Sops[]> => {
+export interface SOPFetchParams {
+  search?: string;
+  page?: number;
+  page_size?: number;
+  category?: string;
+}
+
+export const getAuthSops = async (
+  headers: { headers: { Authorization: string } },
+  params?: SOPFetchParams
+): Promise<PaginatedResponse<Sops>> => {
   const response: AxiosResponse<PaginatedResponse<Sops>> =
-    await apiActions.get(`/api/v1/sops/`, headers);
-  return response.data.results ?? [];
+    await apiActions.get(`/api/v1/sops/`, {
+      ...headers,
+      params: params,
+    });
+  return response.data;
 };
 
 export const getAuthSop = async (reference: string, headers: { headers: { Authorization: string } }): Promise<Sops> => {

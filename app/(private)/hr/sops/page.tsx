@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Plus, Settings2, MoreHorizontal, Pencil, EyeOff, Eye, PlusCircle, FolderPlus, Files, ChevronRight } from "lucide-react";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
 import { useFetchCategories } from "@/hooks/categories/actions";
@@ -26,7 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,14 +38,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import CreateSop from "@/forms/sops/CreateSop";
@@ -55,8 +48,16 @@ import SOPSTable from "@/components/sops/SOPSTable";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 
 export default function HRSopsPage() {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+
   const { data: session } = useSession();
-  const { data: sopsData, isLoading, refetch: refetchSops } = useFetchAuthSops();
+  const { data: sopsData, isLoading, refetch: refetchSops } = useFetchAuthSops({
+    search,
+    page,
+    page_size: pageSize
+  });
   const { data: categoriesData, isLoading: isCategoriesLoading, refetch: refetchCategories } = useFetchCategories();
   
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -95,8 +96,8 @@ export default function HRSopsPage() {
       await updateCategory(togglingCategory.reference, { is_active: !togglingCategory.is_active }, headers);
       toast.success(`Category ${togglingCategory.is_active ? 'deactivated' : 'activated'} successfully`);
       refetchCategories();
-    } catch (e: any) {
-      toast.error(e?.response?.data?.detail || "Failed to update category status");
+    } catch (e) {
+      toast.error((e as any)?.response?.data?.detail || "Failed to update category status");
     } finally {
       setIsToggling(false);
       setTogglingCategory(null);
@@ -144,10 +145,19 @@ export default function HRSopsPage() {
           
           <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
             <SOPSTable 
-              data={sopsData} 
+              data={sopsData?.results} 
               isLoading={isLoading} 
               onEdit={setEditingSop} 
               onToggle={setTogglingSop} 
+              search={search}
+              onSearch={(val) => {
+                setSearch(val);
+                setPage(1); // Reset to page 1 on new search
+              }}
+              page={page}
+              onPageChange={setPage}
+              totalCount={sopsData?.count || 0}
+              pageSize={pageSize}
             />
           </div>
         </div>
@@ -170,7 +180,12 @@ export default function HRSopsPage() {
                   <div className="p-3">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-sm text-[#004d40] truncate tracking-tight">{category.name}</span>
+                        <Link 
+                          href={`/hr/sops/${category.reference}`}
+                          className="text-sm font-bold text-[#004d40] hover:underline truncate uppercase tracking-tight"
+                        >
+                          {category.name}
+                        </Link>
                         <Badge 
                           variant="outline" 
                           className={category.is_active ? "text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-200" : "text-[9px] px-1.5 py-0 bg-red-50 text-red-700 border-red-200"}

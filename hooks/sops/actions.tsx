@@ -1,6 +1,6 @@
 "use client";
 
-import { getSops, getSop, getAuthSop, getAuthSops } from "@/services/sops";
+import { getSops, getSop, getAuthSop, getAuthSops, SOPFetchParams } from "@/services/sops";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
 
@@ -28,11 +28,11 @@ export function useFetchSop(reference: string) {
 
 // Authenticated
 
-export function useFetchAuthSops() {
+export function useFetchAuthSops(params?: SOPFetchParams) {
   const headers = useAxiosAuth()
   return useQuery({
-    queryKey: ["auth-sops"],
-    queryFn: () => getAuthSops(headers),
+    queryKey: ["auth-sops", params],
+    queryFn: () => getAuthSops(headers, params),
     enabled: !!headers,
   });
 }
