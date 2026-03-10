@@ -26,10 +26,10 @@ export default function HRDashboard() {
   const [isCreateBulkUploadOpen, setIsCreateBulkUploadOpen] = useState(false);
 
   const { activeSops, inactiveSops } = useMemo(() => {
-    if (!sopsData) return { activeSops: 0, inactiveSops: 0 };
+    if (!sopsData?.results) return { activeSops: 0, inactiveSops: 0 };
     return {
-      activeSops: sopsData.filter((sop) => sop.is_active).length,
-      inactiveSops: sopsData.filter((sop) => !sop.is_active).length,
+      activeSops: sopsData.results.filter((sop) => sop.is_active).length,
+      inactiveSops: sopsData.results.filter((sop) => !sop.is_active).length,
     };
   }, [sopsData]);
 
@@ -183,7 +183,7 @@ export default function HRDashboard() {
         </div>
         <h2 className="text-xl font-bold text-zinc-900 mb-2">Welcome, HR Manager</h2>
         <p className="text-zinc-600 max-w-md mx-auto">
-          This is your central hub for managing Tamarind Group's learning courses, SOPs, and employee certifications.
+          This is your central hub for managing Tamarind Group&apos;s learning courses, SOPs, and employee certifications.
         </p>
       </div>
     </div>

@@ -34,7 +34,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Card } from "@/components/ui/card";
+// Removed unused Card import
 
 import SOPSTable from "@/components/sops/SOPSTable";
 import UpdateSop from "@/forms/sops/UpdateSop";
@@ -180,7 +180,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
         <div className="lg:col-span-2 space-y-8">
           {/* Category Information */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 space-y-6">
-            <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
               <Building2 className="h-5 w-5 text-[#004d40]" />
               Category Information
             </h2>
@@ -216,7 +216,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
           {/* Associated SOPs Table Card */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden min-h-[400px]">
             <div className="p-6 border-b border-zinc-100">
-              <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
                 <Files className="h-5 w-5 text-[#004d40]" />
                 Associated SOPs ({category.sops_detail.length})
               </h2>
