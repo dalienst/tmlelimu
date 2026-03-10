@@ -46,15 +46,20 @@ interface addSOPToDepartment {
   sop: string[];
 }
 
-export const getDepartments = async (): Promise<Department[]> => {
+export const getDepartments = async (
+  headers: { headers: { Authorization: string } }
+): Promise<Department[]> => {
   const response: AxiosResponse<PaginatedResponse<Department>> =
-    await apiActions.get(`/api/v1/departments/`);
+    await apiActions.get(`/api/v1/departments/`, headers);
   return response.data.results ?? [];
 };
 
-export const getDepartment = async (reference: string): Promise<Department> => {
+export const getDepartment = async (
+  reference: string,
+  headers: { headers: { Authorization: string } }
+): Promise<Department> => {
   const response: AxiosResponse<Department> =
-    await apiActions.get(`/api/v1/departments/${reference}/`);
+    await apiActions.get(`/api/v1/departments/${reference}/`, headers);
   return response.data;
 };
 

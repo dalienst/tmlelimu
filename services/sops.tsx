@@ -33,15 +33,17 @@ interface updateSops {
     is_active: boolean;
 }
 
-export const getSops = async (): Promise<Sops[]> => {
+export const getSops = async (
+  headers: { headers: { Authorization: string } }
+): Promise<Sops[]> => {
   const response: AxiosResponse<PaginatedResponse<Sops>> =
-    await apiActions.get(`/api/v1/sops/`);
+    await apiActions.get(`/api/v1/sops/`, headers);
   return response.data.results ?? [];
 };
 
-export const getSop = async (reference: string): Promise<Sops> => {
+export const getSop = async (reference: string, headers: { headers: { Authorization: string } }): Promise<Sops> => {
   const response: AxiosResponse<Sops> =
-    await apiActions.get(`/api/v1/sops/${reference}/`);
+    await apiActions.get(`/api/v1/sops/${reference}/`, headers);
   return response.data;
 };
 

@@ -4,34 +4,22 @@ import { getSops, getSop, getAuthSop, getAuthSops } from "@/services/sops";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
 
-interface CreateSopParams {
-  formData: FormData;
-  headers: { headers: { Authorization: string } };
-}
-
-interface UpdateSopParams {
-  reference: string;
-  formData: FormData;
-  headers: { headers: { Authorization: string } };
-}
-
-interface DeleteSopParams {
-  reference: string;
-  headers: { headers: { Authorization: string } };
-}
 
 export function useFetchSops() {
+  const headers = useAxiosAuth()
   return useQuery({
     queryKey: ["sops"],
-    queryFn: () => getSops(),
+    queryFn: () => getSops(headers),
+    enabled: !!headers,
   });
 }
 
 export function useFetchSop(reference: string) {
+  const headers = useAxiosAuth()
   return useQuery({
     queryKey: ["sop", reference],
-    queryFn: () => getSop(reference),
-    enabled: !!reference,
+    queryFn: () => getSop(reference, headers),
+    enabled: !!headers && !!reference,
   });
 }
 

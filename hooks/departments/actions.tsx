@@ -10,17 +10,20 @@ import {
 import useAxiosAuth from "../authentication/useAxiosAuth";
 
 export function useFetchDepartments() {
+  const headers = useAxiosAuth()
   return useQuery({
     queryKey: ["departments"],
-    queryFn: () => getDepartments(),
+    queryFn: () => getDepartments(headers),
+    enabled: !!headers,
   });
 }
 
 export function useFetchDepartment(reference: string) {
+  const headers = useAxiosAuth()
   return useQuery({
     queryKey: ["department", reference],
-    queryFn: () => getDepartment(reference),
-    enabled: !!reference,
+    queryFn: () => getDepartment(reference, headers),
+    enabled: !!headers && !!reference,
   });
 }
 
