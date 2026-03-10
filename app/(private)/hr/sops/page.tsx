@@ -51,6 +51,7 @@ import CreateSop from "@/forms/sops/CreateSop";
 import UpdateSop from "@/forms/sops/UpdateSop";
 import CreateCategory from "@/forms/categories/CreateCategory";
 import UpdateCategory from "@/forms/categories/UpdateCategory";
+import SOPSTable from "@/components/sops/SOPSTable";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 
 export default function HRSopsPage() {
@@ -142,88 +143,12 @@ export default function HRSopsPage() {
           </div>
           
           <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-            {isLoading ? (
-              <div className="p-6 space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} className="h-12 w-full" />
-                ))}
-              </div>
-            ) : (
-              <Table>
-                <TableHeader className="bg-zinc-50">
-                  <TableRow>
-                    <TableHead className="w-[30%]">Title</TableHead>
-                    <TableHead className="w-[30%]">Description</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Uploaded</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sopsData && sopsData.length > 0 ? (
-                    sopsData.map((sop: Sops) => (
-                      <TableRow key={sop.id}>
-                        <TableCell className="font-medium text-[#004d40]">
-                          {sop.title}
-                        </TableCell>
-                        <TableCell className="text-zinc-500 truncate max-w-[200px]">
-                          {sop.description}
-                        </TableCell>
-                        <TableCell>
-                          <Badge 
-                            variant="outline" 
-                            className={sop.is_active ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"}
-                          >
-                            {sop.is_active ? "Active" : "Inactive"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-zinc-500 text-sm">
-                          {new Date(sop.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() => setEditingSop(sop)}
-                                className="cursor-pointer font-medium text-zinc-700"
-                              >
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Edit details
-                              </DropdownMenuItem>
-                              <a href={sop.file} target="_blank" rel="noreferrer">
-                                <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
-                                  <Settings2 className="mr-2 h-4 w-4" />
-                                  View Document
-                                </DropdownMenuItem>
-                              </a>
-                              <DropdownMenuItem
-                                onClick={() => setTogglingSop(sop)}
-                                className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium"}
-                              >
-                                {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
-                                {sop.is_active ? "Deactivate" : "Activate"}
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} className="h-32 text-center text-zinc-500">
-                        No Standard Operating Procedures found.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            )}
+            <SOPSTable 
+              data={sopsData} 
+              isLoading={isLoading} 
+              onEdit={setEditingSop} 
+              onToggle={setTogglingSop} 
+            />
           </div>
         </div>
 
@@ -245,7 +170,7 @@ export default function HRSopsPage() {
                   <div className="p-3">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-sm font-bold text-[#004d40] truncate uppercase tracking-tight">{category.name}</span>
+                        <span className="text-sm text-[#004d40] truncate tracking-tight">{category.name}</span>
                         <Badge 
                           variant="outline" 
                           className={category.is_active ? "text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-200" : "text-[9px] px-1.5 py-0 bg-red-50 text-red-700 border-red-200"}
