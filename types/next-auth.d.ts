@@ -10,6 +10,10 @@ declare module "next-auth" {
             role?: string | null;
             is_hr?: boolean;
             is_employee?: boolean;
+            is_manager?: boolean;
+            is_trainer?: boolean;
+            is_hod?: boolean;
+            is_superuser?: boolean;
             username?: string | null;
         } & DefaultSession["user"];
     }
@@ -20,6 +24,10 @@ declare module "next-auth" {
         role?: string | null;
         is_hr?: boolean;
         is_employee?: boolean;
+        is_manager?: boolean;
+        is_trainer?: boolean;
+        is_hod?: boolean;
+        is_superuser?: boolean;
         username?: string | null;
     }
 }

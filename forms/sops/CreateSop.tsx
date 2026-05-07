@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { createSops } from "@/services/sops";
+import { FilePicker } from "@/components/ui/file-picker";
 
 export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
   const { data: session } = useSession();
@@ -115,17 +116,16 @@ export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
             <Label htmlFor="file" className="text-zinc-700">
               SOP Document (PDF or Word)
             </Label>
-            <Input
+            <FilePicker
               id="file"
               name="file"
-              type="file"
               accept=".pdf,.doc,.docx"
-              onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
+              value={values.file}
+              onChange={(file) => {
                 setFieldValue("file", file);
                 setFileError("");
               }}
-              className="border-zinc-300 text-zinc-600 file:text-[#004d40] file:bg-zinc-100 hover:file:bg-zinc-200"
+              error={fileError || (errors.file && touched.file ? String(errors.file) : "")}
             />
             {fileError && <p className="text-sm text-red-500">{fileError}</p>}
             {errors.file && touched.file && (

@@ -22,9 +22,10 @@ import { useFormik } from "formik";
 import { LoginSchema } from "@/validation";
 
 interface CustomUser extends User {
-  is_director?: boolean;
   is_employee?: boolean;
-  is_finance?: boolean;
+  is_manager?: boolean;
+  is_trainer?: boolean;
+  is_hod?: boolean;
   is_hr?: boolean;
   is_superuser?: boolean;
 }
@@ -65,15 +66,16 @@ export default function Login() {
 
         if (session?.user?.is_hr === true) {
           router.push("/hr/dashboard");
-        } else if (session?.user?.is_director === true) {
-          router.push("/director/dashboard");
+        } else if (session?.user?.is_manager === true) {
+          router.push("/manager/dashboard");
         } else if (session?.user?.is_employee === true) {
           router.push("/employee/dashboard");
-        } else if (session?.user?.is_finance === true) {
-          router.push("/finance/dashboard");
+        } else if (session?.user?.is_hod === true) {
+          router.push("/hod/dashboard");
+        } else if (session?.user?.is_trainer === true) {
+          router.push("/trainer/dashboard");
         } else if (session?.user?.is_superuser === true) {
-          // TODO: Add superuser dashboard
-          router.push("/director/dashboard");
+          router.push("/admin/dashboard");
         } else {
           router.push("/");
         }

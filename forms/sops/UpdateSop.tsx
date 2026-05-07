@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { FilePicker } from "@/components/ui/file-picker";
 
 export default function UpdateSop({ 
   sopData, 
@@ -121,17 +122,16 @@ export default function UpdateSop({
             <Label htmlFor="file" className="text-zinc-700">
               Replace SOP Document (Optional)
             </Label>
-            <Input
+            <FilePicker
               id="file"
               name="file"
-              type="file"
               accept=".pdf,.doc,.docx"
-              onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
+              value={values.file}
+              onChange={(file) => {
                 setFieldValue("file", file);
                 setFileError("");
               }}
-              className="border-zinc-300 text-zinc-600 file:text-[#004d40] file:bg-zinc-100 hover:file:bg-zinc-200"
+              error={fileError || (errors.file && touched.file ? String(errors.file) : "")}
             />
             <p className="text-xs text-zinc-500">Leave blank to keep current document.</p>
             {fileError && <p className="text-sm text-red-500">{fileError}</p>}
