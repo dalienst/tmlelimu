@@ -130,7 +130,7 @@ export default function Login() {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.email && formik.errors.email
+                    className={`pl-10 transition-all ${formik.touched.email && formik.errors.email
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}
@@ -168,7 +168,7 @@ export default function Login() {
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.password && formik.errors.password
+                    className={`pl-10 pr-10 transition-all ${formik.touched.password && formik.errors.password
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}

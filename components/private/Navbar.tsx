@@ -57,9 +57,9 @@ export default function Navbar() {
 
   if (isSuperuser) {
     navLinks = [
-      { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-      { name: "User Management", href: "/admin/users", icon: Users },
-      { name: "System Settings", href: "/admin/settings", icon: Settings },
+      { name: "Dashboard", href: "/hr/dashboard", icon: LayoutDashboard },
+      { name: "User Management", href: "/hr/employees", icon: Users },
+      { name: "System Settings", href: "/hr/settings", icon: Settings },
     ];
   } else if (isHR) {
     navLinks = [
