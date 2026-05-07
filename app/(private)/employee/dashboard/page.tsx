@@ -6,6 +6,8 @@ export default function EmployeeDashboard() {
 
     const { data: employee, isLoading: isLoadingEmployee } = useFetchAccount()
 
+    console.log(employee)
+
     return (
         <div>
             Employee Dashboard

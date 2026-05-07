@@ -7,34 +7,47 @@ import { Department } from "./departments";
 import { Category } from "./categories";
 
 export interface Sops {
-    id: string;
-    title: string;
-    description: string;
-    file: string;
-    created_at: string;
-    updated_at: string;
-    reference: string;
-    created_by: string;
-    updated_by: string;
-    code: string;
-    is_active: boolean;
-    departments: Department[];
-    categories: Category[];
+  id: string;
+  title: string;
+  description: string;
+  file: string;
+  created_at: string;
+  updated_at: string;
+  reference: string;
+  created_by: string;
+  updated_by: string;
+  code: string;
+  is_active: boolean;
+  departments: Department[];
+  categories: Category[];
+}
+
+
+export interface SopsMinified {
+  title: string;
+  description: string;
+  file: string;
+  is_active: boolean;
+  code: string;
+  reference: string;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
 }
 
 interface createSops {
-    title: string;
-    description: string;
-    file: File; //file upload
-    is_active: boolean;
+  title: string;
+  description: string;
+  file: File; //file upload
+  is_active: boolean;
 }
 
 interface updateSops {
-    id: string;
-    title: string;
-    description: string;
-    file: File; //file upload
-    is_active: boolean;
+  id: string;
+  title: string;
+  description: string;
+  file: File; //file upload
+  is_active: boolean;
 }
 
 export const getSops = async (

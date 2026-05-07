@@ -3,6 +3,7 @@
 import { apiActions, apiMultipartActions } from "@/tools/axios"
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
+import { DepartmentMinified } from "./departments";
 
 export interface User {
     id: string;
@@ -25,6 +26,15 @@ export interface User {
     updated_at: string;
     deleted_at: string;
     reference: string;
+    departments: DepartmentMinified
+    departments_headed: DepartmentMinified
+}
+
+export interface StaffMinified {
+    first_name: string;
+    last_name: string;
+    email: string;
+    reference: string;
 }
 
 export interface CreateHRAccountPayload {
@@ -35,14 +45,14 @@ export interface CreateHRAccountPayload {
 }
 
 export interface forgotPassword {
-  email: string;
+    email: string;
 }
 
 export interface resetPassword {
-  code: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
+    code: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
 }
 
 export interface updateUser {
@@ -123,9 +133,9 @@ export const createEmployeeByHR = async (data: CreateEmployeeByHRPayload, header
 }
 
 export const downloadTemplate = async (headers: { headers: { Authorization: string } }): Promise<Blob> => {
-    const response = await apiActions.get(`/api/v1/auth/signup/employees/bulk/create/csv/template/`, { 
+    const response = await apiActions.get(`/api/v1/auth/signup/employees/bulk/create/csv/template/`, {
         ...headers,
-        responseType: 'blob' 
+        responseType: 'blob'
     });
     return response.data;
 }

@@ -95,7 +95,7 @@ export default function ResetPassword() {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.email && formik.errors.email
+                    className={`pl-10 transition-all ${formik.touched.email && formik.errors.email
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}
@@ -125,7 +125,7 @@ export default function ResetPassword() {
                     value={formik.values.code}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.code && formik.errors.code
+                    className={`pl-10 transition-all ${formik.touched.code && formik.errors.code
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}
@@ -155,7 +155,7 @@ export default function ResetPassword() {
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.password && formik.errors.password
+                    className={`pl-10 pr-10 transition-all ${formik.touched.password && formik.errors.password
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}
@@ -196,7 +196,7 @@ export default function ResetPassword() {
                     value={formik.values.confirmPassword}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.confirmPassword && formik.errors.confirmPassword
+                    className={`pl-10 pr-10 transition-all ${formik.touched.confirmPassword && formik.errors.confirmPassword
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}

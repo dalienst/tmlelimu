@@ -3,6 +3,8 @@
 import { apiActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
+import { SopsMinified } from "./sops";
+import { StaffMinified } from "./accounts";
 
 export interface Department {
   id: string;
@@ -19,14 +21,28 @@ export interface Department {
   is_active: boolean;
   staff: string[];
   sops: string[];
-    sops_detail: {
-        title: string;
-        code: string;
-        reference: string;
-        is_active: boolean;
-        created_at: string;
-        updated_at: string;
-    }[]
+  sops_detail: {
+    title: string;
+    code: string;
+    reference: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+  }[]
+}
+
+export interface DepartmentMinified {
+  name: string;
+  email: string;
+  description: string;
+  head: string;
+  is_active: boolean;
+  code: string;
+  reference: string;
+  created_at: string;
+  updated_at: string;
+  staff: StaffMinified
+  sops: SopsMinified
 }
 
 // step by step creation
@@ -112,16 +128,16 @@ export const addStaffToDepartment = async (
 };
 
 export const addSOPToDepartment = async (
-    reference: string,
-    formData: addSOPToDepartment | FormData,
-    headers: { headers: { Authorization: string } }
+  reference: string,
+  formData: addSOPToDepartment | FormData,
+  headers: { headers: { Authorization: string } }
 ): Promise<Department> => {
-    const response: AxiosResponse<Department> = await apiActions.patch(
-        `/api/v1/departments/${reference}/`,
-        formData,
-        headers
-    );
-    return response.data;
+  const response: AxiosResponse<Department> = await apiActions.patch(
+    `/api/v1/departments/${reference}/`,
+    formData,
+    headers
+  );
+  return response.data;
 };
 
 export const updateDepartment = async (

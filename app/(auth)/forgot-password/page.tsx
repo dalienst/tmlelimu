@@ -103,7 +103,7 @@ export default function ForgotPassword() {
                       value={formik.values.email}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className={`transition-all ${formik.touched.email && formik.errors.email
+                      className={`pl-10 transition-all ${formik.touched.email && formik.errors.email
                         ? "border-red-500 focus-visible:ring-red-500"
                         : ""
                         }`}

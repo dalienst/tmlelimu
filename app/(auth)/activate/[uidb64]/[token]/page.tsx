@@ -112,7 +112,7 @@ export default function ActivateAccount() {
                     placeholder="••••••••"
                     value={formik.values.password}
                     onChange={formik.handleChange}
-                    className="transition-all"
+                    className="pl-10 pr-10 transition-all"
                   />
                   <button
                     type="button"
@@ -143,7 +143,7 @@ export default function ActivateAccount() {
                     placeholder="••••••••"
                     value={formik.values.password_confirmation}
                     onChange={formik.handleChange}
-                    className="transition-all"
+                    className="pl-10 transition-all"
                   />
                 </div>
               </div>
