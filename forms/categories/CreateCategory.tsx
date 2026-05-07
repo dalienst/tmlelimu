@@ -82,7 +82,7 @@ export default function CreateCategory({ onSuccess }: { onSuccess: () => void })
             />
           </div>
 
-          <div className="flex flex-row items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+          <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-4">
             <div className="space-y-0.5">
               <Label htmlFor="is_active" className="text-base text-zinc-700 font-medium">
                 Active Status

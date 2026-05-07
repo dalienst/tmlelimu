@@ -21,7 +21,7 @@ import { activateAccount } from "@/services/accounts";
 export default function ActivateAccount() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  
+
   const params = useParams();
   const router = useRouter();
 
@@ -38,7 +38,7 @@ export default function ActivateAccount() {
         toast.error("Passwords do not match");
         return;
       }
-      
+
       setLoading(true);
 
       try {
@@ -70,8 +70,8 @@ export default function ActivateAccount() {
     <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-zinc-50 px-4">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 opacity-10" />
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#004d40]/10 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#004d40]/10 rounded blur-[120px] animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded blur-[100px] animate-pulse delay-1000" />
 
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
@@ -86,7 +86,7 @@ export default function ActivateAccount() {
           </p>
         </div>
 
-        <Card className="border-zinc-200 shadow-2xl rounded-2xl overflow-hidden bg-white/80 backdrop-blur-md">
+        <Card className="border-zinc-200 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-md">
           <CardHeader className="pt-8 px-8">
             <CardTitle className="text-2xl font-bold text-zinc-900 tracking-tight text-center">
               Create Password
@@ -151,7 +151,7 @@ export default function ActivateAccount() {
               <Button
                 disabled={loading}
                 type="submit"
-                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded-xl text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
+                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
               >
                 {loading ? (
                   <div className="flex items-center gap-2">

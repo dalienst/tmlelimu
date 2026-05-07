@@ -15,10 +15,10 @@ import { Switch } from "@/components/ui/switch";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { FilePicker } from "@/components/ui/file-picker";
 
-export default function UpdateSop({ 
-  sopData, 
-  onSuccess 
-}: { 
+export default function UpdateSop({
+  sopData,
+  onSuccess
+}: {
   sopData: Sops;
   onSuccess: () => void;
 }) {
@@ -40,14 +40,14 @@ export default function UpdateSop({
       formData.append("title", values.title);
       formData.append("description", values.description);
       formData.append("is_active", String(values.is_active));
-      
+
       // Only append file if changed
       if (values.file) {
         formData.append("file", values.file);
       }
 
       await updateSops(sopData.reference, formData, headers);
-      
+
       toast.success("SOP updated successfully");
       onSuccess();
     } catch (error: any) {
@@ -107,11 +107,10 @@ export default function UpdateSop({
               onBlur={handleBlur}
               value={values.description}
               rows={4}
-              className={`resize-none ${
-                errors.description && touched.description
+              className={`resize-none ${errors.description && touched.description
                   ? "border-red-500"
                   : "border-zinc-300"
-              }`}
+                }`}
             />
             {errors.description && touched.description && (
               <p className="text-sm text-red-500">{errors.description}</p>
@@ -140,7 +139,7 @@ export default function UpdateSop({
             )}
           </div>
 
-          <div className="flex flex-row items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+          <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-4">
             <div className="space-y-0.5">
               <Label htmlFor="is_active" className="text-base text-zinc-700 font-medium">
                 Active Status

@@ -25,7 +25,7 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
     try {
       setIsDownloading(true);
       const blob = await downloadTemplate(token);
-      
+
       // Create a blob URL and trigger download
       const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement('a');
@@ -33,7 +33,7 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
       link.setAttribute('download', 'employee_bulk_upload_template.csv');
       document.body.appendChild(link);
       link.click();
-      
+
       // Cleanup
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -98,7 +98,7 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       validateAndSetFile(e.dataTransfer.files[0]);
     }
@@ -123,10 +123,10 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
       <div className="space-y-2">
         <div className="flex items-center justify-between mb-2">
           <Label>Upload CSV File</Label>
-          <Button 
-            type="button" 
-            variant="outline" 
-            size="sm" 
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
             onClick={handleDownloadTemplate}
             disabled={isDownloading || isPending}
             className="text-[#004d40] border-[#004d40]/20 hover:bg-emerald-50 h-8 text-xs"
@@ -139,12 +139,11 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
             Download Template
           </Button>
         </div>
-        
+
         {!formik.values.file ? (
           <div
-            className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-xl transition-colors ${
-              dragActive ? "border-[#004d40] bg-emerald-50/50" : "border-zinc-300 bg-zinc-50 hover:bg-zinc-100"
-            } ${isPending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+            className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded transition-colors ${dragActive ? "border-[#004d40] bg-emerald-50/50" : "border-zinc-300 bg-zinc-50 hover:bg-zinc-100"
+              } ${isPending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -168,9 +167,9 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
             />
           </div>
         ) : (
-          <div className="flex items-center justify-between p-4 border border-zinc-200 rounded-xl bg-white shadow-sm">
+          <div className="flex items-center justify-between p-4 border border-zinc-200 rounded bg-white shadow-sm">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-emerald-100 rounded-lg">
+              <div className="p-2 bg-emerald-100 rounded">
                 <FileType2 className="w-6 h-6 text-[#004d40]" />
               </div>
               <div className="flex flex-col">
@@ -188,7 +187,7 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
               size="icon"
               onClick={removeFile}
               disabled={isPending}
-              className="text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
+              className="text-red-500 hover:text-red-600 hover:bg-red-50 rounded"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -202,9 +201,9 @@ export default function CreateEmployeeBulkUpload({ onSuccess, onCancel }: Create
             Cancel
           </Button>
         )}
-        <Button 
-          type="submit" 
-          disabled={isPending || !formik.values.file} 
+        <Button
+          type="submit"
+          disabled={isPending || !formik.values.file}
           className="bg-[#004d40] hover:bg-[#004d40]/90 text-white"
         >
           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

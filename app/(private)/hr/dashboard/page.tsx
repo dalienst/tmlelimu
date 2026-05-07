@@ -43,7 +43,7 @@ export default function HRDashboard() {
           <p className="text-zinc-500">Welcome to Tamarind Elimu System Management</p>
         </div>
         <div className="flex items-center gap-4">
-          <Badge className="bg-emerald-100 text-[#004d40] border-emerald-200 hover:bg-emerald-100 px-4 py-1.5 rounded-full">
+          <Badge className="bg-emerald-100 text-[#004d40] border-emerald-200 hover:bg-emerald-100 px-4 py-1.5 rounded">
             HR Administrator
           </Badge>
 
@@ -53,7 +53,7 @@ export default function HRDashboard() {
                 <Dialog open={isCreateBulkUploadOpen} onOpenChange={setIsCreateBulkUploadOpen}>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
+                      <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded px-5">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Actions
                       </Button>
@@ -177,8 +177,8 @@ export default function HRDashboard() {
         </Card>
       </div>
 
-      <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-12 flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-[#004d40] mb-4">
+      <div className="bg-zinc-50 border border-zinc-200 rounded p-12 flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 bg-white rounded shadow-sm flex items-center justify-center text-[#004d40] mb-4">
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4z" />
           </svg>

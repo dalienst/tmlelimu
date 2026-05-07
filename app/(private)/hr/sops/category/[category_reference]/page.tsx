@@ -43,16 +43,16 @@ import UpdateCategory from "@/forms/categories/UpdateCategory";
 export default function CategoryDetailPage({ params }: { params: Promise<{ category_reference: string }> }) {
   const router = useRouter();
   const { category_reference } = use(params);
-  
+
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
   const { data: category, isLoading: isCategoryLoading, refetch: refetchCategory } = useFetchCategory(category_reference);
-  
+
   // All SOPs for the selection dialog
   const { data: allSopsData } = useFetchAuthSops({
-    page_size: 100 
+    page_size: 100
   });
 
   const [isAddSopOpen, setIsAddSopOpen] = useState(false);
@@ -73,7 +73,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
     try {
       const formData = new FormData();
       formData.append("is_active", String(!togglingSop.is_active));
-      
+
       await updateSops(togglingSop.reference, formData, headers);
       toast.success(`SOP ${togglingSop.is_active ? 'deactivated' : 'activated'} successfully`);
       refetchCategory(); // Category contains the nested SOPs
@@ -104,8 +104,8 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
   };
 
   const availableSops = allSopsData?.results.filter(
-    (sop) => !category?.sops_detail.some(s => s.title === sop.title) && 
-    sop.title.toLowerCase().includes(addSearch.toLowerCase())
+    (sop) => !category?.sops_detail.some(s => s.title === sop.title) &&
+      sop.title.toLowerCase().includes(addSearch.toLowerCase())
   ) || [];
 
   if (isCategoryLoading) {
@@ -113,8 +113,8 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       <div className="p-8 mx-auto space-y-8">
         <Skeleton className="h-10 w-32 mb-6" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <Skeleton className="h-[400px] w-full lg:col-span-2 rounded-2xl" />
-          <Skeleton className="h-[400px] w-full rounded-2xl" />
+          <Skeleton className="h-[400px] w-full lg:col-span-2 rounded" />
+          <Skeleton className="h-[400px] w-full rounded" />
         </div>
       </div>
     );
@@ -136,8 +136,8 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
     .map(sop => ({
       id: sop.reference,
       title: sop.title,
-      description: "", 
-      file: "", 
+      description: "",
+      file: "",
       is_active: sop.is_active,
       created_at: sop.created_at,
       updated_at: sop.updated_at,
@@ -153,22 +153,22 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
     <div className="p-8 mx-auto space-y-8">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full hover:bg-zinc-100">
+        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded hover:bg-zinc-100">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-semibold text-[#004d40] uppercase tracking-tight">{category.name}</h1>
-            <Badge variant="outline" className={category.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 uppercase text-[10px] font-semibold px-2.5 py-0.5 rounded-full' : 'bg-red-50 text-red-700 border-red-200 uppercase text-[10px] font-semibold px-2.5 py-0.5 rounded-full'}>
+            <Badge variant="outline" className={category.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 uppercase text-[10px] font-semibold px-2.5 py-0.5 rounded' : 'bg-red-50 text-red-700 border-red-200 uppercase text-[10px] font-semibold px-2.5 py-0.5 rounded'}>
               {category.is_active ? 'Active' : 'Inactive'}
             </Badge>
           </div>
           <p className="text-zinc-500 font-medium">SOP Category Details</p>
         </div>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => setIsUpdateOpen(true)}
-          className="border-[#004d40]/20 text-[#004d40] hover:bg-emerald-50 rounded-full px-6"
+          className="border-[#004d40]/20 text-[#004d40] hover:bg-emerald-50 rounded px-6"
         >
           <Pencil className="mr-2 h-4 w-4" />
           Edit Category
@@ -179,12 +179,12 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           {/* Category Information */}
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 space-y-6">
+          <div className="bg-white rounded border border-zinc-200 shadow-sm p-6 space-y-6">
             <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
               <Building2 className="h-5 w-5 text-[#004d40]" />
               Category Information
             </h2>
-            
+
             <div className="space-y-4">
               <div>
                 <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Description</h3>
@@ -195,13 +195,13 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
               <div className="grid grid-cols-2 gap-6 pt-6 border-t border-zinc-100">
                 <div>
                   <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 text-center">Reference Code</h3>
-                  <p className="text-zinc-900 font-mono font-semibold text-center bg-zinc-50 py-2 rounded-lg border border-zinc-100">
+                  <p className="text-zinc-900 font-mono font-semibold text-center bg-zinc-50 py-2 rounded border border-zinc-100">
                     {category.code || "UNCATEGORIZED"}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 text-center">Creation Date</h3>
-                  <p className="text-[#004d40] font-semibold text-center bg-emerald-50/50 py-2 rounded-lg border border-emerald-100">
+                  <p className="text-[#004d40] font-semibold text-center bg-emerald-50/50 py-2 rounded border border-emerald-100">
                     {new Date(category.created_at).toLocaleDateString(undefined, {
                       day: 'numeric',
                       month: 'long',
@@ -214,19 +214,19 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
           </div>
 
           {/* Associated SOPs Table Card */}
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden min-h-[400px]">
+          <div className="bg-white rounded border border-zinc-200 shadow-sm overflow-hidden min-h-[400px]">
             <div className="p-6 border-b border-zinc-100">
               <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
                 <Files className="h-5 w-5 text-[#004d40]" />
                 Associated SOPs ({category.sops_detail.length})
               </h2>
             </div>
-            
-            <SOPSTable 
-              data={filteredCategorySops} 
-              isLoading={false} 
-              onEdit={setEditingSop} 
-              onToggle={setTogglingSop} 
+
+            <SOPSTable
+              data={filteredCategorySops}
+              isLoading={false}
+              onEdit={setEditingSop}
+              onToggle={setTogglingSop}
               search={search}
               onSearch={setSearch}
               page={page}
@@ -239,20 +239,20 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
 
         {/* Sidebar */}
         <div className="space-y-8">
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 space-y-6">
+          <div className="bg-white rounded border border-zinc-200 shadow-sm p-6 space-y-6">
             <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
               <Settings2 className="h-5 w-5 text-amber-600" />
               Management
             </h2>
-            
-            <div className="p-4 rounded-xl border border-emerald-100 bg-emerald-50/30 flex flex-col gap-4">
+
+            <div className="p-4 rounded border border-emerald-100 bg-emerald-50/30 flex flex-col gap-4">
               <p className="text-sm font-medium text-emerald-800 leading-snug">
                 Organize your SOPs by adding existing ones to this category or removing them as needed.
               </p>
-              
-              <Button 
+
+              <Button
                 onClick={() => setIsAddSopOpen(true)}
-                className="w-full bg-[#004d40] hover:bg-[#00332b] text-white rounded-full font-semibold shadow-md shadow-emerald-200/50"
+                className="w-full bg-[#004d40] hover:bg-[#00332b] text-white rounded font-semibold shadow-md shadow-emerald-200/50"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add SOP to Category
@@ -260,9 +260,9 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
             </div>
 
             <div className="pt-4 border-t border-zinc-100">
-              <div className="text-center p-4 rounded-xl bg-zinc-50 border border-transparent">
-                 <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Created By</p>
-                 <p className="text-sm font-semibold text-zinc-800">{category.created_by || "System Admin"}</p>
+              <div className="text-center p-4 rounded bg-zinc-50 border border-transparent">
+                <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Created By</p>
+                <p className="text-sm font-semibold text-zinc-800">{category.created_by || "System Admin"}</p>
               </div>
             </div>
           </div>
@@ -271,31 +271,31 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
 
       {/* Add SOP Dialog */}
       <Dialog open={isAddSopOpen} onOpenChange={setIsAddSopOpen}>
-        <DialogContent className="sm:max-w-md rounded-2xl border-none shadow-2xl">
+        <DialogContent className="sm:max-w-md rounded border-none shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-semibold text-[#004d40]">Add SOPs to {category.name}</DialogTitle>
             <DialogDescription className="font-medium">
               Select available SOPs to associate with this category.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             <div className="relative group">
-              <Input 
-                placeholder="Filter available SOPs..." 
+              <Input
+                placeholder="Filter available SOPs..."
                 value={addSearch}
                 onChange={(e) => setAddSearch(e.target.value)}
-                className="pl-10 h-11 rounded-xl border-zinc-200 focus:border-[#004d40] transition-all bg-zinc-50 group-focus-within:bg-white"
+                className="pl-10 h-11 rounded border-zinc-200 focus:border-[#004d40] transition-all bg-zinc-50 group-focus-within:bg-white"
               />
               <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors group-focus-within:text-[#004d40]" />
             </div>
-            
-            <div className="max-h-80 overflow-y-auto space-y-2 border border-zinc-100 rounded-2xl p-4 bg-zinc-50/50">
+
+            <div className="max-h-80 overflow-y-auto space-y-2 border border-zinc-100 rounded p-4 bg-zinc-50/50">
               {availableSops.length > 0 ? (
                 availableSops.map((sop) => (
-                  <div key={sop.id} className="flex items-center space-x-3 p-3 hover:bg-white rounded-xl transition-all border border-transparent hover:border-zinc-100 group shadow-sm hover:shadow-md">
-                    <Checkbox 
-                      id={`sop-${sop.id}`} 
+                  <div key={sop.id} className="flex items-center space-x-3 p-3 hover:bg-white rounded transition-all border border-transparent hover:border-zinc-100 group shadow-sm hover:shadow-md">
+                    <Checkbox
+                      id={`sop-${sop.id}`}
                       checked={selectedSops.includes(sop.title)}
                       onCheckedChange={(checked) => {
                         if (checked) {
@@ -304,9 +304,9 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
                           setSelectedSops(selectedSops.filter(id => id !== sop.title));
                         }
                       }}
-                      className="rounded-md border-zinc-300 data-[state=checked]:bg-[#004d40] data-[state=checked]:border-[#004d40]"
+                      className="rounded border-zinc-300 data-[state=checked]:bg-[#004d40] data-[state=checked]:border-[#004d40]"
                     />
-                    <Label 
+                    <Label
                       htmlFor={`sop-${sop.id}`}
                       className="text-sm font-semibold text-zinc-700 leading-none cursor-pointer flex-1 py-1"
                     >
@@ -326,11 +326,11 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="ghost" onClick={() => setIsAddSopOpen(false)} className="rounded-full font-semibold">Cancel</Button>
-            <Button 
+            <Button variant="ghost" onClick={() => setIsAddSopOpen(false)} className="rounded font-semibold">Cancel</Button>
+            <Button
               onClick={handleAddSopsToCategory}
               disabled={selectedSops.length === 0 || isAddingSops}
-              className="bg-[#004d40] hover:bg-[#00332b] text-white rounded-full font-semibold px-8 shadow-lg shadow-emerald-200/50"
+              className="bg-[#004d40] hover:bg-[#00332b] text-white rounded font-semibold px-8 shadow-lg shadow-emerald-200/50"
             >
               {isAddingSops && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isAddingSops ? "Adding..." : `Add Selected (${selectedSops.length})`}
@@ -341,7 +341,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
 
       {/* Edit SOP Dialog */}
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
-        <DialogContent className="sm:max-w-md rounded-2xl">
+        <DialogContent className="sm:max-w-md rounded">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold text-[#004d40]">Edit SOP Details</DialogTitle>
             <DialogDescription className="font-medium">
@@ -349,12 +349,12 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
             </DialogDescription>
           </DialogHeader>
           {editingSop && (
-            <UpdateSop 
-              sopData={editingSop} 
+            <UpdateSop
+              sopData={editingSop}
               onSuccess={() => {
                 setEditingSop(null);
                 refetchCategory();
-              }} 
+              }}
             />
           )}
         </DialogContent>
@@ -362,14 +362,14 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
 
       {/* Update Category Dialog */}
       <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
-        <DialogContent className="sm:max-w-[500px] rounded-2xl">
+        <DialogContent className="sm:max-w-[500px] rounded">
           <DialogHeader>
             <DialogTitle className="text-2xl font-semibold text-[#004d40]">Edit Category Details</DialogTitle>
             <DialogDescription className="font-medium">
               Update general information for {category.name}.
             </DialogDescription>
           </DialogHeader>
-          <UpdateCategory 
+          <UpdateCategory
             categoryData={category}
             onSuccess={() => { setIsUpdateOpen(false); refetchCategory(); }}
           />
@@ -380,25 +380,25 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       <AlertDialog open={!!togglingSop} onOpenChange={(open) => {
         if (!isToggling && !open) setTogglingSop(null);
       }}>
-        <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
+        <AlertDialogContent className="rounded border-none shadow-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-xl font-semibold text-zinc-900">
               {togglingSop?.is_active ? "Deactivate SOP?" : "Activate SOP?"}
             </AlertDialogTitle>
             <AlertDialogDescription className="font-medium">
-              {togglingSop?.is_active 
-                ? "This will hide the SOP from employees, but it will remain accessible to HR administrators." 
+              {togglingSop?.is_active
+                ? "This will hide the SOP from employees, but it will remain accessible to HR administrators."
                 : "This will make the SOP visible to all employees again."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel disabled={isToggling} className="rounded-full border-zinc-200 font-semibold">Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogCancel disabled={isToggling} className="rounded border-zinc-200 font-semibold">Cancel</AlertDialogCancel>
+            <AlertDialogAction
               onClick={handleToggleActive}
               disabled={isToggling}
-              className={togglingSop?.is_active 
-                ? "bg-amber-600 hover:bg-amber-700 text-white rounded-full font-semibold px-8 shadow-lg shadow-amber-200/50" 
-                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-semibold px-8 shadow-lg shadow-emerald-200/50"}
+              className={togglingSop?.is_active
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-semibold px-8 shadow-lg shadow-amber-200/50"
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold px-8 shadow-lg shadow-emerald-200/50"}
             >
               {isToggling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isToggling ? "Updating..." : "Confirm"}

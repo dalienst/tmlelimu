@@ -34,10 +34,10 @@ interface SOPSTableProps {
   pageSize: number;
 }
 
-export default function SOPSTable({ 
-  data, 
-  isLoading, 
-  onEdit, 
+export default function SOPSTable({
+  data,
+  isLoading,
+  onEdit,
   onToggle,
   search,
   onSearch,
@@ -62,8 +62,8 @@ export default function SOPSTable({
     <div className="space-y-4">
       <div className="flex items-center gap-3 px-6 py-4 border-b border-zinc-100 bg-zinc-50/30">
         <Search className="w-4 h-4 text-zinc-400" />
-        <Input 
-          placeholder="Search SOPs by title..." 
+        <Input
+          placeholder="Search SOPs by title..."
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
           className="border-none shadow-none focus-visible:ring-0 text-sm p-0 h-auto bg-transparent placeholder:text-zinc-400"
@@ -74,7 +74,7 @@ export default function SOPSTable({
         {isLoading ? (
           <div className="p-8 space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="h-16 w-full rounded-xl" />
+              <Skeleton key={i} className="h-16 w-full rounded" />
             ))}
           </div>
         ) : (
@@ -106,11 +106,11 @@ export default function SOPSTable({
                       </p>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-center align-top">
-                      <Badge 
-                        variant="outline" 
-                        className={sop.is_active 
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold" 
-                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold"}
+                      <Badge
+                        variant="outline"
+                        className={sop.is_active
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-bold"
+                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded text-[11px] font-bold"}
                       >
                         {sop.is_active ? "ACTIVE" : "INACTIVE"}
                       </Badge>
@@ -125,12 +125,12 @@ export default function SOPSTable({
                     <TableCell className="px-6 py-5 text-right align-top">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-9 w-9 p-0 rounded-full hover:bg-zinc-100 transition-colors">
+                          <Button variant="ghost" className="h-9 w-9 p-0 rounded hover:bg-zinc-100 transition-colors">
                             <span className="sr-only">Open menu</span>
                             <MoreHorizontal className="h-5 w-5 text-zinc-500" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 p-1 rounded-xl shadow-xl border-zinc-200">
+                        <DropdownMenuContent align="end" className="w-48 p-1 rounded shadow-xl border-zinc-200">
                           <DropdownMenuItem
                             onClick={() => onEdit(sop)}
                             className="cursor-pointer font-medium text-zinc-700"
@@ -178,11 +178,11 @@ export default function SOPSTable({
             size="sm"
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1 || isLoading}
-            className="h-8 w-8 p-0 rounded-lg text-zinc-500 border-zinc-200"
+            className="h-8 w-8 p-0 rounded text-zinc-500 border-zinc-200"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <div className="flex items-center justify-center h-8 px-3 rounded-lg border border-zinc-200 bg-white text-xs font-bold text-[#004d40]">
+          <div className="flex items-center justify-center h-8 px-3 rounded border border-zinc-200 bg-white text-xs font-bold text-[#004d40]">
             Page {page} of {totalPages || 1}
           </div>
           <Button
@@ -190,7 +190,7 @@ export default function SOPSTable({
             size="sm"
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages || isLoading}
-            className="h-8 w-8 p-0 rounded-lg text-zinc-500 border-zinc-200"
+            className="h-8 w-8 p-0 rounded text-zinc-500 border-zinc-200"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>

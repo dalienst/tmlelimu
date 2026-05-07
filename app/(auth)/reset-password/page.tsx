@@ -50,8 +50,8 @@ export default function ResetPassword() {
     <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-zinc-50 px-4">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 opacity-10" />
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#004d40]/10 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#004d40]/10 rounded blur-[120px] animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded blur-[100px] animate-pulse delay-1000" />
 
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
@@ -66,7 +66,7 @@ export default function ResetPassword() {
           </p>
         </div>
 
-        <Card className="border-zinc-200 shadow-2xl rounded-2xl overflow-hidden bg-white/80 backdrop-blur-md">
+        <Card className="border-zinc-200 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-md">
           <CardHeader className="pt-8 px-8">
             <CardTitle className="text-2xl font-bold text-zinc-900 tracking-tight text-center">
               Reset Password
@@ -77,7 +77,7 @@ export default function ResetPassword() {
           </CardHeader>
           <CardContent className="px-8 pb-8">
             <form onSubmit={formik.handleSubmit} className="space-y-6">
-              
+
               {/* Email Field */}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
@@ -95,11 +95,10 @@ export default function ResetPassword() {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${
-                      formik.touched.email && formik.errors.email
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }`}
+                    className={`transition-all ${formik.touched.email && formik.errors.email
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                      }`}
                   />
                 </div>
                 {formik.touched.email && formik.errors.email && (
@@ -126,11 +125,10 @@ export default function ResetPassword() {
                     value={formik.values.code}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${
-                      formik.touched.code && formik.errors.code
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }`}
+                    className={`transition-all ${formik.touched.code && formik.errors.code
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                      }`}
                   />
                 </div>
                 {formik.touched.code && formik.errors.code && (
@@ -157,11 +155,10 @@ export default function ResetPassword() {
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${
-                      formik.touched.password && formik.errors.password
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }`}
+                    className={`transition-all ${formik.touched.password && formik.errors.password
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                      }`}
                   />
                   <button
                     type="button"
@@ -199,11 +196,10 @@ export default function ResetPassword() {
                     value={formik.values.confirmPassword}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${
-                      formik.touched.confirmPassword && formik.errors.confirmPassword
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }`}
+                    className={`transition-all ${formik.touched.confirmPassword && formik.errors.confirmPassword
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                      }`}
                   />
                   <button
                     type="button"
@@ -227,7 +223,7 @@ export default function ResetPassword() {
               <Button
                 disabled={loading}
                 type="submit"
-                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded-xl text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 mt-8"
+                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 mt-8"
               >
                 {loading ? (
                   <div className="flex items-center gap-2">

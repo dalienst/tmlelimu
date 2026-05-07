@@ -107,7 +107,7 @@ export default function Navbar() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href={`/${rolePrefix}/dashboard`} className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#004d40] rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#004d40] rounded flex items-center justify-center">
                   <span className="text-white font-bold text-lg leading-none">T</span>
                 </div>
                 <div className="flex flex-col">
@@ -130,7 +130,7 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     className={cn(
-                      "inline-flex items-center px-3 py-2 text-sm font-medium rounded-xl transition-all h-10 mt-3",
+                      "inline-flex items-center px-3 py-2 text-sm font-medium rounded transition-all h-10 mt-3",
                       isActive
                         ? "bg-emerald-50 text-[#004d40]"
                         : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
@@ -150,10 +150,10 @@ export default function Navbar() {
             <div className="hidden sm:ml-6 sm:flex sm:items-center relative" ref={profileRef}>
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-1.5 rounded-full hover:bg-zinc-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#004d40] focus:ring-offset-2"
+                className="flex items-center gap-2 p-1.5 rounded hover:bg-zinc-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#004d40] focus:ring-offset-2"
               >
                 <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
+                  "w-8 h-8 rounded flex items-center justify-center font-bold text-sm",
                   isSuperuser ? "bg-zinc-900 text-white" : "bg-amber-100 text-amber-700"
                 )}>
                   {userInitial}
@@ -170,14 +170,14 @@ export default function Navbar() {
               </button>
 
               {isProfileOpen && (
-                <div className="origin-top-right absolute right-0 top-12 mt-2 w-64 rounded-2xl shadow-2xl bg-white border border-zinc-100 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="origin-top-right absolute right-0 top-12 mt-2 w-64 rounded shadow-2xl bg-white border border-zinc-100 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-4 py-4 border-b border-zinc-100">
                     <p className="text-sm font-bold text-zinc-900 truncate">{userName}</p>
                     {userEmail && (
                       <p className="text-xs font-medium text-zinc-500 truncate mt-0.5">{userEmail}</p>
                     )}
                     <div className={cn(
-                      "mt-3 inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
+                      "mt-3 inline-flex items-center px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border",
                       isSuperuser ? "bg-zinc-100 text-zinc-800 border-zinc-200" :
                         isHR ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
                           isManager ? "bg-blue-50 text-blue-700 border-blue-100" :
@@ -191,7 +191,7 @@ export default function Navbar() {
                   <div className="p-2">
                     <Link
                       href="/profile"
-                      className="flex items-center px-3 py-2 text-sm text-zinc-700 rounded-lg hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                      className="flex items-center px-3 py-2 text-sm text-zinc-700 rounded hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <User className="w-4 h-4 mr-2 text-zinc-400" />
@@ -199,7 +199,7 @@ export default function Navbar() {
                     </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: "/login" })}
-                      className="flex w-full items-center px-3 py-2 text-sm text-red-600 rounded-lg hover:bg-red-50 transition-colors mt-1"
+                      className="flex w-full items-center px-3 py-2 text-sm text-red-600 rounded hover:bg-red-50 transition-colors mt-1"
                     >
                       <LogOut className="w-4 h-4 mr-2 text-red-500" />
                       Sign out Securely
@@ -213,7 +213,7 @@ export default function Navbar() {
             <div className="flex items-center justify-center sm:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-xl text-zinc-400 hover:text-zinc-500 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#004d40]"
+                className="inline-flex items-center justify-center p-2 rounded text-zinc-400 hover:text-zinc-500 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#004d40]"
               >
                 <span className="sr-only">Open main menu</span>
                 {isMobileMenuOpen ? (
@@ -239,7 +239,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
-                  "flex items-center px-3 py-2.5 rounded-xl text-base font-medium transition-colors",
+                  "flex items-center px-3 py-2.5 rounded text-base font-medium transition-colors",
                   isActive
                     ? "bg-emerald-50 text-[#004d40]"
                     : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
@@ -256,7 +256,7 @@ export default function Navbar() {
           <div className="flex items-center px-5">
             <div className="flex-shrink-0">
               <div className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg",
+                "w-10 h-10 rounded flex items-center justify-center font-bold text-lg",
                 isSuperuser ? "bg-zinc-900 text-white" : "bg-amber-100 text-amber-700"
               )}>
                 {userInitial}
@@ -272,14 +272,14 @@ export default function Navbar() {
             <Link
               href="/profile"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center px-3 py-2.5 rounded-xl text-base font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+              className="flex items-center px-3 py-2.5 rounded text-base font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
             >
               <User className="w-5 h-5 mr-3 text-zinc-400" />
               Your Profile
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="flex w-full items-center px-3 py-2.5 rounded-xl text-base font-medium text-red-600 hover:bg-red-50"
+              className="flex w-full items-center px-3 py-2.5 rounded text-base font-medium text-red-600 hover:bg-red-50"
             >
               <LogOut className="w-5 h-5 mr-3 text-red-500" />
               Sign out Securely

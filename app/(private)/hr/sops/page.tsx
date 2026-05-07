@@ -59,7 +59,7 @@ export default function HRSopsPage() {
     page_size: pageSize
   });
   const { data: categoriesData, isLoading: isCategoriesLoading, refetch: refetchCategories } = useFetchCategories();
-  
+
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
   const [editingSop, setEditingSop] = useState<Sops | null>(null);
@@ -77,7 +77,7 @@ export default function HRSopsPage() {
     try {
       const formData = new FormData();
       formData.append("is_active", String(!togglingSop.is_active));
-      
+
       await updateSops(togglingSop.reference, formData, headers);
       toast.success(`SOP ${togglingSop.is_active ? 'deactivated' : 'activated'} successfully`);
       refetchSops();
@@ -113,11 +113,11 @@ export default function HRSopsPage() {
           <h1 className="text-xl font-bold text-[#004d40]">SOP & Category Management</h1>
           <p className="text-zinc-500">Manage Standard Operating Procedures and Categories for Tamarind Group</p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="bg-[#004d40] hover:bg-[#00332b] text-white rounded-full px-6 shadow-md transition-all gap-2">
+              <Button className="bg-[#004d40] hover:bg-[#00332b] text-white rounded px-6 shadow-md transition-all gap-2">
                 <PlusCircle className="w-4 h-4" />
                 Management Actions
               </Button>
@@ -144,13 +144,13 @@ export default function HRSopsPage() {
             <Files className="w-5 h-5 text-[#004d40]" />
             <h2 className="text-xl font-bold text-[#004d40]">All SOPs</h2>
           </div>
-          
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
-            <SOPSTable 
-              data={sopsData?.results} 
-              isLoading={isLoading} 
-              onEdit={setEditingSop} 
-              onToggle={setTogglingSop} 
+
+          <div className="bg-white rounded border border-zinc-200 shadow-sm overflow-hidden">
+            <SOPSTable
+              data={sopsData?.results}
+              isLoading={isLoading}
+              onEdit={setEditingSop}
+              onToggle={setTogglingSop}
               search={search}
               onSearch={(val) => {
                 setSearch(val);
@@ -170,11 +170,11 @@ export default function HRSopsPage() {
             <PlusCircle className="w-5 h-5 text-amber-600" />
             <h2 className="text-xl font-bold text-[#004d40]">Categories</h2>
           </div>
-          
+
           <div className="space-y-3">
             {isCategoriesLoading ? (
               [1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-16 w-full rounded-xl" />
+                <Skeleton key={i} className="h-16 w-full rounded" />
               ))
             ) : categoriesData && categoriesData.length > 0 ? (
               categoriesData.map((category: Category) => (
@@ -182,31 +182,31 @@ export default function HRSopsPage() {
                   <div className="p-3">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <div className="flex items-center gap-2 min-w-0">
-                        <Link 
+                        <Link
                           href={`/hr/sops/category/${category.reference}`}
                           className="text-sm text-[#004d40] hover:underline truncate uppercase tracking-tight"
                         >
                           {category.name}
                         </Link>
-                        <Badge 
-                          variant="outline" 
+                        <Badge
+                          variant="outline"
                           className={category.is_active ? "text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-200" : "text-[9px] px-1.5 py-0 bg-red-50 text-red-700 border-red-200"}
                         >
                           {category.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                       <div className="flex gap-1 shrink-0">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setEditingCategory(category)}
                           className="h-6 w-6 text-zinc-400 hover:text-emerald-600"
                         >
                           <Pencil className="h-3 w-3" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setTogglingCategory(category)}
                           className={`h-6 w-6 ${category.is_active ? 'text-zinc-400 hover:text-amber-600' : 'text-zinc-400 hover:text-emerald-600'}`}
                         >
@@ -222,7 +222,7 @@ export default function HRSopsPage() {
                 </Card>
               ))
             ) : (
-              <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl p-8 text-center">
+              <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded p-8 text-center">
                 <p className="text-xs text-zinc-500">No categories created yet.</p>
               </div>
             )}
@@ -260,12 +260,12 @@ export default function HRSopsPage() {
             </DialogDescription>
           </DialogHeader>
           {editingSop && (
-            <UpdateSop 
-              sopData={editingSop} 
+            <UpdateSop
+              sopData={editingSop}
               onSuccess={() => {
                 setEditingSop(null);
                 refetchSops();
-              }} 
+              }}
             />
           )}
         </DialogContent>
@@ -299,12 +299,12 @@ export default function HRSopsPage() {
             </DialogDescription>
           </DialogHeader>
           {editingCategory && (
-            <UpdateCategory 
-              categoryData={editingCategory} 
+            <UpdateCategory
+              categoryData={editingCategory}
               onSuccess={() => {
                 setEditingCategory(null);
                 refetchCategories();
-              }} 
+              }}
             />
           )}
         </DialogContent>
@@ -320,14 +320,14 @@ export default function HRSopsPage() {
               {togglingSop?.is_active ? "Deactivate SOP?" : "Activate SOP?"}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {togglingSop?.is_active 
-                ? "This will hide the SOP from employees, but it will remain accessible to HR administrators." 
+              {togglingSop?.is_active
+                ? "This will hide the SOP from employees, but it will remain accessible to HR administrators."
                 : "This will make the SOP visible to all employees again."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isToggling}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleToggleActive}
               disabled={isToggling}
               className={togglingSop?.is_active ? "bg-amber-600 hover:bg-amber-700 text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white"}
@@ -348,14 +348,14 @@ export default function HRSopsPage() {
               {togglingCategory?.is_active ? "Deactivate Category?" : "Activate Category?"}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {togglingCategory?.is_active 
-                ? "This will hide the category and its grouping, which might affect how employees find SOPs." 
+              {togglingCategory?.is_active
+                ? "This will hide the category and its grouping, which might affect how employees find SOPs."
                 : "This will restore the category visibility."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isToggling}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleToggleCategory}
               disabled={isToggling}
               className={togglingCategory?.is_active ? "bg-amber-600 hover:bg-amber-700 text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white"}

@@ -49,18 +49,18 @@ export function FilePicker({
         onChange={handleFileChange}
         className="hidden"
       />
-      
+
       <div
         onClick={() => inputRef.current?.click()}
         className={cn(
-          "flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 p-6 transition-all hover:border-[#004d40] hover:bg-[#004d40]/5",
+          "flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-zinc-200 bg-zinc-50/50 p-6 transition-all hover:border-[#004d40] hover:bg-[#004d40]/5",
           value && "border-[#004d40] bg-[#004d40]/5",
           error && "border-red-500 bg-red-50"
         )}
       >
         {!value ? (
           <>
-            <div className="mb-3 rounded-full bg-zinc-100 p-3 text-zinc-500 group-hover:bg-[#004d40]/10 group-hover:text-[#004d40]">
+            <div className="mb-3 rounded bg-zinc-100 p-3 text-zinc-500 group-hover:bg-[#004d40]/10 group-hover:text-[#004d40]">
               <Upload className="h-6 w-6" />
             </div>
             <div className="text-center">
@@ -75,7 +75,7 @@ export function FilePicker({
         ) : (
           <div className="flex w-full items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-[#004d40] p-2 text-white">
+              <div className="rounded bg-[#004d40] p-2 text-white">
                 <FileText className="h-5 w-5" />
               </div>
               <div className="overflow-hidden">
@@ -90,7 +90,7 @@ export function FilePicker({
             <button
               type="button"
               onClick={handleRemove}
-              className="rounded-full p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 transition-colors"
+              className="rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
