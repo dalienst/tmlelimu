@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
-import { useFetchEmployees } from "@/hooks/accounts/actions";
+import { useFetchAccount, useFetchEmployees } from "@/hooks/accounts/actions";
 import { useFetchAuthDepartments } from "@/hooks/departments/actions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -17,6 +17,7 @@ import CreateEmployeesBulk from "@/forms/accounts/CreateEmployeesBulk";
 import CreateEmployeeBulkUpload from "@/forms/accounts/CreateEmployeesBulkUpload";
 
 export default function HRDashboard() {
+  const { data: hrData, isLoading: isLoadingHr } = useFetchAccount()
   const { data: sopsData, isLoading: isSopsLoading } = useFetchAuthSops();
   const { data: employeesData, isLoading: isEmployeesLoading } = useFetchEmployees();
   const { data: departmentsData, isLoading: isDepartmentsLoading } = useFetchAuthDepartments();
@@ -37,14 +38,15 @@ export default function HRDashboard() {
     <div className="p-8  mx-auto space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-[#004d40]">HR Dashboard</h1>
-          <p className="text-zinc-500">Tamarind Elimu System Management</p>
+          <h1 className="text-2xl font-bold text-[#004d40]">HR Dashboard</h1>
+          <h2 className="text-xl font-semibold">{isLoadingHr ? "Loading..." : `${hrData?.first_name} ${hrData?.last_name}`}</h2>
+          <p className="text-zinc-500">Welcome to Tamarind Elimu System Management</p>
         </div>
         <div className="flex items-center gap-4">
           <Badge className="bg-emerald-100 text-[#004d40] border-emerald-200 hover:bg-emerald-100 px-4 py-1.5 rounded-full">
             HR Administrator
           </Badge>
-          
+
           <Dialog open={isCreateHROpen} onOpenChange={setIsCreateHROpen}>
             <Dialog open={isCreateEmployeeOpen} onOpenChange={setIsCreateEmployeeOpen}>
               <Dialog open={isCreateBulkEmployeeOpen} onOpenChange={setIsCreateBulkEmployeeOpen}>
@@ -85,7 +87,7 @@ export default function HRDashboard() {
                     <CreateEmployeeBulkUpload onSuccess={() => setIsCreateBulkUploadOpen(false)} onCancel={() => setIsCreateBulkUploadOpen(false)} />
                   </DialogContent>
                 </Dialog>
-                
+
                 <DialogContent className="w-[95vw] sm:max-w-[800px] md:max-w-6xl lg:max-w-7xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader className="mb-4">
                     <DialogTitle className="text-xl">Bulk Add Employees</DialogTitle>
@@ -134,7 +136,7 @@ export default function HRDashboard() {
             )}
           </CardContent>
         </Card>
-        
+
         <Card className="border-zinc-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Total Employees</CardTitle>
