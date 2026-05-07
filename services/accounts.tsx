@@ -26,8 +26,8 @@ export interface User {
     updated_at: string;
     deleted_at: string;
     reference: string;
-    departments: DepartmentMinified
-    departments_headed: DepartmentMinified
+    departments: DepartmentMinified[]
+    departments_headed: DepartmentMinified[]
 }
 
 export interface StaffMinified {

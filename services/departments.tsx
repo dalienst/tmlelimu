@@ -41,8 +41,8 @@ export interface DepartmentMinified {
   reference: string;
   created_at: string;
   updated_at: string;
-  staff: StaffMinified
-  sops: SopsMinified
+  staff: StaffMinified[]
+  sops: SopsMinified[]
 }
 
 // step by step creation
