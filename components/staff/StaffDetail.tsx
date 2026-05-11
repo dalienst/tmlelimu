@@ -63,24 +63,24 @@ export default function StaffDetail({ reference, onClose }: StaffDetailProps) {
       );
     }
 
-    const initials = `${employee.first_name?.[0] || ""}${employee.last_name?.[0] || ""}`.to();
+    const initials = `${employee.first_name?.[0] || ""}${employee.last_name?.[0] || ""}`.toUpperCase();
 
     return (
-      <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* Profile Identity Section */}
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative">
           <div className="relative group">
-            <div className="w-32 h-32 bg-gradient-to-br from-[#004d40] to-[#002d25] text-white rounded flex items-center justify-center text-4xl font-semibold shadow-2xl border-4 border-white transform transition-transform group-hover:scale-105 duration-300">
-              {initials || <UserIcon className="w-14 h-14" />}
+            <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#002d25] text-white rounded flex items-center justify-center border-4 border-white transform transition-transform group-hover:scale-105 duration-300">
+              {initials || <UserIcon className="w-6 h-6" />}
             </div>
             {employee.is_active && (
-              <div className="absolute -bottom-2 -right-2 bg-emerald-500 border-4 border-white w-8 h-8 rounded-full shadow-lg" title="Active Account" />
+              <div className="absolute -bottom-2 -right-2 bg-emerald-500 border-4 border-white w-4 h-4 rounded-full shadow-lg" title="Active Account" />
             )}
           </div>
           
-          <div className="flex-1 text-center md:text-left space-y-4 pt-2">
+          <div className="flex-1 text-center md:text-left space-y-2 pt-2">
             <div>
-              <h2 className="text-3xl font-semibold text-[#004d40] leading-tight flex flex-wrap items-center justify-center md:justify-start gap-3">
+              <h2 className="text-xl font-semibold text-[#004d40] flex flex-wrap items-center justify-center md:justify-start gap-3">
                 {employee.first_name} {employee.last_name}
                 <Badge variant={employee.is_active ? "outline" : "destructive"} className={employee.is_active ? "bg-emerald-50 text-emerald-700 border-emerald-100 rounded px-3 py-0.5 text-[10px] font-semibold  " : "rounded text-[10px] font-semibold"}>
                   {employee.is_active ? "ACTIVE" : "INACTIVE"}
@@ -112,6 +112,7 @@ export default function StaffDetail({ reference, onClose }: StaffDetailProps) {
               {employee.is_hr && <Badge className="bg-amber-600 text-white rounded-sm font-semibold text-[9px] px-2 py-0.5">HR</Badge>}
               {employee.is_hod && <Badge className="bg-blue-600 text-white rounded-sm font-semibold text-[9px] px-2 py-0.5">HOD</Badge>}
               {employee.is_trainer && <Badge className="bg-purple-600 text-white rounded-sm font-semibold text-[9px] px-2 py-0.5">TRAINER</Badge>}
+              {employee.is_employee && <Badge className="bg-gray-600 text-white rounded-sm font-semibold text-[9px] px-2 py-0.5">EMPLOYEE</Badge>}
             </div>
           </div>
         </div>
@@ -146,12 +147,12 @@ export default function StaffDetail({ reference, onClose }: StaffDetailProps) {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-xs font-semibold text-amber-600   flex items-center gap-2">
+          <div className="space-y-2">
+            <h3 className="text-xs font-semibold text-amber-600 flex items-center gap-2">
               <Clock className="w-4 h-4" />
               Administrative Data
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-2">
               <div className="flex items-center gap-4 bg-zinc-50 p-4 rounded border border-zinc-100">
                 <div className="w-10 h-10 rounded bg-white border border-zinc-200 flex items-center justify-center shrink-0">
                   <Calendar className="w-5 h-5 text-zinc-400" />
@@ -181,9 +182,9 @@ export default function StaffDetail({ reference, onClose }: StaffDetailProps) {
 
         {/* Premium Footer Branding */}
         <Card className="bg-[#004d40] border-none shadow-xl overflow-hidden rounded">
-          <div className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative">
+          <div className="p-4 flex flex-col md:flex-row items-center justify-between gap-6 relative">
             <div className="absolute top-0 right-0 p-8 opacity-5">
-              <ShieldCheck className="w-32 h-32 text-white" />
+              <ShieldCheck className="w-16 h-16 text-white" />
             </div>
             <div className="space-y-1 text-center md:text-left relative z-10">
               <p className="text-emerald-300/60 text-[9px] font-semibold">Institutional Verification</p>
