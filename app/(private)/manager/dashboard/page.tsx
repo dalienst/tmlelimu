@@ -53,7 +53,7 @@ import {
 import CreateSop from "@/forms/sops/CreateSop";
 import UpdateSop from "@/forms/sops/UpdateSop";
 import StaffDetail from "@/components/staff/StaffDetail";
-import { updateSops, Sops } from "@/services/sops";
+import { updateSops, Sops, SopsMinified } from "@/services/sops";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -65,8 +65,8 @@ export default function ManagerDashboard() {
 
   // Management State
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingSop, setEditingSop] = useState<any | null>(null);
-  const [togglingSop, setTogglingSop] = useState<any | null>(null);
+  const [editingSop, setEditingSop] = useState<SopsMinified | null>(null);
+  const [togglingSop, setTogglingSop] = useState<SopsMinified | null>(null);
   const [isToggling, setIsToggling] = useState(false);
 
   // Staff Detail State

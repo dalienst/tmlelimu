@@ -1,6 +1,6 @@
 import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Sops } from "@/services/sops";
+import { Sops, SopsMinified } from "@/services/sops";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,10 +21,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface SOPSTableProps {
-  data: Sops[] | undefined;
+  data: SopsMinified[] | undefined;
   isLoading: boolean;
-  onEdit: (sop: Sops) => void;
-  onToggle: (sop: Sops) => void;
+  onEdit: (sop: SopsMinified) => void;
+  onToggle: (sop: SopsMinified) => void;
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -90,21 +90,14 @@ export default function SOPSTable({
             </TableHeader>
             <TableBody>
               {data && data.length > 0 ? (
-                data.map((sop: Sops) => (
-                  <TableRow key={sop.id} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                data.map((sop: SopsMinified) => (
+                  <TableRow key={sop.reference} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
                     <TableCell className="px-6 py-5 align-top">
                       <div className="font-bold text-[#004d40] leading-tight mb-1">
                         {sop.title}
                       </div>
-                      <div className="flex flex-wrap gap-1 items-center mt-1.5">
-                        <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100">
-                          {sop.code || sop.reference.slice(0, 8)}
-                        </div>
-                        {sop.departments && sop.departments.length > 0 && (
-                          <div className="text-[9px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/30">
-                            {sop.departments[0].code}
-                          </div>
-                        )}
+                      <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100 inline-block">
+                        {sop.code}
                       </div>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-zinc-600 align-top">

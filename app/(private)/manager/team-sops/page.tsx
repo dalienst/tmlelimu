@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Plus, EyeOff, Eye, MoreHorizontal, Files, PlusCircle, FolderPlus, Pencil, Search, ArrowUpDown, MoreVertical, ExternalLink, Download } from "lucide-react";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
 import { useFetchCategories } from "@/hooks/categories/actions";
-import { Sops, updateSops } from "@/services/sops";
+import { Sops, SopsMinified, updateSops } from "@/services/sops";
 import { Category, updateCategory } from "@/services/categories";
 import toast from "react-hot-toast";
 
@@ -44,24 +44,35 @@ import CreateCategory from "@/forms/categories/CreateCategory";
 import UpdateCategory from "@/forms/categories/UpdateCategory";
 import SOPSTable from "@/components/sops/SOPSTable";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { useFetchAccount } from "@/hooks/accounts/actions";
 
 export default function TeamSopsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  const { data: sopsData, isLoading, refetch: refetchSops } = useFetchAuthSops({
-    search,
-    page,
-    page_size: pageSize
-  });
+  const { data: manager, isLoading, refetch: refetchAccount } = useFetchAccount();
+  const managedDept = manager?.departments_headed?.[0];
+  const sops = managedDept?.sops || [];
+
+  const filteredSops = useMemo(() => {
+    return sops.filter((s: any) => 
+      s.title.toLowerCase().includes(search.toLowerCase()) ||
+      s.code.toLowerCase().includes(search.toLowerCase()) ||
+      s.description.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [sops, search]);
+
+  // Client-side pagination
+  const paginatedSops = filteredSops.slice((page - 1) * pageSize, page * pageSize);
+
   const { data: categoriesData, isLoading: isCategoriesLoading, refetch: refetchCategories } = useFetchCategories();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
-  const [editingSop, setEditingSop] = useState<Sops | null>(null);
+  const [editingSop, setEditingSop] = useState<SopsMinified | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
+  const [togglingSop, setTogglingSop] = useState<SopsMinified | null>(null);
   const [togglingCategory, setTogglingCategory] = useState<Category | null>(null);
 
   const [isToggling, setIsToggling] = useState(false);
@@ -77,7 +88,7 @@ export default function TeamSopsPage() {
 
       await updateSops(togglingSop.reference, formData, headers);
       toast.success(`SOP ${togglingSop.is_active ? 'deactivated' : 'activated'} successfully`);
-      refetchSops();
+      refetchAccount();
     } catch (e) {
       toast.error((e as any)?.response?.data?.detail || "Failed to update SOP status");
     } finally {
@@ -145,7 +156,7 @@ export default function TeamSopsPage() {
 
           <Card className="border-zinc-100 shadow-xl rounded overflow-hidden bg-white">
             <SOPSTable
-              data={sopsData?.results}
+              data={paginatedSops}
               isLoading={isLoading}
               onEdit={setEditingSop}
               onToggle={setTogglingSop}
@@ -156,7 +167,7 @@ export default function TeamSopsPage() {
               }}
               page={page}
               onPageChange={setPage}
-              totalCount={sopsData?.count || 0}
+              totalCount={filteredSops.length}
               pageSize={pageSize}
             />
           </Card>
@@ -241,7 +252,7 @@ export default function TeamSopsPage() {
           <CreateSop
             onSuccess={() => {
               setIsCreateOpen(false);
-              refetchSops();
+              refetchAccount();
             }}
           />
         </DialogContent>
@@ -261,7 +272,7 @@ export default function TeamSopsPage() {
               sopData={editingSop}
               onSuccess={() => {
                 setEditingSop(null);
-                refetchSops();
+                refetchAccount();
               }}
             />
           )}

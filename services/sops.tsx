@@ -104,6 +104,7 @@ export interface SOPFetchParams {
   page?: number;
   page_size?: number;
   category?: string;
+  department?: string;
 }
 
 export const getAuthSops = async (

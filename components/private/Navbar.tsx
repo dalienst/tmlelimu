@@ -72,7 +72,6 @@ export default function Navbar() {
     navLinks = [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
       { name: "Team SOPs", href: "/manager/team-sops", icon: Briefcase },
-      { name: "SOP Library", href: "/sops", icon: FileText },
     ];
   } else if (isHOD) {
     navLinks = [
@@ -90,7 +89,7 @@ export default function Navbar() {
     // Default employee or fallback links
     navLinks = [
       { name: "Dashboard", href: "/employee/dashboard", icon: LayoutDashboard },
-      { name: "SOP Library", href: "/sops", icon: FileText },
+      { name: "SOP Library", href: "/employee/sops", icon: FileText },
       { name: "My Progress", href: "/employee/progress", icon: CheckCircle },
     ];
   }

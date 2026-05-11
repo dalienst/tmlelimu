@@ -5,7 +5,7 @@ import { Formik, Form } from "formik";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { UpdateSopSchema } from "@/validation";
-import { Sops, updateSops } from "@/services/sops";
+import { Sops, SopsMinified, updateSops } from "@/services/sops";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,7 @@ export default function UpdateSop({
   sopData,
   onSuccess
 }: {
-  sopData: Sops;
+  sopData: Sops | SopsMinified;
   onSuccess: () => void;
 }) {
   const { data: session } = useSession();
