@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { addHeadToDepartment, addStaffToDepartment, addSOPToDepartment } from "@/services/departments";
 import { useFetchEmployees } from "@/hooks/accounts/actions";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
-import { Sops, updateSops } from "@/services/sops";
+import { Sops, SopsMinified, updateSops } from "@/services/sops";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
 
@@ -97,8 +97,8 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   const [isAddingSops, setIsAddingSops] = useState(false);
   const [addSearch, setAddSearch] = useState("");
 
-  const [editingSop, setEditingSop] = useState<Sops | null>(null);
-  const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
+  const [editingSop, setEditingSop] = useState<SopsMinified | null>(null);
+  const [togglingSop, setTogglingSop] = useState<SopsMinified | null>(null);
   const [isToggling, setIsToggling] = useState(false);
 
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
@@ -213,22 +213,17 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   }
 
   // Filter department.sops_detail based on search/page locally
-  const filteredDeptSops: Sops[] = department.sops_detail
+  const filteredDeptSops: SopsMinified[] = department.sops_detail
     .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
     .map(sop => ({
-      id: sop.reference,
       title: sop.title,
-      description: "",
-      file: "",
+      file: sop.file || "",
       is_active: sop.is_active,
       created_at: sop.created_at,
       updated_at: sop.updated_at,
       reference: sop.reference,
       created_by: "",
-      updated_by: "",
       code: sop.code || "",
-      departments: [],
-      categories: [],
     }));
 
   return (

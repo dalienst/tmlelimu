@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Plus, Settings2, MoreHorizontal, Pencil, EyeOff, Eye, PlusCircle, FolderPlus, Files, ChevronRight } from "lucide-react";
 import { useFetchAuthSops } from "@/hooks/sops/actions";
 import { useFetchCategories } from "@/hooks/categories/actions";
-import { Sops, updateSops } from "@/services/sops";
+import { Sops, SopsMinified, updateSops } from "@/services/sops";
 import { Category, updateCategory } from "@/services/categories";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
@@ -62,9 +62,9 @@ export default function HRSopsPage() {
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
-  const [editingSop, setEditingSop] = useState<Sops | null>(null);
+  const [editingSop, setEditingSop] = useState<SopsMinified | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
+  const [togglingSop, setTogglingSop] = useState<SopsMinified | null>(null);
   const [togglingCategory, setTogglingCategory] = useState<Category | null>(null);
 
   const [isToggling, setIsToggling] = useState(false);

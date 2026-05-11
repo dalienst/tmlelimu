@@ -98,6 +98,16 @@ export default function Navbar() {
   const userName = session?.user?.first_name ? `${session.user.first_name} ${session.user.last_name || ""}` : "Tamarind User";
   const userEmail = session?.user?.email || session?.user?.username || "";
 
+  // Calculate role-specific profile link
+  let rolePath = "/employee";
+  if (isSuperuser) rolePath = "/hr"; // Superusers often land in HR context
+  else if (isHR) rolePath = "/hr";
+  else if (isManager) rolePath = "/manager";
+  else if (isHOD) rolePath = "/hod";
+  else if (isTrainer) rolePath = "/trainer";
+
+  const profileHref = `${rolePath}/profile`;
+
   return (
     <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
       <div className=" mx-auto px-4 sm:px-6 lg:px-8">
@@ -189,7 +199,7 @@ export default function Navbar() {
 
                   <div className="p-2">
                     <Link
-                      href="/profile"
+                      href={profileHref}
                       className="flex items-center px-3 py-2 text-sm text-zinc-700 rounded hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
