@@ -1,4 +1,4 @@
-import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Sops, SopsMinified } from "@/services/sops";
 import { Badge } from "@/components/ui/badge";
@@ -23,8 +23,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface SOPSTableProps {
   data: SopsMinified[] | undefined;
   isLoading: boolean;
-  onEdit: (sop: SopsMinified) => void;
-  onToggle: (sop: SopsMinified) => void;
+  onEdit?: (sop: SopsMinified) => void;
+  onToggle?: (sop: SopsMinified) => void;
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -85,7 +85,11 @@ export default function SOPSTable({
                 <TableHead className="w-[35%] px-6 py-4 font-semibold text-zinc-900">Description</TableHead>
                 <TableHead className="px-6 py-4 font-semibold text-zinc-900 text-center">Status</TableHead>
                 <TableHead className="px-6 py-4 font-semibold text-zinc-900">Uploaded</TableHead>
-                <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Actions</TableHead>
+                {(onEdit || onToggle) ? (
+                  <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Actions</TableHead>
+                ) : (
+                  <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Document</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -123,36 +127,53 @@ export default function SOPSTable({
                       })}
                     </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-9 w-9 p-0 rounded hover:bg-zinc-100 transition-colors">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-5 w-5 text-zinc-500" />
+                      {(onEdit || onToggle) ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-9 w-9 p-0 rounded hover:bg-zinc-100 transition-colors">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-5 w-5 text-zinc-500" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48 p-1 rounded shadow-xl border-zinc-200">
+                            {onEdit && (
+                              <DropdownMenuItem
+                                onClick={() => onEdit(sop)}
+                                className="cursor-pointer font-medium text-zinc-700"
+                              >
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit details
+                              </DropdownMenuItem>
+                            )}
+                            <a href={sop.file} target="_blank" rel="noreferrer">
+                              <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
+                                <Settings2 className="mr-2 h-4 w-4" />
+                                View Document
+                              </DropdownMenuItem>
+                            </a>
+                            {onToggle && (
+                              <DropdownMenuItem
+                                onClick={() => onToggle(sop)}
+                                className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium"}
+                              >
+                                {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+                                {sop.is_active ? "Deactivate" : "Activate"}
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        <a href={sop.file} target="_blank" rel="noreferrer">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-bold text-[10px] uppercase tracking-wider"
+                          >
+                            <Download className="w-3.5 h-3.5 mr-2" />
+                            View
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 p-1 rounded shadow-xl border-zinc-200">
-                          <DropdownMenuItem
-                            onClick={() => onEdit(sop)}
-                            className="cursor-pointer font-medium text-zinc-700"
-                          >
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit details
-                          </DropdownMenuItem>
-                          <a href={sop.file} target="_blank" rel="noreferrer">
-                            <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
-                              <Settings2 className="mr-2 h-4 w-4" />
-                              View Document
-                            </DropdownMenuItem>
-                          </a>
-                          <DropdownMenuItem
-                            onClick={() => onToggle(sop)}
-                            className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium"}
-                          >
-                            {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
-                            {sop.is_active ? "Deactivate" : "Activate"}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                        </a>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
