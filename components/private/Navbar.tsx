@@ -90,7 +90,7 @@ export default function Navbar() {
     navLinks = [
       { name: "Dashboard", href: "/employee/dashboard", icon: LayoutDashboard },
       { name: "SOP Library", href: "/employee/sops", icon: FileText },
-      { name: "My Progress", href: "/employee/progress", icon: CheckCircle },
+      // { name: "My Progress", href: "/employee/progress", icon: CheckCircle },
     ];
   }
 
