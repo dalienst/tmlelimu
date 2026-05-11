@@ -52,7 +52,7 @@ import UpdateDepartment from "@/forms/departments/UpdateDepartment";
 export default function DepartmentsPage() {
   const { data: departments, isLoading, refetch } = useFetchDepartments();
   const token = useAxiosAuth();
-  
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [departmentToUpdate, setDepartmentToUpdate] = useState<Department | null>(null);
@@ -74,7 +74,7 @@ export default function DepartmentsPage() {
     }
   };
 
-  const filteredDepartments = departments?.filter(dept => 
+  const filteredDepartments = departments?.filter(dept =>
     dept.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (dept.email && dept.email.toLowerCase().includes(searchTerm.toLowerCase()))
   ) || [];
@@ -83,7 +83,7 @@ export default function DepartmentsPage() {
     <div className="p-8 mx-auto space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-emerald-100 rounded-lg">
+          <div className="p-2 bg-emerald-100 rounded">
             <Building2 className="w-8 h-8 text-[#004d40]" />
           </div>
           <div>
@@ -91,21 +91,21 @@ export default function DepartmentsPage() {
             <p className="text-zinc-500">Manage organizational departments and assignments</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="relative w-full md:w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-            <Input 
-              placeholder="Search departments..." 
+            <Input
+              placeholder="Search departments..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 rounded-full bg-white"
+              className="pl-9 rounded bg-white"
             />
           </div>
 
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5 whitespace-nowrap">
+              <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded px-5 whitespace-nowrap">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Department
               </Button>
@@ -117,20 +117,20 @@ export default function DepartmentsPage() {
                   Define a new organizational unit within the system.
                 </DialogDescription>
               </DialogHeader>
-              <CreateDepartment 
-                onSuccess={() => {setIsCreateOpen(false); refetch();}} 
-                onCancel={() => setIsCreateOpen(false)} 
+              <CreateDepartment
+                onSuccess={() => { setIsCreateOpen(false); refetch(); }}
+                onCancel={() => setIsCreateOpen(false)}
               />
             </DialogContent>
           </Dialog>
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+      <div className="bg-white rounded border border-zinc-200 shadow-sm overflow-hidden flex flex-col min-h-[500px]">
         {isLoading ? (
           <div className="p-6 space-y-4">
             {[1, 2, 3, 4, 5].map((i) => (
-              <Skeleton key={i} className="h-16 w-full rounded-xl" />
+              <Skeleton key={i} className="h-16 w-full rounded" />
             ))}
           </div>
         ) : (
@@ -178,7 +178,7 @@ export default function DepartmentsPage() {
                               <ChevronRight className="h-4 w-4" />
                             </Button>
                           </Link>
-                          
+
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -197,7 +197,7 @@ export default function DepartmentsPage() {
                                 <Pencil className="mr-2 h-4 w-4" /> Edit Department
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem 
+                              <DropdownMenuItem
                                 onSelect={() => setDepartmentToDelete(dept)}
                                 className="text-red-600 focus:text-red-700 focus:bg-red-50 cursor-pointer"
                               >
@@ -235,7 +235,7 @@ export default function DepartmentsPage() {
             </DialogDescription>
           </DialogHeader>
           {departmentToUpdate && (
-            <UpdateDepartment 
+            <UpdateDepartment
               department={departmentToUpdate}
               onSuccess={() => { setDepartmentToUpdate(null); refetch(); }}
               onCancel={() => setDepartmentToUpdate(null)}
@@ -256,7 +256,7 @@ export default function DepartmentsPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
               className="bg-red-600 hover:bg-red-700 focus:ring-red-600"

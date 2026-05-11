@@ -51,7 +51,7 @@ import { Input } from "@/components/ui/input";
 
 export default function EmployeeManagementPage() {
   const { data: employeesData, isLoading, refetch } = useFetchEmployees();
-  
+
   const [searchTerm, setSearchTerm] = useState("");
   const [togglingRole, setTogglingRole] = useState<{ user: User, role: keyof User, label: string } | null>(null);
   const [isToggling, setIsToggling] = useState(false);
@@ -77,7 +77,7 @@ export default function EmployeeManagementPage() {
       };
 
       await updateUserByHR(togglingRole.user.reference, payload, headers);
-      
+
       toast.success(`${togglingRole.user.first_name}'s ${togglingRole.label} role ${newValue ? 'granted' : 'revoked'}`);
       refetch();
     } catch (e: any) {
@@ -91,7 +91,7 @@ export default function EmployeeManagementPage() {
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resetPasswordUser) return;
-    
+
     if (resetPasswordForm.password !== resetPasswordForm.password_confirmation) {
       toast.error("Passwords do not match");
       return;
@@ -132,13 +132,13 @@ export default function EmployeeManagementPage() {
           <h1 className="text-3xl font-bold text-[#004d40]">Employee Management</h1>
           <p className="text-zinc-500">View and manage roles for Tamarind Group employees</p>
         </div>
-        
+
         <div className="flex items-center gap-4 w-full md:w-auto">
-          <Input 
-            placeholder="Search name, email, or payroll no..." 
+          <Input
+            placeholder="Search name, email, or payroll no..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="rounded-full bg-white md:w-72 p-2"
+            className="rounded bg-white md:w-72 p-2"
           />
 
           <Dialog open={isCreateHROpen} onOpenChange={setIsCreateHROpen}>
@@ -147,7 +147,7 @@ export default function EmployeeManagementPage() {
                 <Dialog open={isCreateBulkUploadOpen} onOpenChange={setIsCreateBulkUploadOpen}>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-full px-5">
+                      <Button className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded px-5">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Actions
                       </Button>
@@ -178,13 +178,13 @@ export default function EmployeeManagementPage() {
                         Upload a CSV file containing employee details. Ensure it matches the required format.
                       </DialogDescription>
                     </DialogHeader>
-                    <CreateEmployeeBulkUpload 
-                      onSuccess={() => { setIsCreateBulkUploadOpen(false); refetch(); }} 
-                      onCancel={() => setIsCreateBulkUploadOpen(false)} 
+                    <CreateEmployeeBulkUpload
+                      onSuccess={() => { setIsCreateBulkUploadOpen(false); refetch(); }}
+                      onCancel={() => setIsCreateBulkUploadOpen(false)}
                     />
                   </DialogContent>
                 </Dialog>
-                
+
                 <DialogContent className="w-[95vw] sm:max-w-[800px] md:max-w-6xl lg:max-w-7xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader className="mb-4">
                     <DialogTitle className="text-xl">Bulk Add Employees</DialogTitle>
@@ -192,9 +192,9 @@ export default function EmployeeManagementPage() {
                       Add multiple employees at once to the Tamarind Elimu System. Fill out the rows below.
                     </DialogDescription>
                   </DialogHeader>
-                  <CreateEmployeesBulk 
-                    onSuccess={() => { setIsCreateBulkEmployeeOpen(false); refetch(); }} 
-                    onCancel={() => setIsCreateBulkEmployeeOpen(false)} 
+                  <CreateEmployeesBulk
+                    onSuccess={() => { setIsCreateBulkEmployeeOpen(false); refetch(); }}
+                    onCancel={() => setIsCreateBulkEmployeeOpen(false)}
                   />
                 </DialogContent>
               </Dialog>
@@ -206,9 +206,9 @@ export default function EmployeeManagementPage() {
                     Add a single employee to the Tamarind Elimu System.
                   </DialogDescription>
                 </DialogHeader>
-                <CreateEmployee 
-                  onSuccess={() => { setIsCreateEmployeeOpen(false); refetch(); }} 
-                  onCancel={() => setIsCreateEmployeeOpen(false)} 
+                <CreateEmployee
+                  onSuccess={() => { setIsCreateEmployeeOpen(false); refetch(); }}
+                  onCancel={() => setIsCreateEmployeeOpen(false)}
                 />
               </DialogContent>
             </Dialog>
@@ -220,16 +220,16 @@ export default function EmployeeManagementPage() {
                   Add a new HR Administrator to the system.
                 </DialogDescription>
               </DialogHeader>
-              <CreateHR 
-                onSuccess={() => { setIsCreateHROpen(false); refetch(); }} 
-                onCancel={() => setIsCreateHROpen(false)} 
+              <CreateHR
+                onSuccess={() => { setIsCreateHROpen(false); refetch(); }}
+                onCancel={() => setIsCreateHROpen(false)}
               />
             </DialogContent>
           </Dialog>
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded border border-zinc-200 shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-6 space-y-4">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -359,7 +359,7 @@ export default function EmployeeManagementPage() {
               {togglingRole?.user[togglingRole.role] ? `Revoke ${togglingRole?.label} Role?` : `Grant ${togglingRole?.label} Role?`}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {togglingRole?.user[togglingRole.role] 
+              {togglingRole?.user[togglingRole.role]
                 ? `Are you sure you want to remove the ${togglingRole?.label} privileges from ${togglingRole?.user.first_name}? They will lose access to associated features.`
                 : `Are you sure you want to promote ${togglingRole?.user.first_name} to ${togglingRole?.label}? They will gain new privileges.`
               }
@@ -367,7 +367,7 @@ export default function EmployeeManagementPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isToggling}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleToggleRole}
               disabled={isToggling}
               className={togglingRole?.user[togglingRole?.role] ? "bg-red-600 hover:bg-red-700 text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white"}

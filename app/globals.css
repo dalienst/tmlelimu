@@ -125,4 +125,12 @@
   body {
     @apply bg-background text-foreground;
   }
+  ::selection {
+    background-color: #004d40 !important;
+    color: #ffffff !important;
+  }
+  ::-moz-selection {
+    background-color: #004d40 !important;
+    color: #ffffff !important;
+  }
 }

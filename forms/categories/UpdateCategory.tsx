@@ -12,10 +12,10 @@ import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { Category, updateCategory } from "@/services/categories";
 import { Loader2 } from "lucide-react";
 
-export default function UpdateCategory({ 
-  categoryData, 
-  onSuccess 
-}: { 
+export default function UpdateCategory({
+  categoryData,
+  onSuccess
+}: {
   categoryData: Category;
   onSuccess: () => void;
 }) {
@@ -88,7 +88,7 @@ export default function UpdateCategory({
             />
           </div>
 
-          <div className="flex flex-row items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+          <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-4">
             <div className="space-y-0.5">
               <Label htmlFor="is_active" className="text-base text-zinc-700 font-medium">
                 Active Status

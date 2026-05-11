@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { createSops } from "@/services/sops";
+import { FilePicker } from "@/components/ui/file-picker";
 
 export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
   const { data: session } = useSession();
@@ -100,11 +101,10 @@ export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
               onBlur={handleBlur}
               value={values.description}
               rows={4}
-              className={`resize-none ${
-                errors.description && touched.description
+              className={`resize-none ${errors.description && touched.description
                   ? "border-red-500 p-2"
                   : "border-zinc-300 p-2"
-              }`}
+                }`}
             />
             {errors.description && touched.description && (
               <p className="text-sm text-red-500">{errors.description}</p>
@@ -115,17 +115,16 @@ export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
             <Label htmlFor="file" className="text-zinc-700">
               SOP Document (PDF or Word)
             </Label>
-            <Input
+            <FilePicker
               id="file"
               name="file"
-              type="file"
               accept=".pdf,.doc,.docx"
-              onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
+              value={values.file}
+              onChange={(file) => {
                 setFieldValue("file", file);
                 setFileError("");
               }}
-              className="border-zinc-300 text-zinc-600 file:text-[#004d40] file:bg-zinc-100 hover:file:bg-zinc-200"
+              error={fileError || (errors.file && touched.file ? String(errors.file) : "")}
             />
             {fileError && <p className="text-sm text-red-500">{fileError}</p>}
             {errors.file && touched.file && (
@@ -133,7 +132,7 @@ export default function CreateSop({ onSuccess }: { onSuccess: () => void }) {
             )}
           </div>
 
-          <div className="flex flex-row items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+          <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-4">
             <div className="space-y-0.5">
               <Label htmlFor="is_active" className="text-base text-zinc-700 font-medium">
                 Active Status

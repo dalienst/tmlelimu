@@ -22,9 +22,10 @@ import { useFormik } from "formik";
 import { LoginSchema } from "@/validation";
 
 interface CustomUser extends User {
-  is_director?: boolean;
   is_employee?: boolean;
-  is_finance?: boolean;
+  is_manager?: boolean;
+  is_trainer?: boolean;
+  is_hod?: boolean;
   is_hr?: boolean;
   is_superuser?: boolean;
 }
@@ -65,15 +66,16 @@ export default function Login() {
 
         if (session?.user?.is_hr === true) {
           router.push("/hr/dashboard");
-        } else if (session?.user?.is_director === true) {
-          router.push("/director/dashboard");
+        } else if (session?.user?.is_manager === true) {
+          router.push("/manager/dashboard");
         } else if (session?.user?.is_employee === true) {
           router.push("/employee/dashboard");
-        } else if (session?.user?.is_finance === true) {
-          router.push("/finance/dashboard");
+        } else if (session?.user?.is_hod === true) {
+          router.push("/hod/dashboard");
+        } else if (session?.user?.is_trainer === true) {
+          router.push("/trainer/dashboard");
         } else if (session?.user?.is_superuser === true) {
-          // TODO: Add superuser dashboard
-          router.push("/director/dashboard");
+          router.push("/admin/dashboard");
         } else {
           router.push("/");
         }
@@ -85,8 +87,8 @@ export default function Login() {
     <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-zinc-50 px-4">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 opacity-10" />
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#004d40]/10 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#004d40]/10 rounded blur-[120px] animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded blur-[100px] animate-pulse delay-1000" />
 
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
@@ -101,7 +103,7 @@ export default function Login() {
           </p>
         </div>
 
-        <Card className="border-zinc-200 shadow-2xl rounded-2xl overflow-hidden bg-white/80 backdrop-blur-md">
+        <Card className="border-zinc-200 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-md">
           <CardHeader className="pt-8 px-8">
             <CardTitle className="text-2xl font-bold text-zinc-900 tracking-tight text-center">
               Login
@@ -128,7 +130,7 @@ export default function Login() {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.email && formik.errors.email
+                    className={`pl-10 transition-all ${formik.touched.email && formik.errors.email
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}
@@ -166,7 +168,7 @@ export default function Login() {
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`transition-all ${formik.touched.password && formik.errors.password
+                    className={`pl-10 pr-10 transition-all ${formik.touched.password && formik.errors.password
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
                       }`}
@@ -193,7 +195,7 @@ export default function Login() {
               <Button
                 disabled={loading}
                 type="submit"
-                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded-xl text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
+                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
               >
                 {loading ? (
                   <div className="flex items-center gap-2">

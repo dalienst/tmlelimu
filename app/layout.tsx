@@ -24,7 +24,7 @@ export default function RootLayout({
           content="The official learning and development platform for Tamarind Group employees. Access training courses, SOPs, and company resources."
         />
       </head>
-      <body className="min-h-screen selection:bg-corporate-primary selection:text-white antialiased">
+      <body className="min-h-screen antialiased">
         <Toaster position="top-center" />
         <NextAuthProvider>
           <TanstackQueryProvider>

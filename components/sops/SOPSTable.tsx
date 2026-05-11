@@ -1,6 +1,6 @@
-import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Sops } from "@/services/sops";
+import { Sops, SopsMinified } from "@/services/sops";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,11 +20,11 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface SOPSTableProps {
-  data: Sops[] | undefined;
+interface SOPSTableProps<T extends Sops | SopsMinified> {
+  data: T[] | undefined;
   isLoading: boolean;
-  onEdit: (sop: Sops) => void;
-  onToggle: (sop: Sops) => void;
+  onEdit?: (sop: T) => void;
+  onToggle?: (sop: T) => void;
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -34,10 +34,10 @@ interface SOPSTableProps {
   pageSize: number;
 }
 
-export default function SOPSTable({ 
-  data, 
-  isLoading, 
-  onEdit, 
+export default function SOPSTable<T extends Sops | SopsMinified>({
+  data,
+  isLoading,
+  onEdit,
   onToggle,
   search,
   onSearch,
@@ -45,7 +45,7 @@ export default function SOPSTable({
   onPageChange,
   totalCount,
   pageSize
-}: SOPSTableProps) {
+}: SOPSTableProps<T>) {
   const [localSearch, setLocalSearch] = useState(search);
 
   // Debounce search
@@ -62,8 +62,8 @@ export default function SOPSTable({
     <div className="space-y-4">
       <div className="flex items-center gap-3 px-6 py-4 border-b border-zinc-100 bg-zinc-50/30">
         <Search className="w-4 h-4 text-zinc-400" />
-        <Input 
-          placeholder="Search SOPs by title..." 
+        <Input
+          placeholder="Search SOPs by title..."
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
           className="border-none shadow-none focus-visible:ring-0 text-sm p-0 h-auto bg-transparent placeholder:text-zinc-400"
@@ -74,7 +74,7 @@ export default function SOPSTable({
         {isLoading ? (
           <div className="p-8 space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="h-16 w-full rounded-xl" />
+              <Skeleton key={i} className="h-16 w-full rounded" />
             ))}
           </div>
         ) : (
@@ -85,19 +85,23 @@ export default function SOPSTable({
                 <TableHead className="w-[35%] px-6 py-4 font-semibold text-zinc-900">Description</TableHead>
                 <TableHead className="px-6 py-4 font-semibold text-zinc-900 text-center">Status</TableHead>
                 <TableHead className="px-6 py-4 font-semibold text-zinc-900">Uploaded</TableHead>
-                <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Actions</TableHead>
+                {(onEdit || onToggle) ? (
+                  <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Actions</TableHead>
+                ) : (
+                  <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Document</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {data && data.length > 0 ? (
-                data.map((sop: Sops) => (
-                  <TableRow key={sop.id} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                data.map((sop: T) => (
+                  <TableRow key={sop.reference} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
                     <TableCell className="px-6 py-5 align-top">
                       <div className="font-bold text-[#004d40] leading-tight mb-1">
                         {sop.title}
                       </div>
-                      <div className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">
-                        Ref: {sop.reference.slice(0, 8)}
+                      <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100 inline-block">
+                        {sop.code}
                       </div>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-zinc-600 align-top">
@@ -106,11 +110,11 @@ export default function SOPSTable({
                       </p>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-center align-top">
-                      <Badge 
-                        variant="outline" 
-                        className={sop.is_active 
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold" 
-                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold"}
+                      <Badge
+                        variant="outline"
+                        className={sop.is_active
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-bold"
+                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded text-[11px] font-bold"}
                       >
                         {sop.is_active ? "ACTIVE" : "INACTIVE"}
                       </Badge>
@@ -123,36 +127,53 @@ export default function SOPSTable({
                       })}
                     </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-9 w-9 p-0 rounded-full hover:bg-zinc-100 transition-colors">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-5 w-5 text-zinc-500" />
+                      {(onEdit || onToggle) ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-9 w-9 p-0 rounded hover:bg-zinc-100 transition-colors">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-5 w-5 text-zinc-500" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48 p-1 rounded shadow-xl border-zinc-200">
+                            {onEdit && (
+                              <DropdownMenuItem
+                                onClick={() => onEdit(sop)}
+                                className="cursor-pointer font-medium text-zinc-700"
+                              >
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit details
+                              </DropdownMenuItem>
+                            )}
+                            <a href={sop.file} target="_blank" rel="noreferrer">
+                              <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
+                                <Settings2 className="mr-2 h-4 w-4" />
+                                View Document
+                              </DropdownMenuItem>
+                            </a>
+                            {onToggle && (
+                              <DropdownMenuItem
+                                onClick={() => onToggle(sop)}
+                                className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium"}
+                              >
+                                {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+                                {sop.is_active ? "Deactivate" : "Activate"}
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        <a href={sop.file} target="_blank" rel="noreferrer">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-bold text-[10px] uppercase tracking-wider"
+                          >
+                            <Download className="w-3.5 h-3.5 mr-2" />
+                            View
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 p-1 rounded-xl shadow-xl border-zinc-200">
-                          <DropdownMenuItem
-                            onClick={() => onEdit(sop)}
-                            className="cursor-pointer font-medium text-zinc-700"
-                          >
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit details
-                          </DropdownMenuItem>
-                          <a href={sop.file} target="_blank" rel="noreferrer">
-                            <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
-                              <Settings2 className="mr-2 h-4 w-4" />
-                              View Document
-                            </DropdownMenuItem>
-                          </a>
-                          <DropdownMenuItem
-                            onClick={() => onToggle(sop)}
-                            className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium"}
-                          >
-                            {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
-                            {sop.is_active ? "Deactivate" : "Activate"}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                        </a>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -178,11 +199,11 @@ export default function SOPSTable({
             size="sm"
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1 || isLoading}
-            className="h-8 w-8 p-0 rounded-lg text-zinc-500 border-zinc-200"
+            className="h-8 w-8 p-0 rounded text-zinc-500 border-zinc-200"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <div className="flex items-center justify-center h-8 px-3 rounded-lg border border-zinc-200 bg-white text-xs font-bold text-[#004d40]">
+          <div className="flex items-center justify-center h-8 px-3 rounded border border-zinc-200 bg-white text-xs font-bold text-[#004d40]">
             Page {page} of {totalPages || 1}
           </div>
           <Button
@@ -190,7 +211,7 @@ export default function SOPSTable({
             size="sm"
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages || isLoading}
-            className="h-8 w-8 p-0 rounded-lg text-zinc-500 border-zinc-200"
+            className="h-8 w-8 p-0 rounded text-zinc-500 border-zinc-200"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>

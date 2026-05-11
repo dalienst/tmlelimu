@@ -5,7 +5,7 @@ import { Formik, Form } from "formik";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { UpdateSopSchema } from "@/validation";
-import { Sops, updateSops } from "@/services/sops";
+import { Sops, SopsMinified, updateSops } from "@/services/sops";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,12 +13,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { FilePicker } from "@/components/ui/file-picker";
 
-export default function UpdateSop({ 
-  sopData, 
-  onSuccess 
-}: { 
-  sopData: Sops;
+export default function UpdateSop({
+  sopData,
+  onSuccess
+}: {
+  sopData: Sops | SopsMinified;
   onSuccess: () => void;
 }) {
   const { data: session } = useSession();
@@ -39,14 +40,14 @@ export default function UpdateSop({
       formData.append("title", values.title);
       formData.append("description", values.description);
       formData.append("is_active", String(values.is_active));
-      
+
       // Only append file if changed
       if (values.file) {
         formData.append("file", values.file);
       }
 
       await updateSops(sopData.reference, formData, headers);
-      
+
       toast.success("SOP updated successfully");
       onSuccess();
     } catch (error: any) {
@@ -106,11 +107,10 @@ export default function UpdateSop({
               onBlur={handleBlur}
               value={values.description}
               rows={4}
-              className={`resize-none ${
-                errors.description && touched.description
+              className={`resize-none ${errors.description && touched.description
                   ? "border-red-500"
                   : "border-zinc-300"
-              }`}
+                }`}
             />
             {errors.description && touched.description && (
               <p className="text-sm text-red-500">{errors.description}</p>
@@ -121,17 +121,16 @@ export default function UpdateSop({
             <Label htmlFor="file" className="text-zinc-700">
               Replace SOP Document (Optional)
             </Label>
-            <Input
+            <FilePicker
               id="file"
               name="file"
-              type="file"
               accept=".pdf,.doc,.docx"
-              onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
+              value={values.file}
+              onChange={(file) => {
                 setFieldValue("file", file);
                 setFileError("");
               }}
-              className="border-zinc-300 text-zinc-600 file:text-[#004d40] file:bg-zinc-100 hover:file:bg-zinc-200"
+              error={fileError || (errors.file && touched.file ? String(errors.file) : "")}
             />
             <p className="text-xs text-zinc-500">Leave blank to keep current document.</p>
             {fileError && <p className="text-sm text-red-500">{fileError}</p>}
@@ -140,7 +139,7 @@ export default function UpdateSop({
             )}
           </div>
 
-          <div className="flex flex-row items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+          <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-4">
             <div className="space-y-0.5">
               <Label htmlFor="is_active" className="text-base text-zinc-700 font-medium">
                 Active Status
