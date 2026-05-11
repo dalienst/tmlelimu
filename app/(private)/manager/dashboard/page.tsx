@@ -18,7 +18,8 @@ import {
   EyeOff,
   Eye,
   PlusCircle,
-  MoreVertical
+  MoreVertical,
+  UserIcon
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,18 +52,11 @@ import {
 
 import CreateSop from "@/forms/sops/CreateSop";
 import UpdateSop from "@/forms/sops/UpdateSop";
+import StaffDetail from "@/components/staff/StaffDetail";
 import { updateSops, Sops } from "@/services/sops";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
-
-const normalizeSopUrl = (url: string) => {
-  if (!url) return "#";
-  if (url.startsWith("http")) return url;
-  // If it's a relative path from Cloudinary, prepend the base URL
-  const baseUrl = "http://res.cloudinary.com/blessedmedia";
-  const cleanPath = url.startsWith("/") ? url : `/${url}`;
-  return `${baseUrl}${cleanPath}`;
-};
+import Link from "next/link";
 
 export default function ManagerDashboard() {
   const { data: manager, isLoading: isLoadingManager, refetch: refetchAccount } = useFetchAccount();
@@ -74,6 +68,9 @@ export default function ManagerDashboard() {
   const [editingSop, setEditingSop] = useState<any | null>(null);
   const [togglingSop, setTogglingSop] = useState<any | null>(null);
   const [isToggling, setIsToggling] = useState(false);
+
+  // Staff Detail State
+  const [selectedStaffReference, setSelectedStaffReference] = useState<string | null>(null);
 
   const headers = useAxiosAuth();
 
@@ -298,7 +295,12 @@ export default function ManagerDashboard() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <Button variant="ghost" size="sm" className="h-8 rounded text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50">
+                          <Button 
+                            onClick={() => setSelectedStaffReference(member.reference)}
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 rounded text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50"
+                          >
                             View Profile
                             <ChevronRight className="w-3 h-3 ml-1" />
                           </Button>
@@ -392,11 +394,11 @@ export default function ManagerDashboard() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <a href={normalizeSopUrl(sop.file)} target="_blank" rel="noreferrer">
+                              <Link href={sop.file} target="_blank" rel="noreferrer">
                                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50">
                                   <ExternalLink className="w-3.5 h-3.5" />
                                 </Button>
-                              </a>
+                              </Link>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:bg-zinc-100">
@@ -582,6 +584,14 @@ export default function ManagerDashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Staff Profile Modal */}
+      {selectedStaffReference && (
+        <StaffDetail 
+          reference={selectedStaffReference} 
+          onClose={() => setSelectedStaffReference(null)} 
+        />
+      )}
     </div>
   );
 }
