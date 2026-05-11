@@ -106,7 +106,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                     </TableCell>
                     <TableCell className="px-6 py-5 text-zinc-600 align-top">
                       <p className="line-clamp-2 text-sm leading-relaxed max-w-[400px]">
-                        {(sop as any).description || "No description provided."}
+                        {sop.description || "No description provided."}
                       </p>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-center align-top">

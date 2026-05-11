@@ -136,6 +136,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
     .map(sop => ({
       ...sop,
       id: sop.reference,
+      description: sop.description || "",
       updated_by: "",
       departments: [],
       categories: [],

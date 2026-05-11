@@ -218,6 +218,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
     .map(sop => ({
       ...sop,
       id: sop.reference,
+      description: sop.description || "",
       updated_by: "",
       departments: [],
       categories: [],
