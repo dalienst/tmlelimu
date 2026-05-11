@@ -96,8 +96,15 @@ export default function SOPSTable({
                       <div className="font-bold text-[#004d40] leading-tight mb-1">
                         {sop.title}
                       </div>
-                      <div className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">
-                        Ref: {sop.reference.slice(0, 8)}
+                      <div className="flex flex-wrap gap-1 items-center mt-1.5">
+                        <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100">
+                          {sop.code || sop.reference.slice(0, 8)}
+                        </div>
+                        {sop.departments && sop.departments.length > 0 && (
+                          <div className="text-[9px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/30">
+                            {sop.departments[0].code}
+                          </div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-zinc-600 align-top">

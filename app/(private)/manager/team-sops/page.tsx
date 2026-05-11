@@ -1,227 +1,371 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useFetchAccount } from "@/hooks/accounts/actions";
-import { 
-  FileText, 
-  Download, 
-  ExternalLink, 
-  Search, 
-  ArrowUpDown,
-  Calendar,
-  User as UserIcon,
-  Tag,
-  Building2,
-  MoreVertical
-} from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { useState } from "react";
+import Link from "next/link";
+import { Plus, EyeOff, Eye, MoreHorizontal, Files, PlusCircle, FolderPlus, Pencil, Search, ArrowUpDown, MoreVertical, ExternalLink, Download } from "lucide-react";
+import { useFetchAuthSops } from "@/hooks/sops/actions";
+import { useFetchCategories } from "@/hooks/categories/actions";
+import { Sops, updateSops } from "@/services/sops";
+import { Category, updateCategory } from "@/services/categories";
+import toast from "react-hot-toast";
+
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Card } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+
+import CreateSop from "@/forms/sops/CreateSop";
+import UpdateSop from "@/forms/sops/UpdateSop";
+import CreateCategory from "@/forms/categories/CreateCategory";
+import UpdateCategory from "@/forms/categories/UpdateCategory";
+import SOPSTable from "@/components/sops/SOPSTable";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 
 export default function TeamSopsPage() {
-  const { data: manager, isLoading: isLoadingManager } = useFetchAccount();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"title" | "date">("title");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
-  // Aggregate SOPs from all departments headed by the manager
-  const allSops = useMemo(() => {
-    if (!manager?.departments_headed) return [];
-    
-    return manager.departments_headed.flatMap(dept => 
-      (dept.sops || []).map(sop => ({
-        ...sop,
-        departmentName: dept.name,
-        departmentCode: dept.code
-      }))
-    );
-  }, [manager]);
+  const { data: sopsData, isLoading, refetch: refetchSops } = useFetchAuthSops({
+    search,
+    page,
+    page_size: pageSize
+  });
+  const { data: categoriesData, isLoading: isCategoriesLoading, refetch: refetchCategories } = useFetchCategories();
 
-  // Filter and sort SOPs
-  const filteredSops = useMemo(() => {
-    let results = allSops.filter(sop => 
-      sop.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sop.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sop.description.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
+  const [editingSop, setEditingSop] = useState<Sops | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
+  const [togglingCategory, setTogglingCategory] = useState<Category | null>(null);
 
-    if (sortBy === "title") {
-      results.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "date") {
-      results.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  const [isToggling, setIsToggling] = useState(false);
+
+  const headers = useAxiosAuth();
+
+  const handleToggleActive = async () => {
+    if (!togglingSop) return;
+    setIsToggling(true);
+    try {
+      const formData = new FormData();
+      formData.append("is_active", String(!togglingSop.is_active));
+
+      await updateSops(togglingSop.reference, formData, headers);
+      toast.success(`SOP ${togglingSop.is_active ? 'deactivated' : 'activated'} successfully`);
+      refetchSops();
+    } catch (e) {
+      toast.error((e as any)?.response?.data?.detail || "Failed to update SOP status");
+    } finally {
+      setIsToggling(false);
+      setTogglingSop(null);
     }
+  };
 
-    return results;
-  }, [allSops, searchQuery, sortBy]);
-
-  if (isLoadingManager) {
-    return (
-      <div className="p-6 space-y-8 animate-in fade-in duration-500">
-        <div className="flex justify-between items-center">
-          <Skeleton className="h-10 w-64 rounded" />
-          <Skeleton className="h-10 w-48 rounded" />
-        </div>
-        <Card className="border-zinc-100 shadow-xl rounded overflow-hidden">
-          <div className="p-0">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Skeleton key={i} className="h-16 w-full rounded-none border-b border-zinc-50" />
-            ))}
-          </div>
-        </Card>
-      </div>
-    );
-  }
+  const handleToggleCategory = async () => {
+    if (!togglingCategory) return;
+    setIsToggling(true);
+    try {
+      await updateCategory(togglingCategory.reference, { is_active: !togglingCategory.is_active }, headers);
+      toast.success(`Category ${togglingCategory.is_active ? 'deactivated' : 'activated'} successfully`);
+      refetchCategories();
+    } catch (e) {
+      toast.error((e as any)?.response?.data?.detail || "Failed to update category status");
+    } finally {
+      setIsToggling(false);
+      setTogglingCategory(null);
+    }
+  };
 
   return (
-    <div className="p-6 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Header & Controls */}
+    <div className="p-8 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Header & Management Controls */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-[#004d40]">Team SOP Library</h1>
           <p className="text-zinc-500 font-medium mt-1">
-            Managing <span className="text-zinc-900 font-bold">{allSops.length}</span> standard operating procedures across your departments
+            Managing standard operating procedures and documentation for your teams
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <div className="relative flex-1 md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-            <Input 
-              placeholder="Search by title, code or description..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-11 rounded bg-white border-zinc-200 focus:border-[#004d40] transition-all"
-            />
-          </div>
-          
+        <div className="flex items-center gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="h-11 rounded border-zinc-200 gap-2 font-bold text-xs uppercase tracking-wider">
-                <ArrowUpDown className="w-4 h-4 text-zinc-400" />
-                Sort: {sortBy === "title" ? "A-Z" : "Latest"}
+              <Button className="bg-[#004d40] hover:bg-[#00332b] text-white rounded px-6 shadow-md transition-all gap-2 h-11">
+                <PlusCircle className="w-4 h-4" />
+                Management Actions
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 rounded">
-              <DropdownMenuItem onClick={() => setSortBy("title")} className="font-medium">
-                Sort by Title (A-Z)
+            <DropdownMenuContent align="end" className="w-56 rounded shadow-xl border-zinc-100">
+              <DropdownMenuItem onClick={() => setIsCreateOpen(true)} className="cursor-pointer font-medium py-2">
+                <Plus className="mr-2 h-4 w-4 text-emerald-600" />
+                Upload New SOP
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("date")} className="font-medium">
-                Sort by Date (Newest)
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setIsCreateCategoryOpen(true)} className="cursor-pointer font-medium py-2">
+                <FolderPlus className="mr-2 h-4 w-4 text-amber-600" />
+                Create New Category
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
-      {/* SOP Table */}
-      {filteredSops.length > 0 ? (
-        <Card className="border-zinc-100 shadow-xl rounded overflow-hidden bg-white">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-zinc-50/50 border-b border-zinc-100">
-                  <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Document</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Code</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Department</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Description</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-50">
-                {filteredSops.map((sop) => (
-                  <tr key={sop.code} className="hover:bg-zinc-50/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-emerald-50 text-[#004d40] rounded flex items-center justify-center border border-emerald-100 shadow-inner group-hover:bg-[#004d40] group-hover:text-white transition-all">
-                          <FileText className="w-5 h-5" />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-bold text-zinc-900 leading-tight group-hover:text-[#004d40] transition-colors">
-                            {sop.title}
-                          </span>
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">
-                            {new Date(sop.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge variant="outline" className="bg-zinc-50 text-zinc-500 border-zinc-200 text-[10px] font-bold py-0.5 rounded px-2">
-                        {sop.code}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-none text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded">
-                        {sop.departmentCode}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="text-xs text-zinc-500 line-clamp-1 max-w-[300px]">
-                        {sop.description}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50">
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="h-8 px-3 rounded text-[10px] font-bold uppercase tracking-widest text-[#004d40] hover:bg-emerald-50">
-                          <Download className="w-3.5 h-3.5 mr-1.5" />
-                          File
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:bg-zinc-100">
-                              <MoreVertical className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="rounded">
-                            <DropdownMenuItem className="gap-2 font-medium text-xs">
-                              <Tag className="w-3.5 h-3.5" /> Assign Category
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="gap-2 font-medium text-xs text-zinc-500">
-                              <Building2 className="w-3.5 h-3.5" /> Move Dept
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* SOPs Section - 3/4 Width */}
+        <div className="lg:col-span-3 space-y-6">
+          <div className="flex items-center gap-2 mb-2">
+            <Files className="w-5 h-5 text-[#004d40]" />
+            <h2 className="text-xl font-bold text-[#004d40]">Operational Documents</h2>
           </div>
-        </Card>
-      ) : (
-        <div className="py-24 flex flex-col items-center justify-center text-center bg-zinc-50 rounded border-2 border-dashed border-zinc-200 animate-in fade-in duration-1000">
-          <div className="w-20 h-20 bg-white rounded flex items-center justify-center text-zinc-200 mb-6 shadow-sm border border-zinc-100">
-            <Search className="w-10 h-10" />
-          </div>
-          <h3 className="text-xl font-bold text-zinc-900 mb-2">No SOPs Found</h3>
-          <p className="text-zinc-500 max-w-sm mx-auto font-medium leading-relaxed">
-            {searchQuery 
-              ? `We couldn't find any documents matching "${searchQuery}". Please try a different search term.`
-              : "There are currently no standard operating procedures assigned to your departments."
-            }
-          </p>
-          {searchQuery && (
-            <Button 
-              variant="link" 
-              onClick={() => setSearchQuery("")}
-              className="mt-4 text-[#004d40] font-bold"
-            >
-              Clear Search
-            </Button>
-          )}
+
+          <Card className="border-zinc-100 shadow-xl rounded overflow-hidden bg-white">
+            <SOPSTable
+              data={sopsData?.results}
+              isLoading={isLoading}
+              onEdit={setEditingSop}
+              onToggle={setTogglingSop}
+              search={search}
+              onSearch={(val) => {
+                setSearch(val);
+                setPage(1);
+              }}
+              page={page}
+              onPageChange={setPage}
+              totalCount={sopsData?.count || 0}
+              pageSize={pageSize}
+            />
+          </Card>
         </div>
-      )}
+
+        {/* Categories Section - 1/4 Width */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="flex items-center gap-2 mb-2">
+            <PlusCircle className="w-5 h-5 text-amber-600" />
+            <h2 className="text-xl font-bold text-[#004d40]">Categories</h2>
+          </div>
+
+          <div className="space-y-4">
+            {isCategoriesLoading ? (
+              [1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-20 w-full rounded" />
+              ))
+            ) : categoriesData && categoriesData.length > 0 ? (
+              categoriesData.map((category: Category) => (
+                <Card key={category.id} className="border-zinc-100 overflow-hidden hover:shadow-lg transition-all rounded group">
+                  <div className="p-4">
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-sm font-bold text-[#004d40] group-hover:text-amber-600 transition-colors truncate uppercase tracking-tight">
+                          {category.name}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className={category.is_active 
+                            ? "text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-100 font-bold rounded" 
+                            : "text-[9px] px-1.5 py-0 bg-red-50 text-red-700 border-red-100 font-bold rounded"}
+                        >
+                          {category.is_active ? "Active" : "Inactive"}
+                        </Badge>
+                      </div>
+                      <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setEditingCategory(category)}
+                          className="h-7 w-7 text-zinc-400 hover:text-emerald-600 rounded"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setTogglingCategory(category)}
+                          className={`h-7 w-7 rounded ${category.is_active ? 'text-zinc-400 hover:text-amber-600' : 'text-zinc-400 hover:text-emerald-600'}`}
+                        >
+                          {category.is_active ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                        </Button>
+                      </div>
+                    </div>
+                    {category.description && (
+                      <p className="text-[11px] text-zinc-500 line-clamp-2 mb-2 leading-relaxed italic">{category.description}</p>
+                    )}
+                    <p className="text-[9px] text-zinc-400 font-bold tracking-widest uppercase opacity-60">REF: {category.reference.slice(0, 8)}</p>
+                  </div>
+                </Card>
+              ))
+            ) : (
+              <div className="bg-zinc-50 border-2 border-dashed border-zinc-100 rounded p-12 text-center">
+                <p className="text-xs text-zinc-400 font-medium">No categories created.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* MODALS */}
+
+      {/* Create SOP Dialog */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-md rounded">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-[#004d40] font-bold">New SOP Document</DialogTitle>
+            <DialogDescription className="text-zinc-500 font-medium">
+              Upload a new Standard Operating Procedure to the Elimu system.
+            </DialogDescription>
+          </DialogHeader>
+          <CreateSop
+            onSuccess={() => {
+              setIsCreateOpen(false);
+              refetchSops();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit SOP Dialog */}
+      <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
+        <DialogContent className="sm:max-w-md rounded">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-[#004d40] font-bold">Edit SOP</DialogTitle>
+            <DialogDescription className="text-zinc-500 font-medium">
+              Update the details or replace the document for this SOP.
+            </DialogDescription>
+          </DialogHeader>
+          {editingSop && (
+            <UpdateSop
+              sopData={editingSop}
+              onSuccess={() => {
+                setEditingSop(null);
+                refetchSops();
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Category Dialog */}
+      <Dialog open={isCreateCategoryOpen} onOpenChange={setIsCreateCategoryOpen}>
+        <DialogContent className="sm:max-w-md rounded">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-[#004d40] font-bold">New Category</DialogTitle>
+            <DialogDescription className="text-zinc-500 font-medium">
+              Create a new category for grouping your Standard Operating Procedures.
+            </DialogDescription>
+          </DialogHeader>
+          <CreateCategory
+            onSuccess={() => {
+              setIsCreateCategoryOpen(false);
+              refetchCategories();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Category Dialog */}
+      <Dialog open={!!editingCategory} onOpenChange={(open) => !open && setEditingCategory(null)}>
+        <DialogContent className="sm:max-w-md rounded">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-[#004d40] font-bold">Edit Category</DialogTitle>
+            <DialogDescription className="text-zinc-500 font-medium">
+              Update the name or description of this category.
+            </DialogDescription>
+          </DialogHeader>
+          {editingCategory && (
+            <UpdateCategory
+              categoryData={editingCategory}
+              onSuccess={() => {
+                setEditingCategory(null);
+                refetchCategories();
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Toggle SOP Confirmation Alert */}
+      <AlertDialog open={!!togglingSop} onOpenChange={(open) => {
+        if (!isToggling && !open) setTogglingSop(null);
+      }}>
+        <AlertDialogContent className="rounded">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-bold">
+              {togglingSop?.is_active ? "Deactivate SOP?" : "Activate SOP?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="font-medium">
+              {togglingSop?.is_active
+                ? "This will hide the SOP from employees, but it will remain accessible to administrators."
+                : "This will make the SOP visible to all employees again."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isToggling} className="rounded">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleToggleActive}
+              disabled={isToggling}
+              className={togglingSop?.is_active 
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-bold" 
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold"}
+            >
+              {isToggling ? "Updating..." : "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Toggle Category Confirmation Alert */}
+      <AlertDialog open={!!togglingCategory} onOpenChange={(open) => {
+        if (!isToggling && !open) setTogglingCategory(null);
+      }}>
+        <AlertDialogContent className="rounded">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-bold">
+              {togglingCategory?.is_active ? "Deactivate Category?" : "Activate Category?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="font-medium">
+              {togglingCategory?.is_active
+                ? "This will hide the category and its grouping, which might affect how employees find SOPs."
+                : "This will restore the category visibility."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isToggling} className="rounded">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleToggleCategory}
+              disabled={isToggling}
+              className={togglingCategory?.is_active 
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-bold" 
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold"}
+            >
+              {isToggling ? "Updating..." : "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

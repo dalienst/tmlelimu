@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { useFetchAccount } from "@/hooks/accounts/actions";
 import { 
   Building2, 
@@ -7,23 +8,113 @@ import {
   Users, 
   Download, 
   ExternalLink,
-  User as UserIcon,
   Mail,
   ShieldCheck,
   Briefcase,
   Search,
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Pencil,
+  EyeOff,
+  Eye,
+  PlusCircle,
+  MoreVertical
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import CreateSop from "@/forms/sops/CreateSop";
+import UpdateSop from "@/forms/sops/UpdateSop";
+import { updateSops, Sops } from "@/services/sops";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import toast from "react-hot-toast";
+
+const normalizeSopUrl = (url: string) => {
+  if (!url) return "#";
+  if (url.startsWith("http")) return url;
+  // If it's a relative path from Cloudinary, prepend the base URL
+  const baseUrl = "http://res.cloudinary.com/blessedmedia";
+  const cleanPath = url.startsWith("/") ? url : `/${url}`;
+  return `${baseUrl}${cleanPath}`;
+};
 
 export default function ManagerDashboard() {
+  const { data: manager, isLoading: isLoadingManager, refetch: refetchAccount } = useFetchAccount();
+  const [staffQuery, setStaffQuery] = useState("");
+  const [sopQuery, setSopQuery] = useState("");
 
-  const { data: manager, isLoading: isLoadingManager } = useFetchAccount();
+  // Management State
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingSop, setEditingSop] = useState<any | null>(null);
+  const [togglingSop, setTogglingSop] = useState<any | null>(null);
+  const [isToggling, setIsToggling] = useState(false);
+
+  const headers = useAxiosAuth();
+
+  const managedDept = manager?.departments_headed?.[0];
+  const sops = managedDept?.sops || [];
+  const staff = managedDept?.staff || [];
+  const managerInitial = manager?.first_name?.[0] || "M";
+
+  const filteredStaff = useMemo(() => {
+    return staff.filter((m: any) => 
+      `${m.first_name} ${m.last_name}`.toLowerCase().includes(staffQuery.toLowerCase()) ||
+      m.reference?.toLowerCase().includes(staffQuery.toLowerCase()) ||
+      m.email?.toLowerCase().includes(staffQuery.toLowerCase())
+    );
+  }, [staff, staffQuery]);
+
+  const filteredSops = useMemo(() => {
+    return sops.filter((s: any) => 
+      s.title.toLowerCase().includes(sopQuery.toLowerCase()) ||
+      s.code.toLowerCase().includes(sopQuery.toLowerCase()) ||
+      s.description.toLowerCase().includes(sopQuery.toLowerCase())
+    );
+  }, [sops, sopQuery]);
+
+  const handleToggleActive = async () => {
+    if (!togglingSop) return;
+    setIsToggling(true);
+    try {
+      const formData = new FormData();
+      formData.append("is_active", String(!togglingSop.is_active));
+
+      await updateSops(togglingSop.reference, formData, headers);
+      toast.success(`SOP ${togglingSop.is_active ? 'deactivated' : 'activated'} successfully`);
+      refetchAccount();
+    } catch (e) {
+      toast.error((e as any)?.response?.data?.detail || "Failed to update SOP status");
+    } finally {
+      setIsToggling(false);
+      setTogglingSop(null);
+    }
+  };
 
   if (isLoadingManager) {
     return (
@@ -50,18 +141,13 @@ export default function ManagerDashboard() {
     );
   }
 
-  const managedDept = manager?.departments_headed?.[0];
-  const sops = managedDept?.sops || [];
-  const staff = managedDept?.staff || [];
-  const managerInitial = manager?.first_name?.[0] || "M";
-
   return (
     <div className="p-6 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Strategic Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-bold uppercase tracking-wider text-[10px] px-2 py-0.5">
+            <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
               Managerial Overview
             </Badge>
             <span className="text-zinc-300">•</span>
@@ -125,7 +211,7 @@ export default function ManagerDashboard() {
               </div>
             </div>
             <div className="mt-4">
-              <Badge variant="secondary" className="bg-zinc-50 text-zinc-500 border-none text-[9px] font-bold py-0.5">
+              <Badge variant="secondary" className="bg-zinc-50 text-zinc-500 border-none text-[9px] font-bold py-0.5 rounded">
                 Full Capacity
               </Badge>
             </div>
@@ -147,7 +233,7 @@ export default function ManagerDashboard() {
               </div>
             </div>
             <div className="mt-4">
-              <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-none text-[9px] font-bold py-0.5">
+              <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-none text-[9px] font-bold py-0.5 rounded">
                 Up to Date
               </Badge>
             </div>
@@ -167,6 +253,8 @@ export default function ManagerDashboard() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input 
                 placeholder="Search staff..." 
+                value={staffQuery}
+                onChange={(e) => setStaffQuery(e.target.value)}
                 className="pl-10 h-10 rounded bg-zinc-50 border-zinc-100 focus:bg-white transition-all text-sm"
               />
             </div>
@@ -183,8 +271,8 @@ export default function ManagerDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-50">
-                  {staff.length > 0 ? (
-                    staff.map((member: any) => (
+                  {filteredStaff.length > 0 ? (
+                    filteredStaff.map((member: any) => (
                       <tr key={member.reference} className="hover:bg-zinc-50/30 transition-colors group">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
@@ -220,7 +308,7 @@ export default function ManagerDashboard() {
                   ) : (
                     <tr>
                       <td colSpan={3} className="px-6 py-12 text-center text-zinc-400 text-sm font-medium">
-                        No team members registered under your department.
+                        {staffQuery ? `No results for "${staffQuery}"` : "No team members registered under your department."}
                       </td>
                     </tr>
                   )}
@@ -231,10 +319,31 @@ export default function ManagerDashboard() {
 
           {/* SOP Oversight Section */}
           <div className="space-y-4 pt-4">
-            <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-amber-600" />
-              Department SOPs
-            </h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-amber-600" />
+                Department SOPs
+              </h2>
+              <div className="flex items-center gap-3">
+                <div className="relative w-full sm:w-64">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                  <Input 
+                    placeholder="Search SOPs..." 
+                    value={sopQuery}
+                    onChange={(e) => setSopQuery(e.target.value)}
+                    className="pl-10 h-10 rounded bg-zinc-50 border-zinc-100 focus:bg-white transition-all text-sm"
+                  />
+                </div>
+                <Button 
+                  onClick={() => setIsCreateOpen(true)}
+                  size="sm" 
+                  className="bg-[#004d40] hover:bg-[#00332b] text-white h-10 px-4 rounded shadow-md gap-2 font-bold text-[10px] uppercase tracking-wider"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  New SOP
+                </Button>
+              </div>
+            </div>
             
             <Card className="border-zinc-100 shadow-xl rounded overflow-hidden bg-white">
               <div className="overflow-x-auto">
@@ -243,22 +352,27 @@ export default function ManagerDashboard() {
                     <tr className="bg-zinc-50/50 border-b border-zinc-100">
                       <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Document</th>
                       <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Code</th>
-                      <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Description</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Status</th>
                       <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-50">
-                    {sops.length > 0 ? (
-                      sops.map((sop: any) => (
+                    {filteredSops.length > 0 ? (
+                      filteredSops.map((sop: any) => (
                         <tr key={sop.code} className="hover:bg-zinc-50/30 transition-colors group">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 bg-emerald-50 text-[#004d40] rounded flex items-center justify-center border border-emerald-100 shadow-inner group-hover:bg-white transition-colors">
+                              <div className="w-9 h-9 bg-emerald-50 text-[#004d40] rounded flex items-center justify-center border border-emerald-100 shadow-inner group-hover:bg-[#004d40] group-hover:text-white transition-all">
                                 <FileText className="w-5 h-5" />
                               </div>
-                              <span className="text-sm font-bold text-zinc-900 leading-tight group-hover:text-[#004d40] transition-colors">
-                                {sop.title}
-                              </span>
+                              <div className="flex flex-col">
+                                <span className="text-sm font-bold text-zinc-900 leading-tight group-hover:text-[#004d40] transition-colors">
+                                  {sop.title}
+                                </span>
+                                <span className="text-[10px] font-medium text-zinc-400 mt-0.5">
+                                  {new Date(sop.created_at).toLocaleDateString()}
+                                </span>
+                              </div>
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -267,19 +381,45 @@ export default function ManagerDashboard() {
                             </Badge>
                           </td>
                           <td className="px-6 py-4">
-                            <p className="text-xs text-zinc-500 line-clamp-1 max-w-[200px]">
-                              {sop.description}
-                            </p>
+                            <Badge
+                              variant="outline"
+                              className={sop.is_active 
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-100 px-2 py-0.5 rounded text-[10px] font-bold" 
+                                : "bg-red-50 text-red-700 border-red-100 px-2 py-0.5 rounded text-[10px] font-bold"}
+                            >
+                              {sop.is_active ? "ACTIVE" : "INACTIVE"}
+                            </Badge>
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50">
-                                <ExternalLink className="w-3.5 h-3.5" />
-                              </Button>
-                              <Button variant="ghost" size="sm" className="h-8 px-3 rounded text-[10px] font-bold uppercase tracking-widest text-[#004d40] hover:bg-emerald-50">
-                                <Download className="w-3.5 h-3.5 mr-1.5" />
-                                File
-                              </Button>
+                              <a href={normalizeSopUrl(sop.file)} target="_blank" rel="noreferrer">
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50">
+                                  <ExternalLink className="w-3.5 h-3.5" />
+                                </Button>
+                              </a>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:bg-zinc-100">
+                                    <MoreVertical className="w-4 h-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48 p-1 rounded shadow-xl border-zinc-200">
+                                  <DropdownMenuItem
+                                    onClick={() => setEditingSop(sop)}
+                                    className="cursor-pointer font-medium text-zinc-700 text-xs"
+                                  >
+                                    <Pencil className="mr-2 h-4 w-4" />
+                                    Edit details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setTogglingSop(sop)}
+                                    className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium text-xs" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium text-xs"}
+                                  >
+                                    {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+                                    {sop.is_active ? "Deactivate" : "Activate"}
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </td>
                         </tr>
@@ -287,7 +427,7 @@ export default function ManagerDashboard() {
                     ) : (
                       <tr>
                         <td colSpan={4} className="px-6 py-12 text-center text-zinc-400 text-sm font-medium">
-                          No department-specific SOPs found.
+                          {sopQuery ? `No results for "${sopQuery}"` : "No department-specific SOPs found."}
                         </td>
                       </tr>
                     )}
@@ -360,7 +500,11 @@ export default function ManagerDashboard() {
                 Manage your team effectively with these quick administrative tools.
               </p>
               <div className="grid grid-cols-2 gap-3 pt-2">
-                <Button variant="ghost" className="bg-white/10 hover:bg-white/20 border-none text-white text-[10px] font-bold h-10 rounded flex flex-col items-center justify-center gap-1">
+                <Button 
+                  onClick={() => setIsCreateOpen(true)}
+                  variant="ghost" 
+                  className="bg-white/10 hover:bg-white/20 border-none text-white text-[10px] font-bold h-10 rounded flex flex-col items-center justify-center gap-1"
+                >
                   New SOP
                 </Button>
                 <Button variant="ghost" className="bg-white/10 hover:bg-white/20 border-none text-white text-[10px] font-bold h-10 rounded flex flex-col items-center justify-center gap-1">
@@ -371,6 +515,73 @@ export default function ManagerDashboard() {
           </Card>
         </div>
       </div>
+
+      {/* MODALS */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-md rounded">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-[#004d40] font-bold">New SOP Document</DialogTitle>
+            <DialogDescription className="text-zinc-500 font-medium">
+              Upload a new Standard Operating Procedure.
+            </DialogDescription>
+          </DialogHeader>
+          <CreateSop
+            onSuccess={() => {
+              setIsCreateOpen(false);
+              refetchAccount();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
+        <DialogContent className="sm:max-w-md rounded">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-[#004d40] font-bold">Edit SOP</DialogTitle>
+            <DialogDescription className="text-zinc-500 font-medium">
+              Update the details for this SOP.
+            </DialogDescription>
+          </DialogHeader>
+          {editingSop && (
+            <UpdateSop
+              sopData={editingSop}
+              onSuccess={() => {
+                setEditingSop(null);
+                refetchAccount();
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={!!togglingSop} onOpenChange={(open) => {
+        if (!isToggling && !open) setTogglingSop(null);
+      }}>
+        <AlertDialogContent className="rounded">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-bold">
+              {togglingSop?.is_active ? "Deactivate SOP?" : "Activate SOP?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="font-medium">
+              {togglingSop?.is_active
+                ? "This will hide the SOP from employees."
+                : "This will make the SOP visible again."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isToggling} className="rounded">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleToggleActive}
+              disabled={isToggling}
+              className={togglingSop?.is_active 
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-bold" 
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold"}
+            >
+              {isToggling ? "Updating..." : "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
