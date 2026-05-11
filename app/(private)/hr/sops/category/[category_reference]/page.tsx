@@ -61,8 +61,8 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
   const [isAddingSops, setIsAddingSops] = useState(false);
   const [addSearch, setAddSearch] = useState("");
 
-  const [editingSop, setEditingSop] = useState<SopsMinified | null>(null);
-  const [togglingSop, setTogglingSop] = useState<SopsMinified | null>(null);
+  const [editingSop, setEditingSop] = useState<Sops | null>(null);
+  const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
   const [isToggling, setIsToggling] = useState(false);
 
   const headers = useAxiosAuth();
@@ -131,17 +131,14 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
   }
 
   // Filter category.sops_detail based on search/page locally
-  const filteredCategorySops: SopsMinified[] = category.sops_detail
+  const filteredCategorySops: Sops[] = category.sops_detail
     .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
     .map(sop => ({
-      title: sop.title,
-      file: sop.file || "",
-      is_active: sop.is_active,
-      created_at: sop.created_at,
-      updated_at: sop.updated_at,
-      reference: sop.reference,
-      created_by: "",
-      code: sop.code || "",
+      ...sop,
+      id: sop.reference,
+      updated_by: "",
+      departments: [],
+      categories: [],
     }));
 
   return (

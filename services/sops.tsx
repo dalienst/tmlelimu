@@ -25,7 +25,6 @@ export interface Sops {
 
 export interface SopsMinified {
   title: string;
-  description: string;
   file: string;
   is_active: boolean;
   code: string;

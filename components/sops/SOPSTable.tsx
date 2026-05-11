@@ -20,11 +20,11 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface SOPSTableProps {
-  data: SopsMinified[] | undefined;
+interface SOPSTableProps<T extends Sops | SopsMinified> {
+  data: T[] | undefined;
   isLoading: boolean;
-  onEdit?: (sop: SopsMinified) => void;
-  onToggle?: (sop: SopsMinified) => void;
+  onEdit?: (sop: T) => void;
+  onToggle?: (sop: T) => void;
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -34,7 +34,7 @@ interface SOPSTableProps {
   pageSize: number;
 }
 
-export default function SOPSTable({
+export default function SOPSTable<T extends Sops | SopsMinified>({
   data,
   isLoading,
   onEdit,
@@ -45,7 +45,7 @@ export default function SOPSTable({
   onPageChange,
   totalCount,
   pageSize
-}: SOPSTableProps) {
+}: SOPSTableProps<T>) {
   const [localSearch, setLocalSearch] = useState(search);
 
   // Debounce search
@@ -94,7 +94,7 @@ export default function SOPSTable({
             </TableHeader>
             <TableBody>
               {data && data.length > 0 ? (
-                data.map((sop: SopsMinified) => (
+                data.map((sop: T) => (
                   <TableRow key={sop.reference} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
                     <TableCell className="px-6 py-5 align-top">
                       <div className="font-bold text-[#004d40] leading-tight mb-1">
@@ -106,7 +106,7 @@ export default function SOPSTable({
                     </TableCell>
                     <TableCell className="px-6 py-5 text-zinc-600 align-top">
                       <p className="line-clamp-2 text-sm leading-relaxed max-w-[400px]">
-                        {sop.description || "No description provided."}
+                        {(sop as any).description || "No description provided."}
                       </p>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-center align-top">

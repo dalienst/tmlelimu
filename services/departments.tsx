@@ -21,14 +21,7 @@ export interface Department {
   is_active: boolean;
   staff: string[];
   sops: string[];
-  sops_detail: {
-    title: string;
-    code: string;
-    reference: string;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-  }[]
+  sops_detail: SopsMinified[]
 }
 
 export interface DepartmentMinified {

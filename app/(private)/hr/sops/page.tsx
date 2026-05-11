@@ -62,9 +62,9 @@ export default function HRSopsPage() {
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
-  const [editingSop, setEditingSop] = useState<SopsMinified | null>(null);
+  const [editingSop, setEditingSop] = useState<Sops | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [togglingSop, setTogglingSop] = useState<SopsMinified | null>(null);
+  const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
   const [togglingCategory, setTogglingCategory] = useState<Category | null>(null);
 
   const [isToggling, setIsToggling] = useState(false);
