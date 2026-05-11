@@ -72,7 +72,7 @@ export default function Navbar() {
     navLinks = [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
       { name: "Team SOPs", href: "/manager/team-sops", icon: Briefcase },
-      { name: "Approvals", href: "/manager/approvals", icon: CheckCircle },
+      { name: "SOP Library", href: "/sops", icon: FileText },
     ];
   } else if (isHOD) {
     navLinks = [
