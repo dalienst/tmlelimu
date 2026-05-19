@@ -104,7 +104,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
   };
 
   const availableSops = allSopsData?.results.filter(
-    (sop) => !category?.sops_detail.some(s => s.title === sop.title) &&
+    (sop) => !category?.sops_detail?.some(s => s.title === sop.title) &&
       sop.title.toLowerCase().includes(addSearch.toLowerCase())
   ) || [];
 
@@ -131,7 +131,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
   }
 
   // Filter category.sops_detail based on search/page locally
-  const filteredCategorySops: Sops[] = category.sops_detail
+  const filteredCategorySops: Sops[] = (category.sops_detail || [])
     .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
     .map(sop => ({
       ...sop,
@@ -211,7 +211,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
             <div className="p-6 border-b border-zinc-100">
               <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
                 <Files className="h-5 w-5 text-[#004d40]" />
-                Associated SOPs ({category.sops_detail.length})
+                Associated SOPs ({(category.sops_detail || []).length})
               </h2>
             </div>
 

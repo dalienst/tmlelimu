@@ -169,7 +169,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   };
 
   const availableSops = allSopsData?.results.filter(
-    (sop) => !department?.sops_detail.some(s => s.title === sop.title) &&
+    (sop) => !department?.sops_detail?.some(s => s.title === sop.title) &&
       sop.title.toLowerCase().includes(addSearch.toLowerCase())
   ) || [];
 
@@ -213,7 +213,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   }
 
   // Filter department.sops_detail based on search/page locally
-  const filteredDeptSops: Sops[] = department.sops_detail
+  const filteredDeptSops: Sops[] = (department.sops_detail || [])
     .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
     .map(sop => ({
       ...sop,
@@ -372,7 +372,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
             <div className="p-6 border-b border-zinc-100">
               <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
                 <Files className="h-5 w-5 text-[#004d40]" />
-                Associated SOPs ({department.sops_detail.length})
+                Associated SOPs ({(department.sops_detail || []).length})
               </h2>
             </div>
 
