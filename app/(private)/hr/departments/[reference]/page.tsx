@@ -129,8 +129,12 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   const handleAddStaff = async () => {
     setIsAddingStaff(true);
     try {
-      // Combine existing staff and the newly selected staff
-      const updatedStaff = [...(department?.staff || []), ...selectedStaff];
+      // Ensure existing staff are strings (emails) and combine with selectedStaff without duplicates
+      const existingStaff = Array.isArray(department?.staff) 
+        ? department.staff.map((s: any) => typeof s === 'string' ? s : s.email).filter(Boolean)
+        : [];
+      const updatedStaff = Array.from(new Set([...existingStaff, ...selectedStaff]));
+      
       await addStaffToDepartment(reference, { staff: updatedStaff }, token);
       toast.success("Staff added successfully");
       setIsManageStaffOpen(false);
