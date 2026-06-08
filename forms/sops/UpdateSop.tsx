@@ -14,6 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { FilePicker } from "@/components/ui/file-picker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useFetchDepartments } from "@/hooks/departments/actions";
+import { Building2, Search } from "lucide-react";
 
 export default function UpdateSop({
   sopData,
@@ -24,12 +27,18 @@ export default function UpdateSop({
 }) {
   const { data: session } = useSession();
   const [fileError, setFileError] = useState("");
+  const [deptSearch, setDeptSearch] = useState("");
+  const { data: departments, isLoading: isLoadingDepartments } = useFetchDepartments();
 
   const initialValues = {
     title: sopData.title || "",
     description: sopData.description || "",
     file: null,
     is_active: sopData.is_active !== undefined ? sopData.is_active : true,
+    is_all_departments: 'is_all_departments' in sopData ? sopData.is_all_departments : false,
+    department_names: 'departments' in sopData && Array.isArray(sopData.departments) 
+      ? sopData.departments.map((d: any) => d.name) 
+      : [] as string[],
   };
 
   const headers = useAxiosAuth()
@@ -40,13 +49,18 @@ export default function UpdateSop({
       formData.append("title", values.title);
       formData.append("description", values.description);
       formData.append("is_active", String(values.is_active));
+      formData.append("is_all_departments", String(values.is_all_departments));
+      
+      values.department_names.forEach((name: string) => {
+        formData.append("department_names", name);
+      });
 
       // Only append file if changed
       if (values.file) {
         formData.append("file", values.file);
       }
 
-      await updateSops(sopData.reference, formData, headers);
+      await updateSops(sopData.reference, formData as any, headers);
 
       toast.success("SOP updated successfully");
       onSuccess();
@@ -87,7 +101,7 @@ export default function UpdateSop({
               onBlur={handleBlur}
               value={values.title}
               className={
-                errors.title && touched.title ? "border-red-500" : "border-zinc-300"
+                errors.title && touched.title ? "border-red-500 focus-visible:ring-red-500" : "border-zinc-200 focus-visible:ring-[#004d40]"
               }
             />
             {errors.title && touched.title && (
@@ -106,10 +120,10 @@ export default function UpdateSop({
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.description}
-              rows={4}
-              className={`resize-none ${errors.description && touched.description
-                  ? "border-red-500"
-                  : "border-zinc-300"
+              rows={3}
+              className={`resize-none min-h-[80px] ${errors.description && touched.description
+                  ? "border-red-500 focus-visible:ring-red-500"
+                  : "border-zinc-200 focus-visible:ring-[#004d40]"
                 }`}
             />
             {errors.description && touched.description && (
@@ -139,22 +153,87 @@ export default function UpdateSop({
             )}
           </div>
 
-          <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-4">
-            <div className="space-y-0.5">
-              <Label htmlFor="is_active" className="text-base text-zinc-700 font-medium">
-                Active Status
-              </Label>
-              <p className="text-sm text-zinc-500">
-                Determine if this SOP should be visible to employees immediately.
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-3 shadow-sm">
+              <div className="space-y-0.5">
+                <Label htmlFor="is_active" className="text-sm text-zinc-700 font-semibold">
+                  Active Status
+                </Label>
+                <p className="text-[11px] text-zinc-500 leading-tight pr-2">
+                  Visible to employees immediately.
+                </p>
+              </div>
+              <Switch
+                id="is_active"
+                checked={values.is_active}
+                onCheckedChange={(checked) => setFieldValue("is_active", checked)}
+                className="data-[state=checked]:bg-[#004d40]"
+              />
             </div>
-            <Switch
-              id="is_active"
-              checked={values.is_active}
-              onCheckedChange={(checked) => setFieldValue("is_active", checked)}
-              className="data-[state=checked]:bg-[#004d40]"
-            />
+
+            <div className="flex flex-row items-center justify-between rounded border border-zinc-200 bg-zinc-50 p-3 shadow-sm">
+              <div className="space-y-0.5">
+                <Label htmlFor="is_all_departments" className="text-sm text-zinc-700 font-semibold">
+                  All Departments
+                </Label>
+                <p className="text-[11px] text-zinc-500 leading-tight pr-2">
+                  Link to all departments automatically.
+                </p>
+              </div>
+              <Switch
+                id="is_all_departments"
+                checked={values.is_all_departments}
+                onCheckedChange={(checked) => setFieldValue("is_all_departments", checked)}
+                className="data-[state=checked]:bg-[#004d40]"
+              />
+            </div>
           </div>
+
+          {!values.is_all_departments && (
+            <div className="space-y-3">
+              <Label className="text-zinc-700 flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-[#004d40]" />
+                Target Departments
+              </Label>
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400" />
+                <Input 
+                  type="text" 
+                  placeholder="Search departments..." 
+                  className="pl-9 h-9 text-sm focus-visible:ring-[#004d40] border-zinc-200"
+                  value={deptSearch}
+                  onChange={(e) => setDeptSearch(e.target.value)}
+                />
+              </div>
+              <div className="max-h-40 overflow-y-auto border border-zinc-200 rounded p-2 bg-zinc-50/50 space-y-1">
+                {isLoadingDepartments ? (
+                  <p className="text-sm text-zinc-500 p-2 text-center">Loading departments...</p>
+                ) : departments && departments.length > 0 ? (
+                  departments
+                    .filter((d) => d.name.toLowerCase().includes(deptSearch.toLowerCase()))
+                    .map((dept) => (
+                    <label key={dept.reference} className="flex items-center space-x-3 p-2 hover:bg-white rounded cursor-pointer transition-colors border border-transparent hover:border-zinc-200 shadow-sm hover:shadow">
+                      <Checkbox
+                        checked={values.department_names.includes(dept.name)}
+                        onCheckedChange={(checked) => {
+                          const current = values.department_names;
+                          if (checked) {
+                            setFieldValue("department_names", [...current, dept.name]);
+                          } else {
+                            setFieldValue("department_names", current.filter((name: string) => name !== dept.name));
+                          }
+                        }}
+                        className="data-[state=checked]:bg-[#004d40] data-[state=checked]:border-[#004d40]"
+                      />
+                      <span className="text-sm font-medium text-zinc-700">{dept.name}</span>
+                    </label>
+                  ))
+                ) : (
+                  <p className="text-sm text-zinc-500 p-2 text-center">No departments available.</p>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="pt-2">
             <Button

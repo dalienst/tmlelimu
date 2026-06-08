@@ -1,4 +1,4 @@
-import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Sops, SopsMinified } from "@/services/sops";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ interface SOPSTableProps<T extends Sops | SopsMinified> {
   isLoading: boolean;
   onEdit?: (sop: T) => void;
   onToggle?: (sop: T) => void;
+  onRemove?: (sop: T) => void;
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -39,6 +40,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
   isLoading,
   onEdit,
   onToggle,
+  onRemove,
   search,
   onSearch,
   page,
@@ -85,7 +87,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                 <TableHead className="w-[35%] px-6 py-4 font-semibold text-zinc-900">Description</TableHead>
                 <TableHead className="px-6 py-4 font-semibold text-zinc-900 text-center">Status</TableHead>
                 <TableHead className="px-6 py-4 font-semibold text-zinc-900">Uploaded</TableHead>
-                {(onEdit || onToggle) ? (
+                {(onEdit || onToggle || onRemove) ? (
                   <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Actions</TableHead>
                 ) : (
                   <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Document</TableHead>
@@ -127,7 +129,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                       })}
                     </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
-                      {(onEdit || onToggle) ? (
+                      {(onEdit || onToggle || onRemove) ? (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-9 w-9 p-0 rounded hover:bg-zinc-100 transition-colors">
@@ -158,6 +160,15 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                               >
                                 {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
                                 {sop.is_active ? "Deactivate" : "Activate"}
+                              </DropdownMenuItem>
+                            )}
+                            {onRemove && (
+                              <DropdownMenuItem
+                                onClick={() => onRemove(sop)}
+                                className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer font-medium"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Remove
                               </DropdownMenuItem>
                             )}
                           </DropdownMenuContent>

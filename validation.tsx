@@ -54,12 +54,16 @@ const CreateSopSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     description: Yup.string().required("Description is required"),
     file: Yup.mixed().required("A document file is required"),
+    is_all_departments: Yup.boolean(),
+    department_names: Yup.array().of(Yup.string())
 });
 
 const UpdateSopSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     description: Yup.string().required("Description is required"),
     file: Yup.mixed().nullable(), // Optional for updates
+    is_all_departments: Yup.boolean(),
+    department_names: Yup.array().of(Yup.string())
 });
 
 export { 

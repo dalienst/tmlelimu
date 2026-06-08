@@ -27,7 +27,9 @@ import {
   MoreHorizontal,
   EyeOff,
   Eye,
-  Settings2
+  Settings2,
+  X,
+  UserPlus
 } from "lucide-react";
 import {
   Dialog,
@@ -90,6 +92,9 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   const [isAddingStaff, setIsAddingStaff] = useState(false);
 
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [isManageStaffOpen, setIsManageStaffOpen] = useState(false);
+  const [staffSearch, setStaffSearch] = useState("");
+  const [removingStaffId, setRemovingStaffId] = useState<string | null>(null);
   const [isAddSopOpen, setIsAddSopOpen] = useState(false);
   const [selectedHead, setSelectedHead] = useState<string>("");
 
@@ -100,6 +105,8 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   const [editingSop, setEditingSop] = useState<Sops | null>(null);
   const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
   const [isToggling, setIsToggling] = useState(false);
+  const [removingSop, setRemovingSop] = useState<Sops | null>(null);
+  const [isRemovingSop, setIsRemovingSop] = useState(false);
 
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
 
@@ -119,16 +126,38 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
     }
   };
 
-  const handleUpdateStaff = async () => {
+  const handleAddStaff = async () => {
     setIsAddingStaff(true);
     try {
-      await addStaffToDepartment(reference, { staff: selectedStaff }, token);
-      toast.success("Department staff updated successfully");
+      // Ensure existing staff are strings (emails) and combine with selectedStaff without duplicates
+      const existingStaff = Array.isArray(department?.staff) 
+        ? department.staff.map((s: any) => typeof s === 'string' ? s : s.email).filter(Boolean)
+        : [];
+      const updatedStaff = Array.from(new Set([...existingStaff, ...selectedStaff]));
+      
+      await addStaffToDepartment(reference, { staff: updatedStaff }, token);
+      toast.success("Staff added successfully");
+      setIsManageStaffOpen(false);
+      setSelectedStaff([]);
       refetchDept();
     } catch (error: any) {
-      toast.error(error.response?.data?.detail || "Failed to update staff");
+      toast.error(error.response?.data?.detail || "Failed to add staff");
     } finally {
       setIsAddingStaff(false);
+    }
+  };
+
+  const handleRemoveStaff = async (staffEmail: string) => {
+    setRemovingStaffId(staffEmail);
+    try {
+      const newStaffList = department?.staff?.filter(email => email !== staffEmail) || [];
+      await addStaffToDepartment(reference, { staff: newStaffList }, token);
+      toast.success("Staff removed successfully");
+      refetchDept();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to remove staff");
+    } finally {
+      setRemovingStaffId(null);
     }
   };
 
@@ -168,6 +197,23 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
     }
   };
 
+  const confirmRemoveSop = async () => {
+    if (!removingSop) return;
+    setIsRemovingSop(true);
+    try {
+      const currentSopTitles = department?.sops_detail?.map(s => s.title) || [];
+      const newSops = currentSopTitles.filter(title => title !== removingSop.title);
+      await addSOPToDepartment(reference, { sops: newSops }, token);
+      toast.success("SOP removed from department successfully");
+      refetchDept();
+    } catch (e: any) {
+      toast.error(e.response?.data?.detail || "Failed to remove SOP");
+    } finally {
+      setIsRemovingSop(false);
+      setRemovingSop(null);
+    }
+  };
+
   const availableSops = allSopsData?.results.filter(
     (sop) => !department?.sops_detail?.some(s => s.title === sop.title) &&
       sop.title.toLowerCase().includes(addSearch.toLowerCase())
@@ -181,14 +227,21 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
     );
   };
 
-  // Sync initial staff state when editing
-  const handleEditStaffClick = () => {
-    if (department?.staff) {
-      // In a real app, department.staff would be an array of references or objects.
-      // Adjust based on your API structure. Assuming it's an array of references. 
-      setSelectedStaff(department.staff);
-    }
+  const handleAddStaffClick = () => {
+    setSelectedStaff([]);
+    setStaffSearch("");
+    setIsManageStaffOpen(true);
   };
+  
+  const availableStaffToAdd = employees?.filter(
+    emp => 
+      !department?.staff?.includes(emp.email) && 
+      emp.email !== department?.head && 
+      !emp.is_manager &&
+      (emp.first_name.toLowerCase().includes(staffSearch.toLowerCase()) || 
+       emp.last_name.toLowerCase().includes(staffSearch.toLowerCase()) || 
+       emp.email.toLowerCase().includes(staffSearch.toLowerCase()))
+  ) || [];
 
   if (isLoadingDept || isLoadingEmployees) {
     return (
@@ -301,21 +354,19 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
                 Staff Members ({department.staff?.length || 0})
               </h2>
               <Button
-                onClick={() => {
-                  handleEditStaffClick();
-                  document.getElementById("staff-management-panel")?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                variant="outline"
+                onClick={handleAddStaffClick}
+                className="bg-[#004d40] hover:bg-[#00332b] text-white rounded shadow-sm gap-2"
                 size="sm"
               >
-                Manage Staff
+                <UserPlus className="h-4 w-4" />
+                Add Staff
               </Button>
             </div>
 
-            {/* Current Staff List (Read-only view) */}
-            <div className="space-y-2">
+            {/* Current Staff List */}
+            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
               {employees?.filter(e => department.staff?.includes(e.email)).map(user => (
-                <div key={user.reference} className="flex items-center justify-between p-3 rounded border border-zinc-100 bg-zinc-50/50">
+                <div key={user.reference} className="flex items-center justify-between p-3 rounded border border-zinc-100 bg-zinc-50/50 group hover:border-[#004d40]/30 transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded bg-emerald-100 flex items-center justify-center text-[#004d40] font-semibold text-sm">
                       {user.first_name?.[0]}{user.last_name?.[0]}
@@ -325,6 +376,20 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
                       <p className="text-xs text-zinc-500">{user.email}</p>
                     </div>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveStaff(user.email)}
+                    disabled={removingStaffId === user.email}
+                    className="h-8 w-8 text-zinc-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Remove staff"
+                  >
+                    {removingStaffId === user.email ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-red-500" />
+                    ) : (
+                      <X className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
               ))}
               {(!department.staff || department.staff.length === 0) && (
@@ -333,47 +398,23 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
                 </div>
               )}
             </div>
-
-            {/* Manage Staff Panel */}
-            <div id="staff-management-panel" className="pt-6 border-t border-zinc-100 space-y-4">
-              <h3 className="font-medium text-zinc-900">Add or Remove Staff</h3>
-              <div className="max-h-[300px] overflow-y-auto space-y-1 border rounded p-2">
-                {employees?.filter(emp => emp.email !== department.head && !emp.is_manager).map(user => (
-                  <label key={user.reference} className="flex items-center gap-3 p-3 rounded hover:bg-zinc-50 cursor-pointer transition-colors">
-                    <Checkbox
-                      checked={selectedStaff.includes(user.email)}
-                      onCheckedChange={() => toggleStaff(user.email)}
-                    />
-                    <div>
-                      <p className="font-medium text-sm text-zinc-900">{user.first_name} {user.last_name}</p>
-                      <p className="text-xs text-zinc-500">{user.email}</p>
-                    </div>
-                    {user.email === department.head && (
-                      <Badge variant="outline" className="ml-auto bg-amber-50 text-amber-700 border-amber-200">Department Head</Badge>
-                    )}
-                  </label>
-                ))}
-              </div>
-              <div className="flex justify-end pt-2">
-                <Button
-                  onClick={handleUpdateStaff}
-                  disabled={isAddingStaff}
-                  className="bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded font-semibold px-6"
-                >
-                  {isAddingStaff && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Save Staff Changes
-                </Button>
-              </div>
-            </div>
           </div>
 
           {/* Associated SOPs Table Card */}
           <div className="bg-white rounded border border-zinc-200 shadow-sm overflow-hidden min-h-[400px]">
-            <div className="p-6 border-b border-zinc-100">
+            <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
               <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
                 <Files className="h-5 w-5 text-[#004d40]" />
                 Associated SOPs ({(department.sops_detail || []).length})
               </h2>
+              <Button
+                onClick={() => setIsAddSopOpen(true)}
+                className="bg-[#004d40] hover:bg-[#00332b] text-white rounded shadow-sm gap-2"
+                size="sm"
+              >
+                <Plus className="h-4 w-4" />
+                Add SOP
+              </Button>
             </div>
 
             <SOPSTable
@@ -381,6 +422,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
               isLoading={false}
               onEdit={setEditingSop}
               onToggle={setTogglingSop}
+              onRemove={setRemovingSop}
               search={search}
               onSearch={setSearch}
               page={page}
@@ -534,6 +576,67 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
         </DialogContent>
       </Dialog>
 
+      {/* Manage Staff Dialog */}
+      <Dialog open={isManageStaffOpen} onOpenChange={setIsManageStaffOpen}>
+        <DialogContent className="sm:max-w-md rounded border-none shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Add Staff to {department.name}</DialogTitle>
+            <DialogDescription className="font-medium">
+              Select employees to add to this department.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="relative group">
+              <Input
+                placeholder="Search staff by name or email..."
+                value={staffSearch}
+                onChange={(e) => setStaffSearch(e.target.value)}
+                className="pl-10 h-11 rounded border-zinc-200 focus:border-[#004d40] transition-all bg-zinc-50 group-focus-within:bg-white"
+              />
+              <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors group-focus-within:text-[#004d40]" />
+            </div>
+
+            <div className="max-h-[300px] overflow-y-auto space-y-1 border border-zinc-100 rounded p-2 bg-zinc-50/50">
+              {availableStaffToAdd.length > 0 ? (
+                availableStaffToAdd.map(user => (
+                  <label key={user.reference} className="flex items-center gap-3 p-3 rounded hover:bg-white cursor-pointer transition-all border border-transparent hover:border-zinc-100 group shadow-sm hover:shadow-md">
+                    <Checkbox
+                      checked={selectedStaff.includes(user.email)}
+                      onCheckedChange={() => toggleStaff(user.email)}
+                      className="rounded border-zinc-300 data-[state=checked]:bg-[#004d40] data-[state=checked]:border-[#004d40]"
+                    />
+                    <div>
+                      <p className="font-medium text-sm text-zinc-900 group-hover:text-[#004d40] transition-colors">{user.first_name} {user.last_name}</p>
+                      <p className="text-xs text-zinc-500">{user.email}</p>
+                    </div>
+                  </label>
+                ))
+              ) : (
+                <div className="py-8 text-center space-y-2">
+                  <Users className="mx-auto h-8 w-8 text-zinc-300" />
+                  <p className="text-zinc-500 font-semibold text-sm">
+                    {employees ? "No available staff found." : "Loading staff..."}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="ghost" onClick={() => setIsManageStaffOpen(false)} className="rounded font-semibold">Cancel</Button>
+            <Button
+              onClick={handleAddStaff}
+              disabled={selectedStaff.length === 0 || isAddingStaff}
+              className="bg-[#004d40] hover:bg-[#00332b] text-white rounded font-semibold px-8 shadow-lg shadow-emerald-200/50"
+            >
+              {isAddingStaff && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isAddingStaff ? "Adding..." : `Add Selected (${selectedStaff.length})`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Edit SOP Dialog */}
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
         <DialogContent className="sm:max-w-md rounded">
@@ -581,6 +684,33 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
             >
               {isToggling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isToggling ? "Updating..." : "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Remove SOP Confirmation Alert */}
+      <AlertDialog open={!!removingSop} onOpenChange={(open) => {
+        if (!isRemovingSop && !open) setRemovingSop(null);
+      }}>
+        <AlertDialogContent className="rounded border-none shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-semibold text-zinc-900">
+              Remove SOP?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="font-medium">
+              Are you sure you want to remove &quot;{removingSop?.title}&quot; from this department? The SOP will not be deleted from the system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel disabled={isRemovingSop} className="rounded border-zinc-200 font-semibold">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemoveSop}
+              disabled={isRemovingSop}
+              className="bg-red-600 hover:bg-red-700 text-white rounded font-semibold px-8 shadow-lg shadow-red-200/50"
+            >
+              {isRemovingSop && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isRemovingSop ? "Removing..." : "Remove"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
