@@ -16,7 +16,7 @@ import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { FilePicker } from "@/components/ui/file-picker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFetchDepartments } from "@/hooks/departments/actions";
-import { Building2 } from "lucide-react";
+import { Building2, Search } from "lucide-react";
 
 export default function UpdateSop({
   sopData,
@@ -27,6 +27,7 @@ export default function UpdateSop({
 }) {
   const { data: session } = useSession();
   const [fileError, setFileError] = useState("");
+  const [deptSearch, setDeptSearch] = useState("");
   const { data: departments, isLoading: isLoadingDepartments } = useFetchDepartments();
 
   const initialValues = {
@@ -194,11 +195,23 @@ export default function UpdateSop({
                 <Building2 className="w-4 h-4 text-[#004d40]" />
                 Target Departments
               </Label>
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400" />
+                <Input 
+                  type="text" 
+                  placeholder="Search departments..." 
+                  className="pl-9 h-9 text-sm focus-visible:ring-[#004d40] border-zinc-200"
+                  value={deptSearch}
+                  onChange={(e) => setDeptSearch(e.target.value)}
+                />
+              </div>
               <div className="max-h-40 overflow-y-auto border border-zinc-200 rounded p-2 bg-zinc-50/50 space-y-1">
                 {isLoadingDepartments ? (
                   <p className="text-sm text-zinc-500 p-2 text-center">Loading departments...</p>
                 ) : departments && departments.length > 0 ? (
-                  departments.map((dept) => (
+                  departments
+                    .filter((d) => d.name.toLowerCase().includes(deptSearch.toLowerCase()))
+                    .map((dept) => (
                     <label key={dept.reference} className="flex items-center space-x-3 p-2 hover:bg-white rounded cursor-pointer transition-colors border border-transparent hover:border-zinc-200 shadow-sm hover:shadow">
                       <Checkbox
                         checked={values.department_names.includes(dept.name)}
