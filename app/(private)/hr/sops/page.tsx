@@ -234,7 +234,7 @@ export default function HRSopsPage() {
 
       {/* Create SOP Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl text-[#004d40]">New SOP Document</DialogTitle>
             <DialogDescription>
@@ -252,7 +252,7 @@ export default function HRSopsPage() {
 
       {/* Edit SOP Dialog */}
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl text-[#004d40]">Edit SOP</DialogTitle>
             <DialogDescription>

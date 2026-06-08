@@ -18,6 +18,7 @@ export interface Sops {
   updated_by: string;
   code: string;
   is_active: boolean;
+  is_all_departments: boolean;
   departments: Department[];
   categories: Category[];
 }
@@ -28,6 +29,7 @@ export interface SopsMinified {
   description: string;
   file: string;
   is_active: boolean;
+  is_all_departments: boolean;
   code: string;
   reference: string;
   created_at: string;
@@ -40,6 +42,8 @@ interface createSops {
   description: string;
   file: File; //file upload
   is_active: boolean;
+  is_all_departments: boolean;
+  department_names: string[];
 }
 
 interface updateSops {
@@ -48,6 +52,8 @@ interface updateSops {
   description: string;
   file: File; //file upload
   is_active: boolean;
+  is_all_departments: boolean;
+  department_names: string[];
 }
 
 export const getSops = async (
