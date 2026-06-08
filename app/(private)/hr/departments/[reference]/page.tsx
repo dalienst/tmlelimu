@@ -105,6 +105,8 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   const [editingSop, setEditingSop] = useState<Sops | null>(null);
   const [togglingSop, setTogglingSop] = useState<Sops | null>(null);
   const [isToggling, setIsToggling] = useState(false);
+  const [removingSop, setRemovingSop] = useState<Sops | null>(null);
+  const [isRemovingSop, setIsRemovingSop] = useState(false);
 
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
 
@@ -188,6 +190,23 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
       toast.error((e as any)?.response?.data?.detail || "Failed to add SOPs to department");
     } finally {
       setIsAddingSops(false);
+    }
+  };
+
+  const confirmRemoveSop = async () => {
+    if (!removingSop) return;
+    setIsRemovingSop(true);
+    try {
+      const currentSopTitles = department?.sops_detail?.map(s => s.title) || [];
+      const newSops = currentSopTitles.filter(title => title !== removingSop.title);
+      await addSOPToDepartment(reference, { sops: newSops }, token);
+      toast.success("SOP removed from department successfully");
+      refetchDept();
+    } catch (e: any) {
+      toast.error(e.response?.data?.detail || "Failed to remove SOP");
+    } finally {
+      setIsRemovingSop(false);
+      setRemovingSop(null);
     }
   };
 
@@ -379,11 +398,19 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
 
           {/* Associated SOPs Table Card */}
           <div className="bg-white rounded border border-zinc-200 shadow-sm overflow-hidden min-h-[400px]">
-            <div className="p-6 border-b border-zinc-100">
+            <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
               <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
                 <Files className="h-5 w-5 text-[#004d40]" />
                 Associated SOPs ({(department.sops_detail || []).length})
               </h2>
+              <Button
+                onClick={() => setIsAddSopOpen(true)}
+                className="bg-[#004d40] hover:bg-[#00332b] text-white rounded shadow-sm gap-2"
+                size="sm"
+              >
+                <Plus className="h-4 w-4" />
+                Add SOP
+              </Button>
             </div>
 
             <SOPSTable
@@ -391,6 +418,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
               isLoading={false}
               onEdit={setEditingSop}
               onToggle={setTogglingSop}
+              onRemove={setRemovingSop}
               search={search}
               onSearch={setSearch}
               page={page}
@@ -652,6 +680,33 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
             >
               {isToggling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isToggling ? "Updating..." : "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Remove SOP Confirmation Alert */}
+      <AlertDialog open={!!removingSop} onOpenChange={(open) => {
+        if (!isRemovingSop && !open) setRemovingSop(null);
+      }}>
+        <AlertDialogContent className="rounded border-none shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-semibold text-zinc-900">
+              Remove SOP?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="font-medium">
+              Are you sure you want to remove &quot;{removingSop?.title}&quot; from this department? The SOP will not be deleted from the system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel disabled={isRemovingSop} className="rounded border-zinc-200 font-semibold">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemoveSop}
+              disabled={isRemovingSop}
+              className="bg-red-600 hover:bg-red-700 text-white rounded font-semibold px-8 shadow-lg shadow-red-200/50"
+            >
+              {isRemovingSop && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isRemovingSop ? "Removing..." : "Remove"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
