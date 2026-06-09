@@ -58,6 +58,7 @@ import StaffDetail from "@/components/staff/StaffDetail";
 import { updateSops, Sops, SopsMinified } from "@/services/sops";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { createSOPReadRecord } from "@/services/sopsreadrecords";
+import SOPReadersModal from "@/components/sops/SOPReadersModal";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
@@ -69,6 +70,7 @@ export default function ManagerDashboard() {
   
   const [loadingReadSops, setLoadingReadSops] = useState<Set<string>>(new Set());
   const [viewedSops, setViewedSops] = useState<Set<string>>(new Set());
+  const [viewingReaders, setViewingReaders] = useState<SopsMinified | null>(null);
 
   // Management State
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -430,14 +432,42 @@ export default function ManagerDashboard() {
                             </Badge>
                           </td>
                           <td className="px-6 py-4">
-                            <Badge
-                              variant="outline"
-                              className={sop.is_active 
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-100 px-2 py-0.5 rounded text-[10px] font-semibold" 
-                                : "bg-red-50 text-red-700 border-red-100 px-2 py-0.5 rounded text-[10px] font-semibold"}
-                            >
-                              {sop.is_active ? "ACTIVE" : "INACTIVE"}
-                            </Badge>
+                            <div className="flex flex-col items-start gap-2">
+                              <Badge
+                                variant="outline"
+                                className={sop.is_active 
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-100 px-2 py-0.5 rounded text-[10px] font-semibold" 
+                                  : "bg-red-50 text-red-700 border-red-100 px-2 py-0.5 rounded text-[10px] font-semibold"}
+                              >
+                                {sop.is_active ? "ACTIVE" : "INACTIVE"}
+                              </Badge>
+                              {sop.read_by && (
+                                <div 
+                                  className="flex items-center -space-x-2 mt-1 cursor-pointer hover:scale-105 transition-transform bg-zinc-50 border border-zinc-100 rounded-full px-1.5 py-0.5"
+                                  onClick={() => setViewingReaders(sop)}
+                                  title="View Readers"
+                                >
+                                  {sop.read_by.length === 0 && (
+                                    <div className="text-[9px] text-zinc-400 font-semibold uppercase tracking-widest px-1">0 Reads</div>
+                                  )}
+                                  {sop.read_by.slice(0, 3).map((staff: any, i: number) => (
+                                    <div 
+                                      key={staff.reference} 
+                                      className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 border border-white flex items-center justify-center text-[8px] font-bold z-10 relative shadow-sm"
+                                      style={{ zIndex: 10 - i }}
+                                      title={`${staff.first_name} ${staff.last_name}`}
+                                    >
+                                      {staff.first_name?.[0] || 'U'}
+                                    </div>
+                                  ))}
+                                  {sop.read_by.length > 3 && (
+                                    <div className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 border border-white flex items-center justify-center text-[8px] font-bold z-0 relative shadow-sm">
+                                      +{sop.read_by.length - 3}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-1">
@@ -489,6 +519,13 @@ export default function ManagerDashboard() {
                                   >
                                     <Pencil className="mr-2 h-4 w-4" />
                                     Edit details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setViewingReaders(sop)}
+                                    className="cursor-pointer font-medium text-[#004d40] text-xs"
+                                  >
+                                    <Users className="mr-2 h-4 w-4" />
+                                    View Readers
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     onClick={() => setTogglingSop(sop)}
@@ -667,6 +704,15 @@ export default function ManagerDashboard() {
         <StaffDetail 
           reference={selectedStaffReference} 
           onClose={() => setSelectedStaffReference(null)} 
+        />
+      )}
+
+      {viewingReaders && (
+        <SOPReadersModal
+          isOpen={!!viewingReaders}
+          onClose={() => setViewingReaders(null)}
+          sop={viewingReaders}
+          departmentStaff={staff}
         />
       )}
     </div>

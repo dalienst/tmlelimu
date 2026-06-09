@@ -187,6 +187,8 @@ export default function TeamSopsPage() {
               onMarkAsRead={handleMarkAsRead}
               readFilter={readFilter}
               onReadFilterChange={setReadFilter}
+              showReaders={true}
+              departmentStaff={staff}
             />
           </Card>
         </div>

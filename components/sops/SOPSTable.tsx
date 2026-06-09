@@ -1,6 +1,8 @@
-import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download, Trash2, CheckCircle2, Loader2 } from "lucide-react";
+import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download, Trash2, CheckCircle2, Loader2, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Sops, SopsMinified } from "@/services/sops";
+import { StaffMinified } from "@/services/accounts";
+import SOPReadersModal from "@/components/sops/SOPReadersModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +31,8 @@ interface SOPSTableProps<T extends Sops | SopsMinified> {
   onMarkAsRead?: (sop: T) => Promise<void>;
   readFilter?: 'all' | 'read' | 'unread';
   onReadFilterChange?: (val: 'all' | 'read' | 'unread') => void;
+  showReaders?: boolean;
+  departmentStaff?: StaffMinified[];
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -47,6 +51,8 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
   onMarkAsRead,
   readFilter,
   onReadFilterChange,
+  showReaders,
+  departmentStaff,
   search,
   onSearch,
   page,
@@ -55,8 +61,9 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
   pageSize
 }: SOPSTableProps<T>) {
   const [localSearch, setLocalSearch] = useState(search);
-  const [viewedSops, setViewedSops] = useState<Set<string>>(new Set());
   const [loadingReadSops, setLoadingReadSops] = useState<Set<string>>(new Set());
+  const [viewedSops, setViewedSops] = useState<Set<string>>(new Set());
+  const [viewingReaders, setViewingReaders] = useState<T | null>(null);
 
   const handleMarkAsReadClick = async (sop: T) => {
     if (!onMarkAsRead) return;
@@ -165,14 +172,42 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                       </p>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-center align-top">
-                      <Badge
-                        variant="outline"
-                        className={sop.is_active
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-semibold"
-                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded text-[11px] font-semibold"}
-                      >
-                        {sop.is_active ? "ACTIVE" : "INACTIVE"}
-                      </Badge>
+                      <div className="flex flex-col items-center gap-2">
+                        <Badge
+                          variant="outline"
+                          className={sop.is_active
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-semibold"
+                            : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded text-[11px] font-semibold"}
+                        >
+                          {sop.is_active ? "ACTIVE" : "INACTIVE"}
+                        </Badge>
+                        {showReaders && sop.read_by && (
+                          <div 
+                            className="flex items-center -space-x-2 mt-1 cursor-pointer hover:scale-105 transition-transform bg-zinc-50 border border-zinc-100 rounded-full px-1.5 py-0.5"
+                            onClick={() => setViewingReaders(sop)}
+                            title="View Readers"
+                          >
+                            {sop.read_by.length === 0 && (
+                              <div className="text-[9px] text-zinc-400 font-semibold uppercase tracking-widest px-1">0 Reads</div>
+                            )}
+                            {sop.read_by.slice(0, 3).map((staff, i) => (
+                              <div 
+                                key={staff.reference} 
+                                className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 border border-white flex items-center justify-center text-[8px] font-bold z-10 relative shadow-sm"
+                                style={{ zIndex: 10 - i }}
+                                title={`${staff.first_name} ${staff.last_name}`}
+                              >
+                                {staff.first_name?.[0] || 'U'}
+                              </div>
+                            ))}
+                            {sop.read_by.length > 3 && (
+                              <div className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 border border-white flex items-center justify-center text-[8px] font-bold z-0 relative shadow-sm">
+                                +{sop.read_by.length - 3}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-zinc-500 text-sm align-top font-medium">
                       {new Date(sop.created_at).toLocaleDateString(undefined, {
@@ -257,6 +292,15 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                                   Edit details
                                 </DropdownMenuItem>
                               )}
+                              {showReaders && (
+                                <DropdownMenuItem
+                                  onClick={() => setViewingReaders(sop)}
+                                  className="cursor-pointer font-medium text-[#004d40]"
+                                >
+                                  <Users className="mr-2 h-4 w-4" />
+                                  View Readers
+                                </DropdownMenuItem>
+                              )}
                               {!onMarkAsRead && (
                                 <a href={sop.file} target="_blank" rel="noreferrer">
                                   <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
@@ -331,6 +375,15 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
           </Button>
         </div>
       </div>
+
+      {showReaders && viewingReaders && (
+        <SOPReadersModal
+          isOpen={!!viewingReaders}
+          onClose={() => setViewingReaders(null)}
+          sop={viewingReaders}
+          departmentStaff={departmentStaff}
+        />
+      )}
     </div>
   );
 }
