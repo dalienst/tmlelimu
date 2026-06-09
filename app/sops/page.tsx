@@ -41,7 +41,7 @@ export default function SOpsPortal() {
               <div className="inline-flex items-center rounded px-3 py-1 text-sm font-medium bg-white/10 text-emerald-100 border border-white/20 mb-6 backdrop-blur-sm">
                 Tamarind Group Official Docs
               </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+              <h1 className="text-xl md:text-xl font-extrabold tracking-tight mb-4">
                 Standard Operating Procedures
               </h1>
               <p className="text-lg text-emerald-100 font-medium">
@@ -91,7 +91,7 @@ export default function SOpsPortal() {
                     <div className="w-12 h-12 bg-amber-50 rounded flex items-center justify-center text-amber-600 mb-5 relative group-hover:scale-110 transition-transform">
                       <FileText className="w-6 h-6" />
                     </div>
-                    <h3 className="text-xl font-bold text-zinc-900 mb-3 line-clamp-2">
+                    <h3 className="text-xl font-semibold text-zinc-900 mb-3 line-clamp-2">
                       {sop.title}
                     </h3>
                     <p className="text-zinc-600 text-sm leading-relaxed mb-6 line-clamp-3">
@@ -122,7 +122,7 @@ export default function SOpsPortal() {
               <div className="w-20 h-20 bg-zinc-50 rounded flex items-center justify-center text-zinc-400 mx-auto mb-6">
                 <Search className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-bold text-zinc-900 mb-2">No results found</h3>
+              <h3 className="text-lg font-semibold text-zinc-900 mb-2">No results found</h3>
               <p className="text-zinc-500 max-w-md mx-auto">
                 We couldn't find any Standard Operating Procedures matching your search criteria. Try using different keywords.
               </p>

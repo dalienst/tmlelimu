@@ -49,7 +49,7 @@ export default function ForgotPassword() {
           <Badge className="mb-4 bg-emerald-50 text-[#004d40] border-emerald-100 font-medium uppercase tracking-widest py-1.5 px-4 shadow-sm">
             Tamarind Elimu System
           </Badge>
-          <h1 className="text-4xl font-bold tracking-tighter text-zinc-900 mb-2">
+          <h1 className="text-xl font-semibold tracking-tighter text-zinc-900 mb-2">
             Reset <span className="text-[#004d40]">Password.</span>
           </h1>
           <p className="text-zinc-500 font-medium">
@@ -59,7 +59,7 @@ export default function ForgotPassword() {
 
         <Card className="border-zinc-200 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-md">
           <CardHeader className="pt-8 px-8">
-            <CardTitle className="text-2xl font-bold text-zinc-900 tracking-tight text-center">
+            <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight text-center">
               Forgot Password
             </CardTitle>
             <CardDescription className="text-center font-medium text-zinc-500">
@@ -73,14 +73,14 @@ export default function ForgotPassword() {
                   <CheckCircle2 className="w-10 h-10 text-emerald-600" />
                 </div>
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-zinc-900">Check Your Inbox</h3>
+                  <h3 className="text-xl font-semibold text-zinc-900">Check Your Inbox</h3>
                   <p className="text-zinc-500 text-sm px-4">
                     We've sent password reset instructions to <span className="font-semibold text-zinc-700">{formik.values.email}</span>. Please check your spam folder if it doesn't arrive within 5 minutes.
                   </p>
                 </div>
                 <Button
                   onClick={() => router.push("/reset-password")}
-                  className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95"
+                  className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-semibold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95"
                 >
                   Enter Reset Code
                 </Button>
@@ -88,7 +88,7 @@ export default function ForgotPassword() {
             ) : (
               <form onSubmit={formik.handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
+                  <label className="text-xs font-semibold uppercase tracking-widest text-[#004d40]/60 ml-1">
                     Email Address
                   </label>
                   <div className="relative group">
@@ -119,7 +119,7 @@ export default function ForgotPassword() {
                 <Button
                   disabled={loading}
                   type="submit"
-                  className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
+                  className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-semibold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
                 >
                   {loading ? (
                     <div className="flex items-center gap-2">
@@ -136,7 +136,7 @@ export default function ForgotPassword() {
             <div className="mt-8 pt-6 border-t border-zinc-100 flex justify-center">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-[#004d40] transition-colors group"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 hover:text-[#004d40] transition-colors group"
               >
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 Back to Login

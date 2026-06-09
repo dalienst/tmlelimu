@@ -117,13 +117,13 @@ export default function Navbar() {
             <div className="flex-shrink-0 flex items-center">
               <Link href={`/${rolePrefix}/dashboard`} className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-[#004d40] rounded flex items-center justify-center">
-                  <span className="text-white font-bold text-lg leading-none">T</span>
+                  <span className="text-white font-semibold text-lg leading-none">T</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold tracking-tight text-[#004d40] leading-tight hidden sm:block">
+                  <span className="text-sm font-semibold tracking-tight text-[#004d40] leading-tight hidden sm:block">
                     Tamarind <span className="text-amber-600">Elimu</span>
                   </span>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider leading-tight hidden sm:block">
+                  <span className="text-[10px] uppercase font-semibold text-zinc-400 tracking-wider leading-tight hidden sm:block">
                     {roleName}
                   </span>
                 </div>
@@ -162,7 +162,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 p-1.5 rounded hover:bg-zinc-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#004d40] focus:ring-offset-2"
               >
                 <div className={cn(
-                  "w-8 h-8 rounded flex items-center justify-center font-bold text-sm",
+                  "w-8 h-8 rounded flex items-center justify-center font-semibold text-sm",
                   isSuperuser ? "bg-zinc-900 text-white" : "bg-amber-100 text-amber-700"
                 )}>
                   {userInitial}
@@ -171,7 +171,7 @@ export default function Navbar() {
                   <span className="text-sm font-medium text-zinc-700 max-w-[120px] truncate leading-none">
                     {userName}
                   </span>
-                  <span className="text-[10px] text-zinc-400 font-bold uppercase mt-0.5 leading-none">
+                  <span className="text-[10px] text-zinc-400 font-semibold uppercase mt-0.5 leading-none">
                     {roleName}
                   </span>
                 </div>
@@ -181,12 +181,12 @@ export default function Navbar() {
               {isProfileOpen && (
                 <div className="origin-top-right absolute right-0 top-12 mt-2 w-64 rounded shadow-2xl bg-white border border-zinc-100 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-4 py-4 border-b border-zinc-100">
-                    <p className="text-sm font-bold text-zinc-900 truncate">{userName}</p>
+                    <p className="text-sm font-semibold text-zinc-900 truncate">{userName}</p>
                     {userEmail && (
                       <p className="text-xs font-medium text-zinc-500 truncate mt-0.5">{userEmail}</p>
                     )}
                     <div className={cn(
-                      "mt-3 inline-flex items-center px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border",
+                      "mt-3 inline-flex items-center px-2.5 py-1 rounded text-[10px] font-semibold uppercase tracking-wider border",
                       isSuperuser ? "bg-zinc-100 text-zinc-800 border-zinc-200" :
                         isHR ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
                           isManager ? "bg-blue-50 text-blue-700 border-blue-100" :
@@ -265,15 +265,15 @@ export default function Navbar() {
           <div className="flex items-center px-5">
             <div className="flex-shrink-0">
               <div className={cn(
-                "w-10 h-10 rounded flex items-center justify-center font-bold text-lg",
+                "w-10 h-10 rounded flex items-center justify-center font-semibold text-lg",
                 isSuperuser ? "bg-zinc-900 text-white" : "bg-amber-100 text-amber-700"
               )}>
                 {userInitial}
               </div>
             </div>
             <div className="ml-3">
-              <div className="text-base font-bold text-zinc-800 leading-tight">{userName}</div>
-              <div className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider mt-0.5">{roleName}</div>
+              <div className="text-base font-semibold text-zinc-800 leading-tight">{userName}</div>
+              <div className="text-[10px] uppercase font-semibold text-zinc-400 tracking-wider mt-0.5">{roleName}</div>
               {userEmail && <div className="text-sm font-medium text-zinc-500 mt-1">{userEmail}</div>}
             </div>
           </div>

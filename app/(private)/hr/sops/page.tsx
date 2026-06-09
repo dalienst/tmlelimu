@@ -7,6 +7,7 @@ import { useFetchAuthSops } from "@/hooks/sops/actions";
 import { useFetchCategories } from "@/hooks/categories/actions";
 import { Sops, SopsMinified, updateSops } from "@/services/sops";
 import { Category, updateCategory } from "@/services/categories";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
@@ -90,6 +91,16 @@ export default function HRSopsPage() {
     }
   };
 
+  const handleMarkAsRead = async (sop: Sops | SopsMinified) => {
+    try {
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchSops();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    }
+  };
+
   const handleToggleCategory = async () => {
     if (!togglingCategory) return;
     setIsToggling(true);
@@ -110,7 +121,7 @@ export default function HRSopsPage() {
     <div className="p-8 mx-auto space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#004d40]">SOP & Category Management</h1>
+          <h1 className="text-xl font-semibold text-[#004d40]">SOP & Category Management</h1>
           <p className="text-zinc-500">Manage Standard Operating Procedures and Categories for Tamarind Group</p>
         </div>
 
@@ -142,7 +153,7 @@ export default function HRSopsPage() {
         <div className="lg:col-span-3 space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <Files className="w-5 h-5 text-[#004d40]" />
-            <h2 className="text-xl font-bold text-[#004d40]">All SOPs</h2>
+            <h2 className="text-xl font-semibold text-[#004d40]">All SOPs</h2>
           </div>
 
           <div className="bg-white rounded border border-zinc-200 shadow-sm overflow-hidden">
@@ -160,6 +171,7 @@ export default function HRSopsPage() {
               onPageChange={setPage}
               totalCount={sopsData?.count || 0}
               pageSize={pageSize}
+              onMarkAsRead={handleMarkAsRead}
             />
           </div>
         </div>
@@ -168,7 +180,7 @@ export default function HRSopsPage() {
         <div className="lg:col-span-1 space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <PlusCircle className="w-5 h-5 text-amber-600" />
-            <h2 className="text-xl font-bold text-[#004d40]">Categories</h2>
+            <h2 className="text-xl font-semibold text-[#004d40]">Categories</h2>
           </div>
 
           <div className="space-y-3">

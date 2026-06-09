@@ -78,7 +78,7 @@ export default function ActivateAccount() {
           <Badge className="mb-4 bg-emerald-50 text-[#004d40] border-emerald-100 font-medium uppercase tracking-widest py-1.5 px-4 shadow-sm hover:bg-emerald-50">
             Tamarind Elimu System
           </Badge>
-          <h1 className="text-4xl font-bold tracking-tighter text-zinc-900 mb-2">
+          <h1 className="text-xl font-semibold tracking-tighter text-zinc-900 mb-2">
             Activate <span className="text-[#004d40]">Account.</span>
           </h1>
           <p className="text-zinc-500 font-medium">
@@ -88,7 +88,7 @@ export default function ActivateAccount() {
 
         <Card className="border-zinc-200 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-md">
           <CardHeader className="pt-8 px-8">
-            <CardTitle className="text-2xl font-bold text-zinc-900 tracking-tight text-center">
+            <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight text-center">
               Create Password
             </CardTitle>
             <CardDescription className="text-center font-medium text-zinc-500">
@@ -98,7 +98,7 @@ export default function ActivateAccount() {
           <CardContent className="px-8 pb-8">
             <form onSubmit={formik.handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#004d40]/60 ml-1">
                   New Password
                 </label>
                 <div className="relative group">
@@ -129,7 +129,7 @@ export default function ActivateAccount() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#004d40]/60 ml-1">
                   Confirm Password
                 </label>
                 <div className="relative group">
@@ -151,7 +151,7 @@ export default function ActivateAccount() {
               <Button
                 disabled={loading}
                 type="submit"
-                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
+                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-semibold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
               >
                 {loading ? (
                   <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export default function ActivateAccount() {
             </form>
           </CardContent>
           <CardFooter className="bg-zinc-50 border-t border-zinc-100 py-6 flex flex-col items-center">
-            <p className="text-xs font-bold text-zinc-400 tracking-wide">
+            <p className="text-xs font-semibold text-zinc-400 tracking-wide">
               TAMARIND GROUP LEARNING & DEVELOPMENT
             </p>
           </CardFooter>

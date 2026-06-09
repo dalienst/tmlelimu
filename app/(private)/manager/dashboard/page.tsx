@@ -19,7 +19,9 @@ import {
   Eye,
   PlusCircle,
   MoreVertical,
-  UserIcon
+  UserIcon,
+  Loader2,
+  CheckCircle2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +57,8 @@ import UpdateSop from "@/forms/sops/UpdateSop";
 import StaffDetail from "@/components/staff/StaffDetail";
 import { updateSops, Sops, SopsMinified } from "@/services/sops";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
+import SOPReadersModal from "@/components/sops/SOPReadersModal";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
@@ -62,6 +66,11 @@ export default function ManagerDashboard() {
   const { data: manager, isLoading: isLoadingManager, refetch: refetchAccount } = useFetchAccount();
   const [staffQuery, setStaffQuery] = useState("");
   const [sopQuery, setSopQuery] = useState("");
+  const [sopReadFilter, setSopReadFilter] = useState<'all' | 'read' | 'unread'>('all');
+  
+  const [loadingReadSops, setLoadingReadSops] = useState<Set<string>>(new Set());
+  const [viewedSops, setViewedSops] = useState<Set<string>>(new Set());
+  const [viewingReaders, setViewingReaders] = useState<SopsMinified | null>(null);
 
   // Management State
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -88,12 +97,15 @@ export default function ManagerDashboard() {
   }, [staff, staffQuery]);
 
   const filteredSops = useMemo(() => {
-    return sops.filter((s: any) => 
-      s.title.toLowerCase().includes(sopQuery.toLowerCase()) ||
-      s.code.toLowerCase().includes(sopQuery.toLowerCase()) ||
-      s.description.toLowerCase().includes(sopQuery.toLowerCase())
-    );
-  }, [sops, sopQuery]);
+    return sops.filter((s: any) => {
+      const matchesSearch = s.title.toLowerCase().includes(sopQuery.toLowerCase()) ||
+                            s.code.toLowerCase().includes(sopQuery.toLowerCase()) ||
+                            s.description.toLowerCase().includes(sopQuery.toLowerCase());
+      const matchesRead = sopReadFilter === 'all' ? true : 
+                          sopReadFilter === 'read' ? s.has_read : !s.has_read;
+      return matchesSearch && matchesRead;
+    });
+  }, [sops, sopQuery, sopReadFilter]);
 
   const handleToggleActive = async () => {
     if (!togglingSop) return;
@@ -110,6 +122,23 @@ export default function ManagerDashboard() {
     } finally {
       setIsToggling(false);
       setTogglingSop(null);
+    }
+  };
+
+  const handleMarkAsReadClick = async (sop: any) => {
+    try {
+      setLoadingReadSops(prev => new Set(prev).add(sop.reference));
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchAccount();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    } finally {
+      setLoadingReadSops(prev => {
+        const next = new Set(prev);
+        next.delete(sop.reference);
+        return next;
+      });
     }
   };
 
@@ -144,31 +173,31 @@ export default function ManagerDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
+            <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
               Managerial Overview
             </Badge>
             <span className="text-zinc-300">•</span>
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
+            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">
               Department Head
             </span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#004d40]">
+          <h1 className="text-xl font-semibold tracking-tight text-[#004d40]">
             Good Day, <span className="text-amber-600">{manager?.first_name}</span>.
           </h1>
           <p className="text-zinc-500 font-medium mt-1">
-            Overseeing <span className="text-zinc-900 font-bold">{managedDept?.name || "No Assigned Department"}</span> • Operational Excellence
+            Overseeing <span className="text-zinc-900 font-semibold">{managedDept?.name || "No Assigned Department"}</span> • Operational Excellence
           </p>
         </div>
         
         <div className="flex items-center gap-3 bg-white p-2 pr-5 border border-zinc-100 rounded shadow-sm hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-bold text-xl shadow-lg shadow-emerald-900/10">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-semibold text-xl shadow-lg shadow-emerald-900/10">
             {managerInitial}
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold text-zinc-900 leading-tight">
+            <span className="text-sm font-semibold text-zinc-900 leading-tight">
               {manager?.first_name} {manager?.last_name}
             </span>
-            <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider mt-0.5">
+            <span className="text-[10px] uppercase font-semibold text-zinc-400 tracking-wider mt-0.5">
               {manager?.payroll_no}
             </span>
           </div>
@@ -179,28 +208,28 @@ export default function ManagerDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-none shadow-xl bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded overflow-hidden relative">
           <div className="absolute top-0 right-0 p-8 opacity-10">
-            <Building2 className="w-24 h-24" />
+            <Building2 className="w-12 h-12" />
           </div>
-          <CardContent className="pt-8 pb-8 relative z-10">
-            <p className="text-emerald-100/70 text-[10px] font-bold uppercase tracking-widest mb-1">Managed Entity</p>
-            <h3 className="text-xl font-bold leading-tight line-clamp-2 pr-12">{managedDept?.name || "N/A"}</h3>
+          <CardContent className="pt-4 pb-4 relative z-10">
+            <p className="text-emerald-100/70 text-[10px] font-semibold uppercase tracking-widest mb-1">Managed Entity</p>
+            <h3 className="text-xl font-semibold leading-tight line-clamp-2 pr-12">{managedDept?.name || "N/A"}</h3>
             <div className="mt-6 flex items-center gap-2">
               <div className="h-1.5 flex-1 bg-white/10 rounded overflow-hidden">
                 <div className="h-full bg-amber-400 w-full rounded" />
               </div>
-              <span className="text-[10px] font-bold text-emerald-100/60 uppercase">Active</span>
+              <span className="text-[10px] font-semibold text-emerald-100/60 uppercase">Active</span>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="pt-4 pb-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-1">Department Staff</p>
+                <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Department Staff</p>
                 <div className="flex items-baseline gap-2">
-                  <h3 className="text-4xl font-black text-[#004d40] group-hover:text-amber-600 transition-colors">{staff.length}</h3>
-                  <span className="text-xs font-bold text-zinc-400">Members</span>
+                  <h3 className="text-xl font-semibold text-[#004d40] group-hover:text-amber-600 transition-colors">{staff.length}</h3>
+                  <span className="text-xs font-semibold text-zinc-400">Members</span>
                 </div>
               </div>
               <div className="bg-amber-50 p-3 rounded group-hover:rotate-12 transition-transform">
@@ -208,7 +237,7 @@ export default function ManagerDashboard() {
               </div>
             </div>
             <div className="mt-4">
-              <Badge variant="secondary" className="bg-zinc-50 text-zinc-500 border-none text-[9px] font-bold py-0.5 rounded">
+              <Badge variant="secondary" className="bg-zinc-50 text-zinc-500 border-none text-[9px] font-semibold py-0.5 rounded">
                 Full Capacity
               </Badge>
             </div>
@@ -216,13 +245,13 @@ export default function ManagerDashboard() {
         </Card>
 
         <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="pt-4 pb-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-1">Oversight SOPs</p>
+                <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Oversight SOPs</p>
                 <div className="flex items-baseline gap-2">
-                  <h3 className="text-4xl font-black text-[#004d40] group-hover:text-emerald-600 transition-colors">{sops.length}</h3>
-                  <span className="text-xs font-bold text-zinc-400">Documents</span>
+                  <h3 className="text-xl font-semibold text-[#004d40] group-hover:text-emerald-600 transition-colors">{sops.length}</h3>
+                  <span className="text-xs font-semibold text-zinc-400">Documents</span>
                 </div>
               </div>
               <div className="bg-emerald-50 p-3 rounded group-hover:scale-110 transition-transform">
@@ -230,7 +259,7 @@ export default function ManagerDashboard() {
               </div>
             </div>
             <div className="mt-4">
-              <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-none text-[9px] font-bold py-0.5 rounded">
+              <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-none text-[9px] font-semibold py-0.5 rounded">
                 Up to Date
               </Badge>
             </div>
@@ -238,11 +267,11 @@ export default function ManagerDashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Team Management Section */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-3 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-[#004d40]" />
               Team Management
             </h2>
@@ -262,9 +291,9 @@ export default function ManagerDashboard() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-zinc-50/50 border-b border-zinc-100">
-                    <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Member</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Contact</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right">Actions</th>
+                    <th className="px-6 py-4 text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Member</th>
+                    <th className="px-6 py-4 text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Contact</th>
+                    <th className="px-6 py-4 text-[10px] font-semibold text-zinc-400 uppercase tracking-widest text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-50">
@@ -273,14 +302,14 @@ export default function ManagerDashboard() {
                       <tr key={member.reference} className="hover:bg-zinc-50/30 transition-colors group">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 bg-zinc-100 text-zinc-500 rounded flex items-center justify-center font-bold text-sm border border-zinc-200 shadow-inner group-hover:bg-white transition-colors">
+                            <div className="w-9 h-9 bg-zinc-100 text-zinc-500 rounded flex items-center justify-center font-semibold text-sm border border-zinc-200 shadow-inner group-hover:bg-white transition-colors">
                               {member.first_name?.[0] || "U"}
                             </div>
                             <div className="flex flex-col">
-                              <span className="text-sm font-bold text-zinc-900 leading-tight">
+                              <span className="text-sm font-semibold text-zinc-900 leading-tight">
                                 {member.first_name} {member.last_name}
                               </span>
-                              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mt-0.5">
+                              <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mt-0.5">
                                 {member.reference}
                               </span>
                             </div>
@@ -299,7 +328,7 @@ export default function ManagerDashboard() {
                             onClick={() => setSelectedStaffReference(member.reference)}
                             variant="ghost" 
                             size="sm" 
-                            className="h-8 rounded text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50"
+                            className="h-8 rounded text-[10px] font-semibold uppercase tracking-widest text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50"
                           >
                             View Profile
                             <ChevronRight className="w-3 h-3 ml-1" />
@@ -318,15 +347,75 @@ export default function ManagerDashboard() {
               </table>
             </div>
           </Card>
+        </div>
 
-          {/* SOP Oversight Section */}
+        {/* Sidebar Sections */}
+        <div className="space-y-4">
+          {/* Department Profile */}
+          <Card className="border-zinc-100 shadow rounded overflow-hidden bg-white">
+            <CardHeader className="bg-[#004d40] text-white pt-4 pb-4 px-4">
+              <CardTitle className="text-xl font-semibold leading-tight">
+                {managedDept?.name || "Department Profile"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-3 pb-3 space-y-2">              
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-10 h-10 bg-zinc-50 rounded flex items-center justify-center border border-zinc-100">
+                    <Mail className="w-4 h-4 text-zinc-400" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">Dept. Email</span>
+                    <span className="text-zinc-900 font-medium truncate max-w-[150px]">{managedDept?.email || "N/A"}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="w-10 h-10 bg-amber-50 rounded flex items-center justify-center border border-amber-100/30">
+                    <ShieldCheck className="w-4 h-4 text-amber-600" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">Head Status</span>
+                    <span className="text-zinc-900 font-semibold">Verified Head</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button className="w-full h-8 bg-zinc-900 hover:bg-black text-white rounded text-xs font-semibold transition-all shadow-lg shadow-zinc-200">
+                Edit Department Info
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      {/* SOP Oversight Section */}
           <div className="space-y-4 pt-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-amber-600" />
                 Department SOPs
               </h2>
               <div className="flex items-center gap-3">
+                <div className="flex bg-zinc-100/80 p-0.5 rounded border border-zinc-200/60 shadow-sm">
+                  <button
+                    onClick={() => setSopReadFilter('all')}
+                    className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider rounded transition-all ${sopReadFilter === 'all' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setSopReadFilter('unread')}
+                    className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider rounded transition-all ${sopReadFilter === 'unread' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    Unread
+                  </button>
+                  <button
+                    onClick={() => setSopReadFilter('read')}
+                    className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider rounded transition-all ${sopReadFilter === 'read' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    Read
+                  </button>
+                </div>
                 <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                   <Input 
@@ -339,7 +428,7 @@ export default function ManagerDashboard() {
                 <Button 
                   onClick={() => setIsCreateOpen(true)}
                   size="sm" 
-                  className="bg-[#004d40] hover:bg-[#00332b] text-white h-10 px-4 rounded shadow-md gap-2 font-bold text-[10px] uppercase tracking-wider"
+                  className="bg-[#004d40] hover:bg-[#00332b] text-white h-10 px-4 rounded shadow-md gap-2 font-semibold text-[10px] uppercase tracking-wider"
                 >
                   <PlusCircle className="w-4 h-4" />
                   New SOP
@@ -352,10 +441,10 @@ export default function ManagerDashboard() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-zinc-50/50 border-b border-zinc-100">
-                      <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Document</th>
-                      <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Code</th>
-                      <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Status</th>
-                      <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right">Actions</th>
+                      <th className="px-6 py-4 text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Document</th>
+                      <th className="px-6 py-4 text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Code</th>
+                      <th className="px-6 py-4 text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Status</th>
+                      <th className="px-6 py-4 text-[10px] font-semibold text-zinc-400 uppercase tracking-widest text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-50">
@@ -368,7 +457,7 @@ export default function ManagerDashboard() {
                                 <FileText className="w-5 h-5" />
                               </div>
                               <div className="flex flex-col">
-                                <span className="text-sm font-bold text-zinc-900 leading-tight group-hover:text-[#004d40] transition-colors">
+                                <span className="text-sm font-semibold text-zinc-900 leading-tight group-hover:text-[#004d40] transition-colors">
                                   {sop.title}
                                 </span>
                                 <span className="text-[10px] font-medium text-zinc-400 mt-0.5">
@@ -378,27 +467,85 @@ export default function ManagerDashboard() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <Badge variant="outline" className="bg-zinc-50 text-zinc-500 border-zinc-200 text-[10px] font-bold py-0.5 rounded px-2">
+                            <Badge variant="outline" className="bg-zinc-50 text-zinc-500 border-zinc-200 text-[10px] font-semibold py-0.5 rounded px-2">
                               {sop.code}
                             </Badge>
                           </td>
                           <td className="px-6 py-4">
-                            <Badge
-                              variant="outline"
-                              className={sop.is_active 
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-100 px-2 py-0.5 rounded text-[10px] font-bold" 
-                                : "bg-red-50 text-red-700 border-red-100 px-2 py-0.5 rounded text-[10px] font-bold"}
-                            >
-                              {sop.is_active ? "ACTIVE" : "INACTIVE"}
-                            </Badge>
+                            <div className="flex flex-col items-start gap-2">
+                              <Badge
+                                variant="outline"
+                                className={sop.is_active 
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-100 px-2 py-0.5 rounded text-[10px] font-semibold" 
+                                  : "bg-red-50 text-red-700 border-red-100 px-2 py-0.5 rounded text-[10px] font-semibold"}
+                              >
+                                {sop.is_active ? "ACTIVE" : "INACTIVE"}
+                              </Badge>
+                              {sop.read_by && (
+                                <div 
+                                  className="flex items-center -space-x-2 mt-1 cursor-pointer hover:scale-105 transition-transform bg-zinc-50 border border-zinc-100 rounded-full px-1.5 py-0.5"
+                                  onClick={() => setViewingReaders(sop)}
+                                  title="View Readers"
+                                >
+                                  {sop.read_by.length === 0 && (
+                                    <div className="text-[9px] text-zinc-400 font-semibold uppercase tracking-widest px-1">0 Reads</div>
+                                  )}
+                                  {sop.read_by.slice(0, 3).map((staff: any, i: number) => (
+                                    <div 
+                                      key={staff.reference} 
+                                      className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 border border-white flex items-center justify-center text-[8px] font-bold z-10 relative shadow-sm"
+                                      style={{ zIndex: 10 - i }}
+                                      title={`${staff.first_name} ${staff.last_name}`}
+                                    >
+                                      {staff.first_name?.[0] || 'U'}
+                                    </div>
+                                  ))}
+                                  {sop.read_by.length > 3 && (
+                                    <div className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 border border-white flex items-center justify-center text-[8px] font-bold z-0 relative shadow-sm">
+                                      +{sop.read_by.length - 3}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <Link href={sop.file} target="_blank" rel="noreferrer">
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50">
-                                  <ExternalLink className="w-3.5 h-3.5" />
+                              <a 
+                                href={sop.file} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                onClick={() => setViewedSops(prev => new Set(prev).add(sop.reference))}
+                              >
+                                <Button variant="ghost" size="sm" className="h-8 px-2 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50 text-[10px] uppercase font-semibold">
+                                  <Download className="w-3.5 h-3.5 mr-1" /> View
                                 </Button>
-                              </Link>
+                              </a>
+
+                              {!sop.has_read ? (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className={`h-8 px-2 rounded font-semibold text-[10px] uppercase tracking-wider transition-colors ${
+                                    viewedSops.has(sop.reference)
+                                      ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                                      : "border-zinc-200 text-zinc-400"
+                                  }`}
+                                  disabled={!viewedSops.has(sop.reference) || loadingReadSops.has(sop.reference)}
+                                  onClick={() => handleMarkAsReadClick(sop)}
+                                >
+                                  {loadingReadSops.has(sop.reference) ? (
+                                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                                  ) : (
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                  )}
+                                  Mark
+                                </Button>
+                              ) : (
+                                <Badge className="h-8 px-2 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                                  <CheckCircle2 className="w-3 h-3 mr-1" /> Read
+                                </Badge>
+                              )}
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:bg-zinc-100">
@@ -412,6 +559,13 @@ export default function ManagerDashboard() {
                                   >
                                     <Pencil className="mr-2 h-4 w-4" />
                                     Edit details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setViewingReaders(sop)}
+                                    className="cursor-pointer font-medium text-[#004d40] text-xs"
+                                  >
+                                    <Users className="mr-2 h-4 w-4" />
+                                    View Readers
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     onClick={() => setTogglingSop(sop)}
@@ -438,91 +592,12 @@ export default function ManagerDashboard() {
               </div>
             </Card>
           </div>
-        </div>
-
-        {/* Sidebar Sections */}
-        <div className="space-y-8">
-          {/* Department Profile */}
-          <Card className="border-zinc-100 shadow-lg rounded overflow-hidden bg-white">
-            <CardHeader className="bg-[#004d40] text-white pt-8 pb-8 px-8">
-              <div className="w-12 h-12 bg-white/10 rounded flex items-center justify-center mb-4 backdrop-blur-md border border-white/10">
-                <Building2 className="w-6 h-6 text-emerald-100" />
-              </div>
-              <CardTitle className="text-xl font-bold leading-tight">
-                {managedDept?.name || "Department Profile"}
-              </CardTitle>
-              <CardDescription className="text-emerald-100/60 font-medium text-xs mt-1">
-                Operational Identity & Strategy
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-8 px-8 pb-8 space-y-6">
-              <div className="space-y-2">
-                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Core Mission</p>
-                <p className="text-sm text-zinc-600 leading-relaxed italic">
-                  &quot;{managedDept?.description || "Ensuring excellence and reliability in our department operations every day."}&quot;
-                </p>
-              </div>
-              
-              <div className="pt-6 border-t border-zinc-100 space-y-4">
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="w-10 h-10 bg-zinc-50 rounded flex items-center justify-center border border-zinc-100">
-                    <Mail className="w-4 h-4 text-zinc-400" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Dept. Email</span>
-                    <span className="text-zinc-900 font-medium truncate max-w-[150px]">{managedDept?.email || "N/A"}</span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="w-10 h-10 bg-amber-50 rounded flex items-center justify-center border border-amber-100/30">
-                    <ShieldCheck className="w-4 h-4 text-amber-600" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Head Status</span>
-                    <span className="text-zinc-900 font-bold">Verified Head</span>
-                  </div>
-                </div>
-              </div>
-
-              <Button className="w-full h-12 bg-zinc-900 hover:bg-black text-white rounded text-xs font-bold transition-all shadow-lg shadow-zinc-200">
-                Edit Department Info
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Quick Tasks Card */}
-          <Card className="border-none shadow-xl bg-gradient-to-br from-amber-600 to-amber-700 text-white rounded">
-            <CardContent className="p-8 space-y-4">
-              <h4 className="text-lg font-bold flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                Quick Actions
-              </h4>
-              <p className="text-amber-50 text-xs font-medium leading-relaxed opacity-80">
-                Manage your team effectively with these quick administrative tools.
-              </p>
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <Button 
-                  onClick={() => setIsCreateOpen(true)}
-                  variant="ghost" 
-                  className="bg-white/10 hover:bg-white/20 border-none text-white text-[10px] font-bold h-10 rounded flex flex-col items-center justify-center gap-1"
-                >
-                  New SOP
-                </Button>
-                <Button variant="ghost" className="bg-white/10 hover:bg-white/20 border-none text-white text-[10px] font-bold h-10 rounded flex flex-col items-center justify-center gap-1">
-                  Announce
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
 
       {/* MODALS */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-md rounded">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
-            <DialogTitle className="text-xl text-[#004d40] font-bold">New SOP Document</DialogTitle>
+            <DialogTitle className="text-xl text-[#004d40] font-semibold">New SOP Document</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
               Upload a new Standard Operating Procedure.
             </DialogDescription>
@@ -537,9 +612,9 @@ export default function ManagerDashboard() {
       </Dialog>
 
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
-        <DialogContent className="sm:max-w-md rounded">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
-            <DialogTitle className="text-xl text-[#004d40] font-bold">Edit SOP</DialogTitle>
+            <DialogTitle className="text-xl text-[#004d40] font-semibold">Edit SOP</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
               Update the details for this SOP.
             </DialogDescription>
@@ -561,7 +636,7 @@ export default function ManagerDashboard() {
       }}>
         <AlertDialogContent className="rounded">
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-bold">
+            <AlertDialogTitle className="font-semibold">
               {togglingSop?.is_active ? "Deactivate SOP?" : "Activate SOP?"}
             </AlertDialogTitle>
             <AlertDialogDescription className="font-medium">
@@ -576,8 +651,8 @@ export default function ManagerDashboard() {
               onClick={handleToggleActive}
               disabled={isToggling}
               className={togglingSop?.is_active 
-                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-bold" 
-                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold"}
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-semibold" 
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold"}
             >
               {isToggling ? "Updating..." : "Confirm"}
             </AlertDialogAction>
@@ -590,6 +665,15 @@ export default function ManagerDashboard() {
         <StaffDetail 
           reference={selectedStaffReference} 
           onClose={() => setSelectedStaffReference(null)} 
+        />
+      )}
+
+      {viewingReaders && (
+        <SOPReadersModal
+          isOpen={!!viewingReaders}
+          onClose={() => setViewingReaders(null)}
+          sop={viewingReaders}
+          departmentStaff={staff}
         />
       )}
     </div>

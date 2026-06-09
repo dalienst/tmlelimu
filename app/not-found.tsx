@@ -26,10 +26,10 @@ export default function NotFound() {
 
         {/* Text Content */}
         <div className="space-y-4">
-          <h1 className="text-8xl font-black tracking-tighter text-zinc-900">
+          <h1 className="text-8xl font-semibold tracking-tighter text-zinc-900">
             4<span className="text-[#004d40]">0</span>4
           </h1>
-          <h2 className="text-2xl md:text-3xl font-bold text-zinc-800 tracking-tight">
+          <h2 className="text-lg md:text-xl font-semibold text-zinc-800 tracking-tight">
             Looks like you're lost.
           </h2>
           <p className="text-zinc-500 font-medium max-w-md mx-auto">
@@ -57,7 +57,7 @@ export default function NotFound() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 text-xs font-bold text-zinc-400 tracking-widest uppercase">
+      <div className="absolute bottom-8 text-xs font-semibold text-zinc-400 tracking-widest uppercase">
         Tamarind Group Learning & Development
       </div>
     </div>

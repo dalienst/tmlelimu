@@ -21,14 +21,14 @@ export default function LandingPage() {
               <div className="inline-flex items-center rounded px-3 py-1 text-sm font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
                 Official Learning Portal
               </div>
-              <h1 className="text-5xl md:text-7xl font-extrabold text-[#004d40] leading-tight mb-6">
+              <h1 className="text-xl md:text-7xl font-extrabold text-[#004d40] leading-tight mb-6">
                 Excellence Through <span className="text-amber-600 underline decoration-amber-200">Knowledge</span>
               </h1>
               <p className="text-lg md:text-xl text-zinc-600 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 Welcome to Tamarind Elimu System. Access world-class courses, master company SOPs, and accelerate your career within the Tamarind Group.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                <Link href="/login" className="w-full sm:w-auto px-8 py-4 text-lg font-bold text-white bg-[#004d40] rounded hover:bg-[#00332b] transition-all shadow-xl hover:-translate-y-1">
+                <Link href="/login" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-white bg-[#004d40] rounded hover:bg-[#00332b] transition-all shadow-xl hover:-translate-y-1">
                   Start Learning Now
                 </Link>
                 <Link href="#features" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-[#004d40] border-2 border-[#004d40]/10 rounded hover:bg-zinc-50 transition-all">
@@ -59,7 +59,7 @@ export default function LandingPage() {
         {/* Features Section */}
         <section id="features" className="py-24 bg-zinc-50">
           <div className="max-w-6xl mx-auto px-6 md:px-12 text-center">
-            <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 mb-16">
+            <h2 className="text-xl md:text-xl font-semibold text-zinc-900 mb-16">
               Everything You Need to <span className="text-[#004d40]">Excel</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -70,7 +70,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-zinc-900 mb-3">Professional Courses</h3>
+                <h3 className="text-xl font-semibold text-zinc-900 mb-3">Professional Courses</h3>
                 <p className="text-zinc-600">Specially curated content for hospitality, management, and food safety standards.</p>
               </div>
 
@@ -81,7 +81,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-zinc-900 mb-3">Company SOPs</h3>
+                <h3 className="text-xl font-semibold text-zinc-900 mb-3">Company SOPs</h3>
                 <p className="text-zinc-600">Access and master all Standard Operating Procedures to ensure consistent excellence.</p>
               </div>
 
@@ -92,7 +92,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-zinc-900 mb-3">Real-time Progress</h3>
+                <h3 className="text-xl font-semibold text-zinc-900 mb-3">Real-time Progress</h3>
                 <p className="text-zinc-600">Track your learning journey and earn certificates as you complete training modules.</p>
               </div>
             </div>
@@ -104,8 +104,8 @@ export default function LandingPage() {
       <footer className="bg-white py-12 border-t border-zinc-100">
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2 text-[#004d40]">
-            <div className="w-8 h-8 bg-[#004d40] rounded flex items-center justify-center text-white font-bold">T</div>
-            <span className="font-bold tracking-tight">Tamarind Elimu System</span>
+            <div className="w-8 h-8 bg-[#004d40] rounded flex items-center justify-center text-white font-semibold">T</div>
+            <span className="font-semibold tracking-tight">Tamarind Elimu System</span>
           </div>
           <div className="text-zinc-400 text-sm">
             &copy; {new Date().getFullYear()} Tamarind Group. All rights reserved.

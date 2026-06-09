@@ -38,7 +38,7 @@ export default function HRDashboard() {
     <div className="p-8  mx-auto space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-[#004d40]">HR Dashboard</h1>
+          <h1 className="text-lg font-semibold text-[#004d40]">HR Dashboard</h1>
           <h2 className="text-xl font-semibold">{isLoadingHr ? "Loading..." : `${hrData?.first_name} ${hrData?.last_name}`}</h2>
           <p className="text-zinc-500">Welcome to Tamarind Elimu System Management</p>
         </div>
@@ -132,7 +132,7 @@ export default function HRDashboard() {
             {isDepartmentsLoading ? (
               <Skeleton className="h-10 w-16" />
             ) : (
-              <div className="text-4xl font-bold text-[#004d40]">{departmentsData?.length || 0}</div>
+              <div className="text-xl font-semibold text-[#004d40]">{departmentsData?.length || 0}</div>
             )}
           </CardContent>
         </Card>
@@ -145,7 +145,7 @@ export default function HRDashboard() {
             {isEmployeesLoading ? (
               <Skeleton className="h-10 w-16" />
             ) : (
-              <div className="text-4xl font-bold text-[#004d40]">{employeesData?.length || 0}</div>
+              <div className="text-xl font-semibold text-[#004d40]">{employeesData?.length || 0}</div>
             )}
           </CardContent>
         </Card>
@@ -162,7 +162,7 @@ export default function HRDashboard() {
               </div>
             ) : (
               <div>
-                <div className="text-4xl font-bold text-[#004d40]">
+                <div className="text-xl font-semibold text-[#004d40]">
                   {activeSops} <span className="text-xl font-medium text-emerald-600/60">Active</span>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
@@ -183,7 +183,7 @@ export default function HRDashboard() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4z" />
           </svg>
         </div>
-        <h2 className="text-xl font-bold text-zinc-900 mb-2">Welcome, HR Manager</h2>
+        <h2 className="text-xl font-semibold text-zinc-900 mb-2">Welcome, HR Manager</h2>
         <p className="text-zinc-600 max-w-md mx-auto">
           This is your central hub for managing Tamarind Group&apos;s learning courses, SOPs, and employee certifications.
         </p>

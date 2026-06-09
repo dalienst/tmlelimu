@@ -8,10 +8,16 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import SOPSTable from "@/components/sops/SOPSTable";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import toast from "react-hot-toast";
+import { SopsMinified } from "@/services/sops";
 
 export default function EmployeeSopsPage() {
-  const { data: user, isLoading: isUserLoading } = useFetchAccount();
+  const headers = useAxiosAuth();
+  const { data: user, isLoading: isUserLoading, refetch: refetchAccount } = useFetchAccount();
   const [deptSearch, setDeptSearch] = useState("");
+  const [deptReadFilter, setDeptReadFilter] = useState<'all' | 'read' | 'unread'>('all');
   const [deptPage, setDeptPage] = useState(1);
   const pageSize = 5;
 
@@ -29,35 +35,49 @@ export default function EmployeeSopsPage() {
   }, [user]);
 
   const filteredDeptSops = useMemo(() => {
-    return departmentSops.filter(s => 
-      s.title.toLowerCase().includes(deptSearch.toLowerCase()) ||
-      s.code.toLowerCase().includes(deptSearch.toLowerCase())
-    );
-  }, [departmentSops, deptSearch]);
+    return departmentSops.filter(s => {
+      const matchesSearch = s.title.toLowerCase().includes(deptSearch.toLowerCase()) ||
+                            s.code.toLowerCase().includes(deptSearch.toLowerCase());
+      const matchesRead = deptReadFilter === 'all' ? true : 
+                          deptReadFilter === 'read' ? s.has_read : !s.has_read;
+      return matchesSearch && matchesRead;
+    });
+  }, [departmentSops, deptSearch, deptReadFilter]);
 
   const paginatedDeptSops = filteredDeptSops.slice((deptPage - 1) * pageSize, deptPage * pageSize);
 
   // 2. Get Explore SOPs (Server-side Paginated)
-  const { data: exploreData, isLoading: isExploreLoading } = useFetchAuthSops({
+  const { data: exploreData, isLoading: isExploreLoading, refetch: refetchExplore } = useFetchAuthSops({
     search: exploreSearch,
     page: explorePage,
     page_size: explorePageSize
   });
+
+  const handleMarkAsRead = async (sop: SopsMinified) => {
+    try {
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchAccount();
+      refetchExplore();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    }
+  };
 
   return (
     <div className="p-6 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Strategic Header */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 mb-1">
-          <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
+          <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
             Knowledge Base
           </Badge>
           <span className="text-zinc-300">•</span>
-          <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
+          <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">
             Employee Portal
           </span>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#004d40]">SOP Library</h1>
+        <h1 className="text-xl font-semibold tracking-tight text-[#004d40]">SOP Library</h1>
         <p className="text-zinc-500 font-medium">
           Access organizational procedures, safety protocols, and operational guidelines.
         </p>
@@ -70,7 +90,7 @@ export default function EmployeeSopsPage() {
             <Files className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-zinc-900">My Department Documents</h2>
+            <h2 className="text-xl font-semibold text-zinc-900">My Department Documents</h2>
             <p className="text-xs text-zinc-400 font-semibold uppercase tracking-widest">Core Procedures</p>
           </div>
         </div>
@@ -88,6 +108,9 @@ export default function EmployeeSopsPage() {
             onPageChange={setDeptPage}
             totalCount={filteredDeptSops.length}
             pageSize={pageSize}
+            onMarkAsRead={handleMarkAsRead}
+            readFilter={deptReadFilter}
+            onReadFilterChange={setDeptReadFilter}
           />
         </Card>
       </section>
@@ -110,7 +133,7 @@ export default function EmployeeSopsPage() {
             <BookOpen className="w-5 h-5 text-zinc-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-zinc-900">Explore Organizational Library</h2>
+            <h2 className="text-xl font-semibold text-zinc-900">Explore Organizational Library</h2>
             <p className="text-xs text-zinc-400 font-semibold uppercase tracking-widest">Global References</p>
           </div>
         </div>
@@ -128,13 +151,14 @@ export default function EmployeeSopsPage() {
             onPageChange={setExplorePage}
             totalCount={exploreData?.count || 0}
             pageSize={explorePageSize}
+            onMarkAsRead={handleMarkAsRead}
           />
         </Card>
       </section>
 
       {/* Institutional Footer */}
       <div className="pt-8 text-center border-t border-zinc-100">
-        <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.3em]">
+        <p className="text-[10px] font-semibold text-zinc-300 uppercase tracking-[0.3em]">
           Elimu Operational Intelligence • Secured Library
         </p>
       </div>

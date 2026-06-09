@@ -5,12 +5,14 @@ import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 import { Department } from "./departments";
 import { Category } from "./categories";
+import { StaffMinified } from "./accounts";
 
 export interface Sops {
   id: string;
   title: string;
   description: string;
   file: string;
+  has_read: boolean;
   created_at: string;
   updated_at: string;
   reference: string;
@@ -21,6 +23,7 @@ export interface Sops {
   is_all_departments: boolean;
   departments: Department[];
   categories: Category[];
+  read_by: StaffMinified[];
 }
 
 
@@ -28,6 +31,8 @@ export interface SopsMinified {
   title: string;
   description: string;
   file: string;
+  has_read: boolean;
+  read_by: StaffMinified[];
   is_active: boolean;
   is_all_departments: boolean;
   code: string;
