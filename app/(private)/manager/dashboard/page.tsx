@@ -208,9 +208,9 @@ export default function ManagerDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-none shadow-xl bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded overflow-hidden relative">
           <div className="absolute top-0 right-0 p-8 opacity-10">
-            <Building2 className="w-24 h-24" />
+            <Building2 className="w-12 h-12" />
           </div>
-          <CardContent className="pt-8 pb-8 relative z-10">
+          <CardContent className="pt-4 pb-4 relative z-10">
             <p className="text-emerald-100/70 text-[10px] font-semibold uppercase tracking-widest mb-1">Managed Entity</p>
             <h3 className="text-xl font-semibold leading-tight line-clamp-2 pr-12">{managedDept?.name || "N/A"}</h3>
             <div className="mt-6 flex items-center gap-2">
@@ -223,7 +223,7 @@ export default function ManagerDashboard() {
         </Card>
 
         <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="pt-4 pb-4">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Department Staff</p>
@@ -245,7 +245,7 @@ export default function ManagerDashboard() {
         </Card>
 
         <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="pt-4 pb-4">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Oversight SOPs</p>
