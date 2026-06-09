@@ -30,6 +30,7 @@ export default function EmployeeDashboard() {
   const headers = useAxiosAuth();
   const { data: employee, isLoading: isLoadingEmployee, refetch: refetchAccount } = useFetchAccount();
   const [sopSearch, setSopSearch] = useState("");
+  const [sopReadFilter, setSopReadFilter] = useState<'all' | 'read' | 'unread'>('all');
   const [sopPage, setSopPage] = useState(1);
   const pageSize = 5;
 
@@ -63,10 +64,13 @@ export default function EmployeeDashboard() {
   const team = department?.staff || [];
   const userInitial = employee?.first_name?.[0] || "U";
 
-  const filteredSops = sops.filter((s: any) => 
-    s.title.toLowerCase().includes(sopSearch.toLowerCase()) ||
-    s.code.toLowerCase().includes(sopSearch.toLowerCase())
-  );
+  const filteredSops = sops.filter((s: any) => {
+    const matchesSearch = s.title.toLowerCase().includes(sopSearch.toLowerCase()) ||
+                          s.code.toLowerCase().includes(sopSearch.toLowerCase());
+    const matchesRead = sopReadFilter === 'all' ? true : 
+                        sopReadFilter === 'read' ? s.has_read : !s.has_read;
+    return matchesSearch && matchesRead;
+  });
 
   const paginatedSops = filteredSops.slice((sopPage - 1) * pageSize, sopPage * pageSize);
 
@@ -123,7 +127,7 @@ export default function EmployeeDashboard() {
           <div className="absolute top-0 right-0 p-8 opacity-10">
             <Building2 className="w-24 h-24" />
           </div>
-          <CardContent className="pt-8 pb-8 relative z-10">
+          <CardContent className="pt-4 pb-4 relative z-10">
             <p className="text-emerald-100/70 text-[10px] font-semibold uppercase tracking-widest mb-1">Assigned Department</p>
             <h3 className="text-2xl font-semibold leading-tight line-clamp-2 pr-12">{department?.name || "N/A"}</h3>
             <div className="mt-6 flex items-center gap-2">
@@ -136,7 +140,7 @@ export default function EmployeeDashboard() {
         </Card>
 
         <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="pt-4 pb-4">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Available Documents</p>
@@ -153,7 +157,7 @@ export default function EmployeeDashboard() {
         </Card>
 
         <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="pt-4 pb-4">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Collaborators</p>
@@ -194,6 +198,8 @@ export default function EmployeeDashboard() {
               totalCount={filteredSops.length}
               pageSize={pageSize}
               onMarkAsRead={handleMarkAsRead}
+              readFilter={sopReadFilter}
+              onReadFilterChange={setSopReadFilter}
             />
           </Card>
         </div>

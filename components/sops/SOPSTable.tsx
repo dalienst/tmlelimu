@@ -27,6 +27,8 @@ interface SOPSTableProps<T extends Sops | SopsMinified> {
   onToggle?: (sop: T) => void;
   onRemove?: (sop: T) => void;
   onMarkAsRead?: (sop: T) => Promise<void>;
+  readFilter?: 'all' | 'read' | 'unread';
+  onReadFilterChange?: (val: 'all' | 'read' | 'unread') => void;
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -43,6 +45,8 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
   onToggle,
   onRemove,
   onMarkAsRead,
+  readFilter,
+  onReadFilterChange,
   search,
   onSearch,
   page,
@@ -81,13 +85,44 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 px-6 py-4 border-b border-zinc-100 bg-zinc-50/30">
-        <Search className="w-4 h-4 text-zinc-400" />
+        <Search className="w-4 h-4 text-zinc-400 shrink-0" />
         <Input
           placeholder="Search SOPs by title..."
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
-          className="border-none shadow-none focus-visible:ring-0 text-sm p-0 h-auto bg-transparent placeholder:text-zinc-400"
+          className="border-none shadow-none focus-visible:ring-0 text-sm p-0 h-auto bg-transparent placeholder:text-zinc-400 flex-1"
         />
+        {onReadFilterChange && (
+          <div className="flex items-center gap-1 ml-auto shrink-0 bg-zinc-200/50 p-1 rounded border border-zinc-200/50">
+            <button
+              onClick={() => {
+                onReadFilterChange('all');
+                onPageChange(1);
+              }}
+              className={`px-3 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wider transition-all ${readFilter === 'all' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => {
+                onReadFilterChange('unread');
+                onPageChange(1);
+              }}
+              className={`px-3 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wider transition-all ${readFilter === 'unread' ? 'bg-white text-amber-700 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+            >
+              Unread
+            </button>
+            <button
+              onClick={() => {
+                onReadFilterChange('read');
+                onPageChange(1);
+              }}
+              className={`px-3 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wider transition-all ${readFilter === 'read' ? 'bg-white text-emerald-700 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+            >
+              Read
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="overflow-hidden">

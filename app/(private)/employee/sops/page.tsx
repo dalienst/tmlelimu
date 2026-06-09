@@ -17,6 +17,7 @@ export default function EmployeeSopsPage() {
   const headers = useAxiosAuth();
   const { data: user, isLoading: isUserLoading, refetch: refetchAccount } = useFetchAccount();
   const [deptSearch, setDeptSearch] = useState("");
+  const [deptReadFilter, setDeptReadFilter] = useState<'all' | 'read' | 'unread'>('all');
   const [deptPage, setDeptPage] = useState(1);
   const pageSize = 5;
 
@@ -34,11 +35,14 @@ export default function EmployeeSopsPage() {
   }, [user]);
 
   const filteredDeptSops = useMemo(() => {
-    return departmentSops.filter(s => 
-      s.title.toLowerCase().includes(deptSearch.toLowerCase()) ||
-      s.code.toLowerCase().includes(deptSearch.toLowerCase())
-    );
-  }, [departmentSops, deptSearch]);
+    return departmentSops.filter(s => {
+      const matchesSearch = s.title.toLowerCase().includes(deptSearch.toLowerCase()) ||
+                            s.code.toLowerCase().includes(deptSearch.toLowerCase());
+      const matchesRead = deptReadFilter === 'all' ? true : 
+                          deptReadFilter === 'read' ? s.has_read : !s.has_read;
+      return matchesSearch && matchesRead;
+    });
+  }, [departmentSops, deptSearch, deptReadFilter]);
 
   const paginatedDeptSops = filteredDeptSops.slice((deptPage - 1) * pageSize, deptPage * pageSize);
 
@@ -105,6 +109,8 @@ export default function EmployeeSopsPage() {
             totalCount={filteredDeptSops.length}
             pageSize={pageSize}
             onMarkAsRead={handleMarkAsRead}
+            readFilter={deptReadFilter}
+            onReadFilterChange={setDeptReadFilter}
           />
         </Card>
       </section>
