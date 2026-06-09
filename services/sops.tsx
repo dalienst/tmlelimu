@@ -11,6 +11,7 @@ export interface Sops {
   title: string;
   description: string;
   file: string;
+  has_read: boolean;
   created_at: string;
   updated_at: string;
   reference: string;
@@ -28,6 +29,7 @@ export interface SopsMinified {
   title: string;
   description: string;
   file: string;
+  has_read: boolean;
   is_active: boolean;
   is_all_departments: boolean;
   code: string;
