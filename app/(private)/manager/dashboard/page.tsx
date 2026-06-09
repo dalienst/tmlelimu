@@ -267,9 +267,9 @@ export default function ManagerDashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Team Management Section */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-3 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-[#004d40]" />
@@ -347,8 +347,48 @@ export default function ManagerDashboard() {
               </table>
             </div>
           </Card>
+        </div>
 
-          {/* SOP Oversight Section */}
+        {/* Sidebar Sections */}
+        <div className="space-y-4">
+          {/* Department Profile */}
+          <Card className="border-zinc-100 shadow rounded overflow-hidden bg-white">
+            <CardHeader className="bg-[#004d40] text-white pt-4 pb-4 px-4">
+              <CardTitle className="text-xl font-semibold leading-tight">
+                {managedDept?.name || "Department Profile"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-3 pb-3 space-y-2">              
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-10 h-10 bg-zinc-50 rounded flex items-center justify-center border border-zinc-100">
+                    <Mail className="w-4 h-4 text-zinc-400" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">Dept. Email</span>
+                    <span className="text-zinc-900 font-medium truncate max-w-[150px]">{managedDept?.email || "N/A"}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="w-10 h-10 bg-amber-50 rounded flex items-center justify-center border border-amber-100/30">
+                    <ShieldCheck className="w-4 h-4 text-amber-600" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">Head Status</span>
+                    <span className="text-zinc-900 font-semibold">Verified Head</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button className="w-full h-8 bg-zinc-900 hover:bg-black text-white rounded text-xs font-semibold transition-all shadow-lg shadow-zinc-200">
+                Edit Department Info
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      {/* SOP Oversight Section */}
           <div className="space-y-4 pt-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
@@ -552,89 +592,10 @@ export default function ManagerDashboard() {
               </div>
             </Card>
           </div>
-        </div>
-
-        {/* Sidebar Sections */}
-        <div className="space-y-8">
-          {/* Department Profile */}
-          <Card className="border-zinc-100 shadow-lg rounded overflow-hidden bg-white">
-            <CardHeader className="bg-[#004d40] text-white pt-8 pb-8 px-8">
-              <div className="w-12 h-12 bg-white/10 rounded flex items-center justify-center mb-4 backdrop-blur-md border border-white/10">
-                <Building2 className="w-6 h-6 text-emerald-100" />
-              </div>
-              <CardTitle className="text-xl font-semibold leading-tight">
-                {managedDept?.name || "Department Profile"}
-              </CardTitle>
-              <CardDescription className="text-emerald-100/60 font-medium text-xs mt-1">
-                Operational Identity & Strategy
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-8 px-8 pb-8 space-y-6">
-              <div className="space-y-2">
-                <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Core Mission</p>
-                <p className="text-sm text-zinc-600 leading-relaxed italic">
-                  &quot;{managedDept?.description || "Ensuring excellence and reliability in our department operations every day."}&quot;
-                </p>
-              </div>
-              
-              <div className="pt-6 border-t border-zinc-100 space-y-4">
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="w-10 h-10 bg-zinc-50 rounded flex items-center justify-center border border-zinc-100">
-                    <Mail className="w-4 h-4 text-zinc-400" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">Dept. Email</span>
-                    <span className="text-zinc-900 font-medium truncate max-w-[150px]">{managedDept?.email || "N/A"}</span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="w-10 h-10 bg-amber-50 rounded flex items-center justify-center border border-amber-100/30">
-                    <ShieldCheck className="w-4 h-4 text-amber-600" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">Head Status</span>
-                    <span className="text-zinc-900 font-semibold">Verified Head</span>
-                  </div>
-                </div>
-              </div>
-
-              <Button className="w-full h-12 bg-zinc-900 hover:bg-black text-white rounded text-xs font-semibold transition-all shadow-lg shadow-zinc-200">
-                Edit Department Info
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Quick Tasks Card */}
-          <Card className="border-none shadow-xl bg-gradient-to-br from-amber-600 to-amber-700 text-white rounded">
-            <CardContent className="p-8 space-y-4">
-              <h4 className="text-lg font-semibold flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                Quick Actions
-              </h4>
-              <p className="text-amber-50 text-xs font-medium leading-relaxed opacity-80">
-                Manage your team effectively with these quick administrative tools.
-              </p>
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <Button 
-                  onClick={() => setIsCreateOpen(true)}
-                  variant="ghost" 
-                  className="bg-white/10 hover:bg-white/20 border-none text-white text-[10px] font-semibold h-10 rounded flex flex-col items-center justify-center gap-1"
-                >
-                  New SOP
-                </Button>
-                <Button variant="ghost" className="bg-white/10 hover:bg-white/20 border-none text-white text-[10px] font-semibold h-10 rounded flex flex-col items-center justify-center gap-1">
-                  Announce
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
 
       {/* MODALS */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-md rounded">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
             <DialogTitle className="text-xl text-[#004d40] font-semibold">New SOP Document</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
@@ -651,7 +612,7 @@ export default function ManagerDashboard() {
       </Dialog>
 
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
-        <DialogContent className="sm:max-w-md rounded">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
             <DialogTitle className="text-xl text-[#004d40] font-semibold">Edit SOP</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
