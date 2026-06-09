@@ -182,58 +182,52 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                       })}
                     </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
-                      {(onEdit || onToggle || onRemove) ? (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-9 w-9 p-0 rounded hover:bg-zinc-100 transition-colors">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-5 w-5 text-zinc-500" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 p-1 rounded shadow-xl border-zinc-200">
-                            {onEdit && (
-                              <DropdownMenuItem
-                                onClick={() => onEdit(sop)}
-                                className="cursor-pointer font-medium text-zinc-700"
+                      <div className="flex items-center justify-end gap-2">
+                        {onMarkAsRead ? (
+                          <>
+                            <a 
+                              href={sop.file} 
+                              target="_blank" 
+                              rel="noreferrer"
+                              onClick={() => setViewedSops(prev => new Set(prev).add(sop.reference))}
+                            >
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
                               >
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Edit details
-                              </DropdownMenuItem>
-                            )}
-                            <a href={sop.file} target="_blank" rel="noreferrer">
-                              <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
-                                <Settings2 className="mr-2 h-4 w-4" />
-                                View Document
-                              </DropdownMenuItem>
+                                <Download className="w-3.5 h-3.5 mr-2" />
+                                View
+                              </Button>
                             </a>
-                            {onToggle && (
-                              <DropdownMenuItem
-                                onClick={() => onToggle(sop)}
-                                className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium"}
+                            {!sop.has_read ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className={`h-9 px-3 rounded font-semibold text-[10px] uppercase tracking-wider transition-colors ${
+                                  viewedSops.has(sop.reference)
+                                    ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                                    : "border-zinc-200 text-zinc-400"
+                                }`}
+                                disabled={!viewedSops.has(sop.reference) || loadingReadSops.has(sop.reference)}
+                                onClick={() => handleMarkAsReadClick(sop)}
                               >
-                                {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
-                                {sop.is_active ? "Deactivate" : "Activate"}
-                              </DropdownMenuItem>
+                                {loadingReadSops.has(sop.reference) ? (
+                                  <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
+                                ) : (
+                                  <CheckCircle2 className="w-3.5 h-3.5 mr-2" />
+                                )}
+                                {loadingReadSops.has(sop.reference) ? "Marking..." : "Mark as Read"}
+                              </Button>
+                            ) : (
+                              <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
+                                Read
+                              </Badge>
                             )}
-                            {onRemove && (
-                              <DropdownMenuItem
-                                onClick={() => onRemove(sop)}
-                                className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer font-medium"
-                              >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Remove
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      ) : onMarkAsRead ? (
-                        <div className="flex items-center justify-end gap-2">
-                          <a 
-                            href={sop.file} 
-                            target="_blank" 
-                            rel="noreferrer"
-                            onClick={() => setViewedSops(prev => new Set(prev).add(sop.reference))}
-                          >
+                          </>
+                        ) : (
+                          <a href={sop.file} target="_blank" rel="noreferrer">
                             <Button 
                               variant="ghost" 
                               size="sm" 
@@ -243,45 +237,58 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                               View
                             </Button>
                           </a>
-                          {!sop.has_read ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className={`h-9 px-3 rounded font-semibold text-[10px] uppercase tracking-wider transition-colors ${
-                                viewedSops.has(sop.reference)
-                                  ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
-                                  : "border-zinc-200 text-zinc-400"
-                              }`}
-                              disabled={!viewedSops.has(sop.reference) || loadingReadSops.has(sop.reference)}
-                              onClick={() => handleMarkAsReadClick(sop)}
-                            >
-                              {loadingReadSops.has(sop.reference) ? (
-                                <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                              ) : (
-                                <CheckCircle2 className="w-3.5 h-3.5 mr-2" />
+                        )}
+
+                        {(onEdit || onToggle || onRemove) && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-9 w-9 p-0 rounded hover:bg-zinc-100 transition-colors">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-5 w-5 text-zinc-500" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 p-1 rounded shadow-xl border-zinc-200">
+                              {onEdit && (
+                                <DropdownMenuItem
+                                  onClick={() => onEdit(sop)}
+                                  className="cursor-pointer font-medium text-zinc-700"
+                                >
+                                  <Pencil className="mr-2 h-4 w-4" />
+                                  Edit details
+                                </DropdownMenuItem>
                               )}
-                              {loadingReadSops.has(sop.reference) ? "Marking..." : "Mark as Read"}
-                            </Button>
-                          ) : (
-                            <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
-                              <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                              Read
-                            </Badge>
-                          )}
-                        </div>
-                      ) : (
-                        <a href={sop.file} target="_blank" rel="noreferrer">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
-                          >
-                            <Download className="w-3.5 h-3.5 mr-2" />
-                            View
-                          </Button>
-                        </a>
-                      )}
+                              {!onMarkAsRead && (
+                                <a href={sop.file} target="_blank" rel="noreferrer">
+                                  <DropdownMenuItem className="cursor-pointer font-medium text-[#004d40]">
+                                    <Settings2 className="mr-2 h-4 w-4" />
+                                    View Document
+                                  </DropdownMenuItem>
+                                </a>
+                              )}
+                              {onToggle && (
+                                <DropdownMenuItem
+                                  onClick={() => onToggle(sop)}
+                                  className={sop.is_active ? "text-amber-600 focus:bg-amber-50 focus:text-amber-600 cursor-pointer font-medium" : "text-emerald-600 focus:bg-emerald-50 focus:text-emerald-600 cursor-pointer font-medium"}
+                                >
+                                  {sop.is_active ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+                                  {sop.is_active ? "Deactivate" : "Activate"}
+                                </DropdownMenuItem>
+                              )}
+                              {onRemove && (
+                                <DropdownMenuItem
+                                  onClick={() => onRemove(sop)}
+                                  className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer font-medium"
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Remove
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </div>
                     </TableCell>
+
                   </TableRow>
                 ))
               ) : (

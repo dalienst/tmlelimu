@@ -7,6 +7,7 @@ import { useFetchAuthSops } from "@/hooks/sops/actions";
 import { useFetchCategories } from "@/hooks/categories/actions";
 import { Sops, SopsMinified, updateSops } from "@/services/sops";
 import { Category, updateCategory } from "@/services/categories";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
@@ -90,6 +91,16 @@ export default function HRSopsPage() {
     }
   };
 
+  const handleMarkAsRead = async (sop: Sops | SopsMinified) => {
+    try {
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchSops();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    }
+  };
+
   const handleToggleCategory = async () => {
     if (!togglingCategory) return;
     setIsToggling(true);
@@ -160,6 +171,7 @@ export default function HRSopsPage() {
               onPageChange={setPage}
               totalCount={sopsData?.count || 0}
               pageSize={pageSize}
+              onMarkAsRead={handleMarkAsRead}
             />
           </div>
         </div>

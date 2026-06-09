@@ -7,6 +7,7 @@ import { useFetchAuthSops } from "@/hooks/sops/actions";
 import { useFetchCategories } from "@/hooks/categories/actions";
 import { Sops, SopsMinified, updateSops } from "@/services/sops";
 import { Category, updateCategory } from "@/services/categories";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
 import toast from "react-hot-toast";
 
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +49,7 @@ import { useFetchAccount } from "@/hooks/accounts/actions";
 
 export default function TeamSopsPage() {
   const [search, setSearch] = useState("");
+  const [readFilter, setReadFilter] = useState<'all' | 'read' | 'unread'>('all');
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
@@ -56,12 +58,15 @@ export default function TeamSopsPage() {
   const sops = managedDept?.sops || [];
 
   const filteredSops = useMemo(() => {
-    return sops.filter((s: any) => 
-      s.title.toLowerCase().includes(search.toLowerCase()) ||
-      s.code.toLowerCase().includes(search.toLowerCase()) ||
-      s.description.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [sops, search]);
+    return sops.filter((s: any) => {
+      const matchesSearch = s.title.toLowerCase().includes(search.toLowerCase()) ||
+                            s.code.toLowerCase().includes(search.toLowerCase()) ||
+                            s.description.toLowerCase().includes(search.toLowerCase());
+      const matchesRead = readFilter === 'all' ? true : 
+                          readFilter === 'read' ? s.has_read : !s.has_read;
+      return matchesSearch && matchesRead;
+    });
+  }, [sops, search, readFilter]);
 
   // Client-side pagination
   const paginatedSops = filteredSops.slice((page - 1) * pageSize, page * pageSize);
@@ -94,6 +99,16 @@ export default function TeamSopsPage() {
     } finally {
       setIsToggling(false);
       setTogglingSop(null);
+    }
+  };
+
+  const handleMarkAsRead = async (sop: Sops | SopsMinified) => {
+    try {
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchAccount();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
     }
   };
 
@@ -169,6 +184,9 @@ export default function TeamSopsPage() {
               onPageChange={setPage}
               totalCount={filteredSops.length}
               pageSize={pageSize}
+              onMarkAsRead={handleMarkAsRead}
+              readFilter={readFilter}
+              onReadFilterChange={setReadFilter}
             />
           </Card>
         </div>

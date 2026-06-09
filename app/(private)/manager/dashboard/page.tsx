@@ -19,7 +19,9 @@ import {
   Eye,
   PlusCircle,
   MoreVertical,
-  UserIcon
+  UserIcon,
+  Loader2,
+  CheckCircle2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +57,7 @@ import UpdateSop from "@/forms/sops/UpdateSop";
 import StaffDetail from "@/components/staff/StaffDetail";
 import { updateSops, Sops, SopsMinified } from "@/services/sops";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
@@ -62,6 +65,10 @@ export default function ManagerDashboard() {
   const { data: manager, isLoading: isLoadingManager, refetch: refetchAccount } = useFetchAccount();
   const [staffQuery, setStaffQuery] = useState("");
   const [sopQuery, setSopQuery] = useState("");
+  const [sopReadFilter, setSopReadFilter] = useState<'all' | 'read' | 'unread'>('all');
+  
+  const [loadingReadSops, setLoadingReadSops] = useState<Set<string>>(new Set());
+  const [viewedSops, setViewedSops] = useState<Set<string>>(new Set());
 
   // Management State
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -88,12 +95,15 @@ export default function ManagerDashboard() {
   }, [staff, staffQuery]);
 
   const filteredSops = useMemo(() => {
-    return sops.filter((s: any) => 
-      s.title.toLowerCase().includes(sopQuery.toLowerCase()) ||
-      s.code.toLowerCase().includes(sopQuery.toLowerCase()) ||
-      s.description.toLowerCase().includes(sopQuery.toLowerCase())
-    );
-  }, [sops, sopQuery]);
+    return sops.filter((s: any) => {
+      const matchesSearch = s.title.toLowerCase().includes(sopQuery.toLowerCase()) ||
+                            s.code.toLowerCase().includes(sopQuery.toLowerCase()) ||
+                            s.description.toLowerCase().includes(sopQuery.toLowerCase());
+      const matchesRead = sopReadFilter === 'all' ? true : 
+                          sopReadFilter === 'read' ? s.has_read : !s.has_read;
+      return matchesSearch && matchesRead;
+    });
+  }, [sops, sopQuery, sopReadFilter]);
 
   const handleToggleActive = async () => {
     if (!togglingSop) return;
@@ -110,6 +120,23 @@ export default function ManagerDashboard() {
     } finally {
       setIsToggling(false);
       setTogglingSop(null);
+    }
+  };
+
+  const handleMarkAsReadClick = async (sop: any) => {
+    try {
+      setLoadingReadSops(prev => new Set(prev).add(sop.reference));
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchAccount();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    } finally {
+      setLoadingReadSops(prev => {
+        const next = new Set(prev);
+        next.delete(sop.reference);
+        return next;
+      });
     }
   };
 
@@ -327,6 +354,26 @@ export default function ManagerDashboard() {
                 Department SOPs
               </h2>
               <div className="flex items-center gap-3">
+                <div className="flex bg-zinc-100/80 p-0.5 rounded border border-zinc-200/60 shadow-sm">
+                  <button
+                    onClick={() => setSopReadFilter('all')}
+                    className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider rounded transition-all ${sopReadFilter === 'all' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setSopReadFilter('unread')}
+                    className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider rounded transition-all ${sopReadFilter === 'unread' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    Unread
+                  </button>
+                  <button
+                    onClick={() => setSopReadFilter('read')}
+                    className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider rounded transition-all ${sopReadFilter === 'read' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    Read
+                  </button>
+                </div>
                 <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                   <Input 
@@ -394,11 +441,41 @@ export default function ManagerDashboard() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <Link href={sop.file} target="_blank" rel="noreferrer">
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50">
-                                  <ExternalLink className="w-3.5 h-3.5" />
+                              <a 
+                                href={sop.file} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                onClick={() => setViewedSops(prev => new Set(prev).add(sop.reference))}
+                              >
+                                <Button variant="ghost" size="sm" className="h-8 px-2 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50 text-[10px] uppercase font-semibold">
+                                  <Download className="w-3.5 h-3.5 mr-1" /> View
                                 </Button>
-                              </Link>
+                              </a>
+
+                              {!sop.has_read ? (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className={`h-8 px-2 rounded font-semibold text-[10px] uppercase tracking-wider transition-colors ${
+                                    viewedSops.has(sop.reference)
+                                      ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                                      : "border-zinc-200 text-zinc-400"
+                                  }`}
+                                  disabled={!viewedSops.has(sop.reference) || loadingReadSops.has(sop.reference)}
+                                  onClick={() => handleMarkAsReadClick(sop)}
+                                >
+                                  {loadingReadSops.has(sop.reference) ? (
+                                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                                  ) : (
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                  )}
+                                  Mark
+                                </Button>
+                              ) : (
+                                <Badge className="h-8 px-2 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                                  <CheckCircle2 className="w-3 h-3 mr-1" /> Read
+                                </Badge>
+                              )}
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded text-zinc-400 hover:bg-zinc-100">

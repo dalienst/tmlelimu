@@ -5,6 +5,7 @@ import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 import { Department } from "./departments";
 import { Category } from "./categories";
+import { StaffMinified } from "./accounts";
 
 export interface Sops {
   id: string;
@@ -22,6 +23,7 @@ export interface Sops {
   is_all_departments: boolean;
   departments: Department[];
   categories: Category[];
+  read_by: StaffMinified[];
 }
 
 
