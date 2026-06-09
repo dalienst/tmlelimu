@@ -8,9 +8,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import SOPSTable from "@/components/sops/SOPSTable";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import toast from "react-hot-toast";
+import { SopsMinified } from "@/services/sops";
 
 export default function EmployeeSopsPage() {
-  const { data: user, isLoading: isUserLoading } = useFetchAccount();
+  const headers = useAxiosAuth();
+  const { data: user, isLoading: isUserLoading, refetch: refetchAccount } = useFetchAccount();
   const [deptSearch, setDeptSearch] = useState("");
   const [deptPage, setDeptPage] = useState(1);
   const pageSize = 5;
@@ -38,11 +43,22 @@ export default function EmployeeSopsPage() {
   const paginatedDeptSops = filteredDeptSops.slice((deptPage - 1) * pageSize, deptPage * pageSize);
 
   // 2. Get Explore SOPs (Server-side Paginated)
-  const { data: exploreData, isLoading: isExploreLoading } = useFetchAuthSops({
+  const { data: exploreData, isLoading: isExploreLoading, refetch: refetchExplore } = useFetchAuthSops({
     search: exploreSearch,
     page: explorePage,
     page_size: explorePageSize
   });
+
+  const handleMarkAsRead = async (sop: SopsMinified) => {
+    try {
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchAccount();
+      refetchExplore();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    }
+  };
 
   return (
     <div className="p-6 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -88,6 +104,7 @@ export default function EmployeeSopsPage() {
             onPageChange={setDeptPage}
             totalCount={filteredDeptSops.length}
             pageSize={pageSize}
+            onMarkAsRead={handleMarkAsRead}
           />
         </Card>
       </section>
@@ -128,6 +145,7 @@ export default function EmployeeSopsPage() {
             onPageChange={setExplorePage}
             totalCount={exploreData?.count || 0}
             pageSize={explorePageSize}
+            onMarkAsRead={handleMarkAsRead}
           />
         </Card>
       </section>
