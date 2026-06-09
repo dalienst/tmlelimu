@@ -32,6 +32,7 @@ export interface SopsMinified {
   description: string;
   file: string;
   has_read: boolean;
+  read_by: StaffMinified[];
   is_active: boolean;
   is_all_departments: boolean;
   code: string;
