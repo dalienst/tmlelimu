@@ -242,7 +242,7 @@ export default function TeamSopsPage() {
 
       {/* Create SOP Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-md rounded">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
             <DialogTitle className="text-xl text-[#004d40] font-bold">New SOP Document</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
@@ -260,7 +260,7 @@ export default function TeamSopsPage() {
 
       {/* Edit SOP Dialog */}
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
-        <DialogContent className="sm:max-w-md rounded">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
             <DialogTitle className="text-xl text-[#004d40] font-bold">Edit SOP</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
