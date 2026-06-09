@@ -56,6 +56,7 @@ export default function TeamSopsPage() {
   const { data: manager, isLoading, refetch: refetchAccount } = useFetchAccount();
   const managedDept = manager?.departments_headed?.[0];
   const sops = managedDept?.sops || [];
+  const staff = managedDept?.staff || [];
 
   const filteredSops = useMemo(() => {
     return sops.filter((s: any) => {
