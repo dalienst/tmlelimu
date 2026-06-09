@@ -124,7 +124,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
     return (
       <div className="p-8 mx-auto text-center space-y-4">
         <Folder className="mx-auto h-12 w-12 text-zinc-300" />
-        <h2 className="text-2xl font-semibold text-zinc-700">Category Not Found</h2>
+        <h2 className="text-lg font-semibold text-zinc-700">Category Not Found</h2>
         <Button onClick={() => router.back()} variant="outline">Go Back</Button>
       </div>
     );
@@ -266,7 +266,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       <Dialog open={isAddSopOpen} onOpenChange={setIsAddSopOpen}>
         <DialogContent className="sm:max-w-md rounded border-none shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Add SOPs to {category.name}</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#004d40]">Add SOPs to {category.name}</DialogTitle>
             <DialogDescription className="font-medium">
               Select available SOPs to associate with this category.
             </DialogDescription>
@@ -357,7 +357,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
         <DialogContent className="sm:max-w-[500px] rounded">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Edit Category Details</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#004d40]">Edit Category Details</DialogTitle>
             <DialogDescription className="font-medium">
               Update general information for {category.name}.
             </DialogDescription>

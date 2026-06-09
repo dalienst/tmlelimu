@@ -259,7 +259,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
     return (
       <div className="p-8 mx-auto text-center space-y-4">
         <Building2 className="mx-auto h-12 w-12 text-zinc-300" />
-        <h2 className="text-2xl font-semibold text-zinc-700">Department Not Found</h2>
+        <h2 className="text-lg font-semibold text-zinc-700">Department Not Found</h2>
         <Button onClick={() => router.back()} variant="outline">Go Back</Button>
       </div>
     );
@@ -445,7 +445,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
             <div className="space-y-4">
               {department.head ? (
                 <div className="p-4 rounded border border-amber-100 bg-amber-50/50 flex items-center gap-4">
-                  <div className="h-10 w-10 rounded bg-amber-100 flex items-center justify-center text-amber-700 font-bold">
+                  <div className="h-10 w-10 rounded bg-amber-100 flex items-center justify-center text-amber-700 font-semibold">
                     H
                   </div>
                   <div>
@@ -493,7 +493,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
       <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
         <DialogContent className="sm:max-w-[500px] rounded">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Edit Department Details</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#004d40]">Edit Department Details</DialogTitle>
             <DialogDescription className="font-medium">
               Update general information for {department.name}.
             </DialogDescription>
@@ -510,7 +510,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
       <Dialog open={isAddSopOpen} onOpenChange={setIsAddSopOpen}>
         <DialogContent className="sm:max-w-md rounded border-none shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Add SOPs to {department.name}</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#004d40]">Add SOPs to {department.name}</DialogTitle>
             <DialogDescription className="font-medium">
               Select available SOPs to associate with this department.
             </DialogDescription>
@@ -580,7 +580,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
       <Dialog open={isManageStaffOpen} onOpenChange={setIsManageStaffOpen}>
         <DialogContent className="sm:max-w-md rounded border-none shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#004d40]">Add Staff to {department.name}</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#004d40]">Add Staff to {department.name}</DialogTitle>
             <DialogDescription className="font-medium">
               Select employees to add to this department.
             </DialogDescription>

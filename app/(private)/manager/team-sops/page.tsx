@@ -117,7 +117,7 @@ export default function TeamSopsPage() {
       {/* Header & Management Controls */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#004d40]">Team SOP Library</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-[#004d40]">Team SOP Library</h1>
           <p className="text-zinc-500 font-medium mt-1">
             Managing standard operating procedures and documentation for your teams
           </p>
@@ -151,7 +151,7 @@ export default function TeamSopsPage() {
         <div className="lg:col-span-3 space-y-6">
           <div className="flex items-center gap-2 mb-2">
             <Files className="w-5 h-5 text-[#004d40]" />
-            <h2 className="text-xl font-bold text-[#004d40]">Operational Documents</h2>
+            <h2 className="text-xl font-semibold text-[#004d40]">Operational Documents</h2>
           </div>
 
           <Card className="border-zinc-100 shadow-xl rounded overflow-hidden bg-white">
@@ -177,7 +177,7 @@ export default function TeamSopsPage() {
         <div className="lg:col-span-1 space-y-6">
           <div className="flex items-center gap-2 mb-2">
             <PlusCircle className="w-5 h-5 text-amber-600" />
-            <h2 className="text-xl font-bold text-[#004d40]">Categories</h2>
+            <h2 className="text-xl font-semibold text-[#004d40]">Categories</h2>
           </div>
 
           <div className="space-y-4">
@@ -191,14 +191,14 @@ export default function TeamSopsPage() {
                   <div className="p-4">
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-sm font-bold text-[#004d40] group-hover:text-amber-600 transition-colors truncate uppercase tracking-tight">
+                        <span className="text-sm font-semibold text-[#004d40] group-hover:text-amber-600 transition-colors truncate uppercase tracking-tight">
                           {category.name}
                         </span>
                         <Badge
                           variant="outline"
                           className={category.is_active 
-                            ? "text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-100 font-bold rounded" 
-                            : "text-[9px] px-1.5 py-0 bg-red-50 text-red-700 border-red-100 font-bold rounded"}
+                            ? "text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-100 font-semibold rounded" 
+                            : "text-[9px] px-1.5 py-0 bg-red-50 text-red-700 border-red-100 font-semibold rounded"}
                         >
                           {category.is_active ? "Active" : "Inactive"}
                         </Badge>
@@ -225,7 +225,7 @@ export default function TeamSopsPage() {
                     {category.description && (
                       <p className="text-[11px] text-zinc-500 line-clamp-2 mb-2 leading-relaxed italic">{category.description}</p>
                     )}
-                    <p className="text-[9px] text-zinc-400 font-bold tracking-widest uppercase opacity-60">REF: {category.reference.slice(0, 8)}</p>
+                    <p className="text-[9px] text-zinc-400 font-semibold tracking-widest uppercase opacity-60">REF: {category.reference.slice(0, 8)}</p>
                   </div>
                 </Card>
               ))
@@ -244,7 +244,7 @@ export default function TeamSopsPage() {
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
         <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
-            <DialogTitle className="text-xl text-[#004d40] font-bold">New SOP Document</DialogTitle>
+            <DialogTitle className="text-xl text-[#004d40] font-semibold">New SOP Document</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
               Upload a new Standard Operating Procedure to the Elimu system.
             </DialogDescription>
@@ -262,7 +262,7 @@ export default function TeamSopsPage() {
       <Dialog open={!!editingSop} onOpenChange={(open) => !open && setEditingSop(null)}>
         <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto rounded">
           <DialogHeader>
-            <DialogTitle className="text-xl text-[#004d40] font-bold">Edit SOP</DialogTitle>
+            <DialogTitle className="text-xl text-[#004d40] font-semibold">Edit SOP</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
               Update the details or replace the document for this SOP.
             </DialogDescription>
@@ -283,7 +283,7 @@ export default function TeamSopsPage() {
       <Dialog open={isCreateCategoryOpen} onOpenChange={setIsCreateCategoryOpen}>
         <DialogContent className="sm:max-w-md rounded">
           <DialogHeader>
-            <DialogTitle className="text-xl text-[#004d40] font-bold">New Category</DialogTitle>
+            <DialogTitle className="text-xl text-[#004d40] font-semibold">New Category</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
               Create a new category for grouping your Standard Operating Procedures.
             </DialogDescription>
@@ -301,7 +301,7 @@ export default function TeamSopsPage() {
       <Dialog open={!!editingCategory} onOpenChange={(open) => !open && setEditingCategory(null)}>
         <DialogContent className="sm:max-w-md rounded">
           <DialogHeader>
-            <DialogTitle className="text-xl text-[#004d40] font-bold">Edit Category</DialogTitle>
+            <DialogTitle className="text-xl text-[#004d40] font-semibold">Edit Category</DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
               Update the name or description of this category.
             </DialogDescription>
@@ -324,7 +324,7 @@ export default function TeamSopsPage() {
       }}>
         <AlertDialogContent className="rounded">
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-bold">
+            <AlertDialogTitle className="font-semibold">
               {togglingSop?.is_active ? "Deactivate SOP?" : "Activate SOP?"}
             </AlertDialogTitle>
             <AlertDialogDescription className="font-medium">
@@ -339,8 +339,8 @@ export default function TeamSopsPage() {
               onClick={handleToggleActive}
               disabled={isToggling}
               className={togglingSop?.is_active 
-                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-bold" 
-                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold"}
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-semibold" 
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold"}
             >
               {isToggling ? "Updating..." : "Confirm"}
             </AlertDialogAction>
@@ -354,7 +354,7 @@ export default function TeamSopsPage() {
       }}>
         <AlertDialogContent className="rounded">
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-bold">
+            <AlertDialogTitle className="font-semibold">
               {togglingCategory?.is_active ? "Deactivate Category?" : "Activate Category?"}
             </AlertDialogTitle>
             <AlertDialogDescription className="font-medium">
@@ -369,8 +369,8 @@ export default function TeamSopsPage() {
               onClick={handleToggleCategory}
               disabled={isToggling}
               className={togglingCategory?.is_active 
-                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-bold" 
-                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold"}
+                ? "bg-amber-600 hover:bg-amber-700 text-white rounded font-semibold" 
+                : "bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold"}
             >
               {isToggling ? "Updating..." : "Confirm"}
             </AlertDialogAction>

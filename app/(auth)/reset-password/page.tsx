@@ -58,7 +58,7 @@ export default function ResetPassword() {
           <Badge className="mb-4 bg-emerald-50 text-[#004d40] border-emerald-100 font-medium uppercase tracking-widest py-1.5 px-4 shadow-sm">
             Tamarind Elimu System
           </Badge>
-          <h1 className="text-4xl font-bold tracking-tighter text-zinc-900 mb-2">
+          <h1 className="text-xl font-semibold tracking-tighter text-zinc-900 mb-2">
             Create <span className="text-[#004d40]">New Password.</span>
           </h1>
           <p className="text-zinc-500 font-medium">
@@ -68,7 +68,7 @@ export default function ResetPassword() {
 
         <Card className="border-zinc-200 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-md">
           <CardHeader className="pt-8 px-8">
-            <CardTitle className="text-2xl font-bold text-zinc-900 tracking-tight text-center">
+            <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight text-center">
               Reset Password
             </CardTitle>
             <CardDescription className="text-center font-medium text-zinc-500">
@@ -80,7 +80,7 @@ export default function ResetPassword() {
 
               {/* Email Field */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#004d40]/60 ml-1">
                   Email Address
                 </label>
                 <div className="relative group">
@@ -110,7 +110,7 @@ export default function ResetPassword() {
 
               {/* Reset Code Field */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#004d40]/60 ml-1">
                   Reset Code
                 </label>
                 <div className="relative group">
@@ -140,7 +140,7 @@ export default function ResetPassword() {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#004d40]/60 ml-1">
                   New Password
                 </label>
                 <div className="relative group">
@@ -181,7 +181,7 @@ export default function ResetPassword() {
 
               {/* Confirm Password Field */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-[#004d40]/60 ml-1">
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#004d40]/60 ml-1">
                   Confirm Password
                 </label>
                 <div className="relative group">
@@ -223,7 +223,7 @@ export default function ResetPassword() {
               <Button
                 disabled={loading}
                 type="submit"
-                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-bold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 mt-8"
+                className="w-full h-14 bg-[#004d40] hover:bg-[#00332b] text-white rounded text-lg font-semibold shadow-lg shadow-[#004d40]/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 mt-8"
               >
                 {loading ? (
                   <div className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export default function ResetPassword() {
             <div className="mt-8 pt-6 border-t border-zinc-100 flex justify-center">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-[#004d40] transition-colors group"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 hover:text-[#004d40] transition-colors group"
               >
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 Cancel and return to Login

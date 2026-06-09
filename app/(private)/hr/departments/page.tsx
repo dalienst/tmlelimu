@@ -87,7 +87,7 @@ export default function DepartmentsPage() {
             <Building2 className="w-8 h-8 text-[#004d40]" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#004d40]">Departments</h1>
+            <h1 className="text-xl font-semibold text-[#004d40]">Departments</h1>
             <p className="text-zinc-500">Manage organizational departments and assignments</p>
           </div>
         </div>

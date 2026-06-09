@@ -63,18 +63,18 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
       {/* Institutional Identity Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-5">
-          <div className="w-20 h-20 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-bold text-3xl shadow-xl shadow-emerald-900/20 border-4 border-white">
+          <div className="w-20 h-20 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-semibold text-xl shadow-xl shadow-emerald-900/20 border-4 border-white">
             {user.first_name?.[0]}{user.last_name?.[0]}
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
+              <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
                 Personal Identity
               </Badge>
               <span className="text-zinc-300">•</span>
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Account Hub</span>
+              <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Account Hub</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+            <h1 className="text-xl font-semibold tracking-tight text-zinc-900">
               {user.first_name} {user.last_name}
             </h1>
             <p className="text-zinc-500 font-medium mt-1">
@@ -89,7 +89,7 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
         <div className="lg:col-span-2 space-y-6">
           <Card className="border-zinc-100 shadow-xl rounded overflow-hidden bg-white">
             <CardHeader className="border-b border-zinc-50 bg-zinc-50/30">
-              <CardTitle className="text-lg font-bold text-[#004d40] flex items-center gap-2">
+              <CardTitle className="text-lg font-semibold text-[#004d40] flex items-center gap-2">
                 <UserIcon className="w-5 h-5" />
                 Identity Details
               </CardTitle>
@@ -105,7 +105,7 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                   <Form className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="first_name" className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">First Name</Label>
+                        <Label htmlFor="first_name" className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">First Name</Label>
                         <Input
                           id="first_name"
                           name="first_name"
@@ -117,12 +117,12 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                           }`}
                         />
                         {errors.first_name && touched.first_name && (
-                          <p className="text-[10px] text-red-500 font-bold uppercase tracking-wider">{errors.first_name}</p>
+                          <p className="text-[10px] text-red-500 font-semibold uppercase tracking-wider">{errors.first_name}</p>
                         )}
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="last_name" className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Last Name</Label>
+                        <Label htmlFor="last_name" className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Last Name</Label>
                         <Input
                           id="last_name"
                           name="last_name"
@@ -134,7 +134,7 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                           }`}
                         />
                         {errors.last_name && touched.last_name && (
-                          <p className="text-[10px] text-red-500 font-bold uppercase tracking-wider">{errors.last_name}</p>
+                          <p className="text-[10px] text-red-500 font-semibold uppercase tracking-wider">{errors.last_name}</p>
                         )}
                       </div>
                     </div>
@@ -143,7 +143,7 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-[#004d40] hover:bg-[#00332b] text-white px-8 h-11 rounded shadow-lg shadow-emerald-900/10 gap-2 font-bold text-xs uppercase tracking-wider"
+                        className="bg-[#004d40] hover:bg-[#00332b] text-white px-8 h-11 rounded shadow-lg shadow-emerald-900/10 gap-2 font-semibold text-xs uppercase tracking-wider"
                       >
                         <Save className="w-4 h-4" />
                         {isSubmitting ? "Updating..." : "Save Changes"}
@@ -158,7 +158,7 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
           {/* Department Access (Read Only) */}
           <Card className="border-zinc-100 shadow-lg rounded overflow-hidden bg-white">
             <CardHeader className="border-b border-zinc-50 bg-zinc-50/30">
-              <CardTitle className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+              <CardTitle className="text-lg font-semibold text-zinc-900 flex items-center gap-2">
                 <Building2 className="w-5 h-5 text-amber-600" />
                 Departmental Associations
               </CardTitle>
@@ -172,11 +172,11 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                         <ShieldCheck className="w-5 h-5 text-amber-600" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-zinc-900">{dept.name}</h4>
-                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">{dept.code}</p>
+                        <h4 className="text-sm font-semibold text-zinc-900">{dept.name}</h4>
+                        <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest mt-0.5">{dept.code}</p>
                       </div>
                     </div>
-                    <Badge className="bg-zinc-100 text-zinc-500 border-none font-bold text-[9px] uppercase tracking-wider rounded">
+                    <Badge className="bg-zinc-100 text-zinc-500 border-none font-semibold text-[9px] uppercase tracking-wider rounded">
                       Primary Member
                     </Badge>
                   </div>
@@ -195,7 +195,7 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
         <div className="space-y-6">
           <Card className="border-none shadow-xl bg-gradient-to-br from-zinc-900 to-zinc-800 text-white rounded overflow-hidden">
             <CardHeader className="pb-4">
-              <CardTitle className="text-sm font-bold uppercase tracking-[0.2em] opacity-60">System Registry</CardTitle>
+              <CardTitle className="text-sm font-semibold uppercase tracking-[0.2em] opacity-60">System Registry</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 pt-2 pb-8">
               <div className="space-y-4">
@@ -204,8 +204,8 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                     <Mail className="w-4 h-4 text-emerald-300" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Email Address</span>
-                    <span className="text-xs font-bold truncate opacity-90">{user.email}</span>
+                    <span className="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest">Email Address</span>
+                    <span className="text-xs font-semibold truncate opacity-90">{user.email}</span>
                   </div>
                 </div>
 
@@ -214,8 +214,8 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                     <Fingerprint className="w-4 h-4 text-amber-300" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Employee Payroll</span>
-                    <span className="text-xs font-bold truncate opacity-90">{user.payroll_no}</span>
+                    <span className="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest">Employee Payroll</span>
+                    <span className="text-xs font-semibold truncate opacity-90">{user.payroll_no}</span>
                   </div>
                 </div>
 
@@ -224,8 +224,8 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
                     <BadgeCheck className="w-4 h-4 text-blue-300" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">System Reference</span>
-                    <span className="text-xs font-mono font-bold truncate opacity-60">{user.reference}</span>
+                    <span className="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest">System Reference</span>
+                    <span className="text-xs font-mono font-semibold truncate opacity-60">{user.reference}</span>
                   </div>
                 </div>
               </div>
@@ -242,8 +242,8 @@ export default function ProfileUpdate({ user, onUpdate }: { user: User; onUpdate
 
           {/* Quick Stats or Footer */}
           <div className="bg-zinc-50 rounded border border-dashed border-zinc-200 p-6 text-center">
-            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-2">Member Since</p>
-            <p className="text-sm font-bold text-zinc-900">
+            <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-[0.2em] mb-2">Member Since</p>
+            <p className="text-sm font-semibold text-zinc-900">
               {new Date(user.created_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
             </p>
           </div>

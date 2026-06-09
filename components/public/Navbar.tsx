@@ -19,7 +19,7 @@ export default function Navbar() {
       <div className="flex flex-1 items-center gap-2">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-10 h-10 bg-[#004d40] rounded flex items-center justify-center transform transition hover:scale-105 shadow-sm">
-            <span className="text-white font-bold text-xl leading-none">T</span>
+            <span className="text-white font-semibold text-xl leading-none">T</span>
           </div>
           <span className="text-xl font-extrabold tracking-tight text-[#004d40]">
             Tamarind <span className="text-amber-600">Elimu</span>
@@ -41,7 +41,7 @@ export default function Navbar() {
             </Link>
           );
         })}
-        <Link href="/login" className="px-6 py-2.5 text-sm font-bold text-white bg-[#004d40] rounded hover:bg-[#00332b] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+        <Link href="/login" className="px-6 py-2.5 text-sm font-semibold text-white bg-[#004d40] rounded hover:bg-[#00332b] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
           Log In
         </Link>
       </div>
@@ -72,7 +72,7 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block px-4 py-3 rounded text-base font-bold transition-colors ${isActive ? 'bg-emerald-50 text-[#004d40]' : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'}`}
+                  className={`block px-4 py-3 rounded text-base font-semibold transition-colors ${isActive ? 'bg-emerald-50 text-[#004d40]' : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'}`}
                 >
                   {link.name}
                 </Link>
@@ -82,7 +82,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center w-full px-5 py-4 text-base font-bold text-white bg-[#004d40] rounded hover:bg-[#00332b] shadow-md transition-all active:scale-[0.98]"
+                className="flex items-center justify-center w-full px-5 py-4 text-base font-semibold text-white bg-[#004d40] rounded hover:bg-[#00332b] shadow-md transition-all active:scale-[0.98]"
               >
                 Log In Securely
               </Link>

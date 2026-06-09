@@ -117,10 +117,10 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                 data.map((sop: T) => (
                   <TableRow key={sop.reference} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
                     <TableCell className="px-6 py-5 align-top">
-                      <div className="font-bold text-[#004d40] leading-tight mb-1">
+                      <div className="font-semibold text-[#004d40] leading-tight mb-1">
                         {sop.title}
                       </div>
-                      <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100 inline-block">
+                      <div className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100 inline-block">
                         {sop.code}
                       </div>
                     </TableCell>
@@ -133,8 +133,8 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                       <Badge
                         variant="outline"
                         className={sop.is_active
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-bold"
-                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded text-[11px] font-bold"}
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-semibold"
+                          : "bg-red-50 text-red-700 border-red-200 px-2.5 py-0.5 rounded text-[11px] font-semibold"}
                       >
                         {sop.is_active ? "ACTIVE" : "INACTIVE"}
                       </Badge>
@@ -202,7 +202,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                             <Button 
                               variant="ghost" 
                               size="sm" 
-                              className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-bold text-[10px] uppercase tracking-wider"
+                              className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
                             >
                               <Download className="w-3.5 h-3.5 mr-2" />
                               View
@@ -212,7 +212,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                             <Button
                               variant="outline"
                               size="sm"
-                              className={`h-9 px-3 rounded font-bold text-[10px] uppercase tracking-wider transition-colors ${
+                              className={`h-9 px-3 rounded font-semibold text-[10px] uppercase tracking-wider transition-colors ${
                                 viewedSops.has(sop.reference)
                                   ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
                                   : "border-zinc-200 text-zinc-400"
@@ -228,7 +228,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                               {loadingReadSops.has(sop.reference) ? "Marking..." : "Mark as Read"}
                             </Button>
                           ) : (
-                            <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-bold rounded flex items-center justify-center">
+                            <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
                               <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
                               Read
                             </Badge>
@@ -239,7 +239,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-bold text-[10px] uppercase tracking-wider"
+                            className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
                           >
                             <Download className="w-3.5 h-3.5 mr-2" />
                             View
@@ -275,7 +275,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <div className="flex items-center justify-center h-8 px-3 rounded border border-zinc-200 bg-white text-xs font-bold text-[#004d40]">
+          <div className="flex items-center justify-center h-8 px-3 rounded border border-zinc-200 bg-white text-xs font-semibold text-[#004d40]">
             Page {page} of {totalPages || 1}
           </div>
           <Button

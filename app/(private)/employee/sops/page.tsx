@@ -65,15 +65,15 @@ export default function EmployeeSopsPage() {
       {/* Strategic Header */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 mb-1">
-          <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
+          <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
             Knowledge Base
           </Badge>
           <span className="text-zinc-300">•</span>
-          <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
+          <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">
             Employee Portal
           </span>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#004d40]">SOP Library</h1>
+        <h1 className="text-xl font-semibold tracking-tight text-[#004d40]">SOP Library</h1>
         <p className="text-zinc-500 font-medium">
           Access organizational procedures, safety protocols, and operational guidelines.
         </p>
@@ -86,7 +86,7 @@ export default function EmployeeSopsPage() {
             <Files className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-zinc-900">My Department Documents</h2>
+            <h2 className="text-xl font-semibold text-zinc-900">My Department Documents</h2>
             <p className="text-xs text-zinc-400 font-semibold uppercase tracking-widest">Core Procedures</p>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function EmployeeSopsPage() {
             <BookOpen className="w-5 h-5 text-zinc-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-zinc-900">Explore Organizational Library</h2>
+            <h2 className="text-xl font-semibold text-zinc-900">Explore Organizational Library</h2>
             <p className="text-xs text-zinc-400 font-semibold uppercase tracking-widest">Global References</p>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function EmployeeSopsPage() {
 
       {/* Institutional Footer */}
       <div className="pt-8 text-center border-t border-zinc-100">
-        <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.3em]">
+        <p className="text-[10px] font-semibold text-zinc-300 uppercase tracking-[0.3em]">
           Elimu Operational Intelligence • Secured Library
         </p>
       </div>
