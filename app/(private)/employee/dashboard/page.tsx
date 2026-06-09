@@ -21,9 +21,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SOPSTable from "@/components/sops/SOPSTable";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import toast from "react-hot-toast";
+import { SopsMinified } from "@/services/sops";
 
 export default function EmployeeDashboard() {
-  const { data: employee, isLoading: isLoadingEmployee } = useFetchAccount();
+  const headers = useAxiosAuth();
+  const { data: employee, isLoading: isLoadingEmployee, refetch: refetchAccount } = useFetchAccount();
   const [sopSearch, setSopSearch] = useState("");
   const [sopPage, setSopPage] = useState(1);
   const pageSize = 5;
@@ -64,6 +69,16 @@ export default function EmployeeDashboard() {
   );
 
   const paginatedSops = filteredSops.slice((sopPage - 1) * pageSize, sopPage * pageSize);
+
+  const handleMarkAsRead = async (sop: SopsMinified) => {
+    try {
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchAccount();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    }
+  };
 
   return (
     <div className="p-6 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -178,6 +193,7 @@ export default function EmployeeDashboard() {
               onPageChange={setSopPage}
               totalCount={filteredSops.length}
               pageSize={pageSize}
+              onMarkAsRead={handleMarkAsRead}
             />
           </Card>
         </div>

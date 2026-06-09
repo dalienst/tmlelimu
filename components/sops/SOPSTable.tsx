@@ -1,4 +1,4 @@
-import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download, Trash2, CheckCircle2 } from "lucide-react";
+import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download, Trash2, CheckCircle2, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Sops, SopsMinified } from "@/services/sops";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ interface SOPSTableProps<T extends Sops | SopsMinified> {
   onEdit?: (sop: T) => void;
   onToggle?: (sop: T) => void;
   onRemove?: (sop: T) => void;
-  onMarkAsRead?: (sop: T) => void;
+  onMarkAsRead?: (sop: T) => Promise<void>;
   // Search & Pagination
   search: string;
   onSearch: (value: string) => void;
@@ -52,6 +52,21 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
 }: SOPSTableProps<T>) {
   const [localSearch, setLocalSearch] = useState(search);
   const [viewedSops, setViewedSops] = useState<Set<string>>(new Set());
+  const [loadingReadSops, setLoadingReadSops] = useState<Set<string>>(new Set());
+
+  const handleMarkAsReadClick = async (sop: T) => {
+    if (!onMarkAsRead) return;
+    setLoadingReadSops((prev) => new Set(prev).add(sop.reference));
+    try {
+      await onMarkAsRead(sop);
+    } finally {
+      setLoadingReadSops((prev) => {
+        const next = new Set(prev);
+        next.delete(sop.reference);
+        return next;
+      });
+    }
+  };
 
   // Debounce search
   useEffect(() => {
@@ -202,11 +217,15 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                                   ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
                                   : "border-zinc-200 text-zinc-400"
                               }`}
-                              disabled={!viewedSops.has(sop.reference)}
-                              onClick={() => onMarkAsRead(sop)}
+                              disabled={!viewedSops.has(sop.reference) || loadingReadSops.has(sop.reference)}
+                              onClick={() => handleMarkAsReadClick(sop)}
                             >
-                              <CheckCircle2 className="w-3.5 h-3.5 mr-2" />
-                              Mark as Read
+                              {loadingReadSops.has(sop.reference) ? (
+                                <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
+                              ) : (
+                                <CheckCircle2 className="w-3.5 h-3.5 mr-2" />
+                              )}
+                              {loadingReadSops.has(sop.reference) ? "Marking..." : "Mark as Read"}
                             </Button>
                           ) : (
                             <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-bold rounded flex items-center justify-center">
