@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { MessageSquare, X, Send, Bot, User as UserIcon, Loader2 } from "lucide-react";
+import { MessageSquare, X, Send, Bot, User as UserIcon, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { sendChatMessage, ChatMessage } from "@/services/chatbot";
 import ReactMarkdown from "react-markdown";
 import { Session } from "next-auth";
@@ -17,6 +17,7 @@ interface CustomSession extends Session {
 export const ChatWidget = () => {
     const { data: session } = useSession() as { data: CustomSession | null };
     const [isOpen, setIsOpen] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +31,7 @@ export const ChatWidget = () => {
         if (isOpen && messages.length === 0) {
             setMessages([{
                 role: "model",
-                parts: [{ text: "Hello! I'm your AI Assistant. How can I help you find or summarize SOPs today?" }]
+                parts: [{ text: "Hello! I'm Elimu AI. How can I help you find or summarize SOPs today?" }]
             }]);
         }
     }, [isOpen, messages.length]);
@@ -39,19 +40,25 @@ export const ChatWidget = () => {
         scrollToBottom();
     }, [messages, isLoading]);
 
-    const handleSend = async (e?: React.FormEvent) => {
-        e?.preventDefault();
-        if (!input.trim() || !session?.user?.token) return;
+    const suggestedPrompts = [
+        "What is the procedure for taking leave?",
+        "Find the IT security policy",
+        "Summarize my department's SOPs"
+    ];
 
-        const userText = input.trim();
-        setInput("");
+    const handleSend = async (e?: React.FormEvent, promptText?: string) => {
+        e?.preventDefault();
+        const userText = promptText || input.trim();
+        if (!userText || !session?.user?.token) return;
+
+        if (e) setInput("");
         
         const newHistory: ChatMessage[] = [...messages, { role: "user", parts: [{ text: userText }] }];
         setMessages(newHistory);
         setIsLoading(true);
 
         try {
-            const apiHistory = newHistory.filter(m => m.parts[0].text !== "Hello! I'm your AI Assistant. How can I help you find or summarize SOPs today?");
+            const apiHistory = newHistory.filter(m => m.parts[0].text !== "Hello! I'm Elimu AI. How can I help you find or summarize SOPs today?");
             const res = await sendChatMessage(userText, apiHistory, {
                 headers: { Authorization: `Token ${session.user.token}` }
             });
@@ -73,19 +80,24 @@ export const ChatWidget = () => {
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
             {isOpen && (
-                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl w-[380px] h-[550px] flex flex-col overflow-hidden mb-4 transition-all duration-300 ease-in-out">
+                <div className={`bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-4 transition-all duration-300 ease-in-out ${isExpanded ? "w-[90vw] h-[85vh] sm:w-[600px] sm:h-[700px]" : "w-[380px] h-[550px]"}`}>
                     {/* Header */}
                     <div className="bg-[#004d40] p-4 flex justify-between items-center text-white shadow-md">
                         <div className="flex items-center gap-2">
                             <Bot size={24} className="text-white" />
                             <div>
-                                <h3 className="font-bold text-sm tracking-wide">AI Assistant</h3>
+                                <h3 className="font-bold text-sm tracking-wide">Elimu AI</h3>
                                 <p className="text-xs text-emerald-100 opacity-90">SOP Knowledge Base</p>
                             </div>
                         </div>
-                        <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1.5 rounded-full transition-colors">
-                            <X size={20} />
-                        </button>
+                        <div className="flex items-center gap-1">
+                            <button onClick={() => setIsExpanded(!isExpanded)} className="hover:bg-white/20 p-1.5 rounded-full transition-colors text-white" aria-label="Expand Chat">
+                                {isExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                            </button>
+                            <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1.5 rounded-full transition-colors text-white" aria-label="Close Chat">
+                                <X size={20} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Messages Area */}
@@ -106,6 +118,19 @@ export const ChatWidget = () => {
                                 </div>
                             </div>
                         ))}
+                        {messages.length === 1 && !isLoading && (
+                            <div className="flex flex-wrap gap-2 px-12 mt-2">
+                                {suggestedPrompts.map((prompt, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => handleSend(undefined, prompt)}
+                                        className="text-xs text-left bg-emerald-50 text-[#004d40] border border-emerald-100 hover:bg-emerald-100 px-3 py-1.5 rounded-full transition-colors"
+                                    >
+                                        {prompt}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                         {isLoading && (
                             <div className="flex gap-3">
                                 <div className="w-8 h-8 rounded-full bg-[#00332b] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
