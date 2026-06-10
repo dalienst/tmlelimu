@@ -7,7 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import {
   Menu, X, LogOut, User, LayoutDashboard, FileText,
   ChevronDown, CheckCircle, Users, Building2,
-  Shield, GraduationCap, Briefcase, BarChart3, Settings
+  Shield, GraduationCap, Briefcase, BarChart3, Settings, Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -60,6 +60,7 @@ export default function Navbar() {
       { name: "Dashboard", href: "/hr/dashboard", icon: LayoutDashboard },
       { name: "User Management", href: "/hr/employees", icon: Users },
       { name: "System Settings", href: "/hr/settings", icon: Settings },
+      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isHR) {
     navLinks = [
@@ -67,17 +68,20 @@ export default function Navbar() {
       { name: "Departments", href: "/hr/departments", icon: Building2 },
       { name: "Employees", href: "/hr/employees", icon: Users },
       { name: "SOP Management", href: "/hr/sops", icon: FileText },
+      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isManager) {
     navLinks = [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
       { name: "Team SOPs", href: "/manager/team-sops", icon: Briefcase },
+      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isHOD) {
     navLinks = [
       { name: "Dashboard", href: "/hod/dashboard", icon: LayoutDashboard },
       { name: "Dept Analytics", href: "/hod/analytics", icon: BarChart3 },
       { name: "Resources", href: "/hod/resources", icon: FileText },
+      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isTrainer) {
     navLinks = [
@@ -90,7 +94,7 @@ export default function Navbar() {
     navLinks = [
       { name: "Dashboard", href: "/employee/dashboard", icon: LayoutDashboard },
       { name: "SOP Library", href: "/employee/sops", icon: FileText },
-      // { name: "My Progress", href: "/employee/progress", icon: CheckCircle },
+      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   }
 
