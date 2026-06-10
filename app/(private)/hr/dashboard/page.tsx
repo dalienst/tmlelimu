@@ -10,14 +10,20 @@ import { useFetchAuthDepartments } from "@/hooks/departments/actions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, MoreHorizontal } from "lucide-react";
+import { PlusCircle, MoreHorizontal, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import SOPSTable from "@/components/sops/SOPSTable";
+import { createSOPReadRecord } from "@/services/sopsreadrecords";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import toast from "react-hot-toast";
 import CreateHR from "@/forms/accounts/CreateHR";
 import CreateEmployee from "@/forms/accounts/CreateEmployee";
 import CreateEmployeesBulk from "@/forms/accounts/CreateEmployeesBulk";
 import CreateEmployeeBulkUpload from "@/forms/accounts/CreateEmployeesBulkUpload";
 
 export default function HRDashboard() {
-  const { data: hrData, isLoading: isLoadingHr } = useFetchAccount()
+  const headers = useAxiosAuth();
+  const { data: hrData, isLoading: isLoadingHr, refetch: refetchAccount } = useFetchAccount();
   const { data: sopsData, isLoading: isSopsLoading } = useFetchAuthSops();
   const { data: employeesData, isLoading: isEmployeesLoading } = useFetchEmployees();
   const { data: departmentsData, isLoading: isDepartmentsLoading } = useFetchAuthDepartments();
@@ -33,6 +39,37 @@ export default function HRDashboard() {
       inactiveSops: sopsData.results.filter((sop) => !sop.is_active).length,
     };
   }, [sopsData]);
+
+  // HR Department SOPs logic
+  const [sopSearch, setSopSearch] = useState("");
+  const [sopReadFilter, setSopReadFilter] = useState<'all' | 'read' | 'unread'>('all');
+  const [sopPage, setSopPage] = useState(1);
+  const pageSize = 5;
+
+  const hrDept = hrData?.departments?.[0];
+  const hrSops = hrDept?.sops || [];
+
+  const filteredHrSops = useMemo(() => {
+    return hrSops.filter((s: any) => {
+      const matchesSearch = s.title.toLowerCase().includes(sopSearch.toLowerCase()) ||
+                            s.code.toLowerCase().includes(sopSearch.toLowerCase());
+      const matchesRead = sopReadFilter === 'all' ? true : 
+                          sopReadFilter === 'read' ? s.has_read : !s.has_read;
+      return matchesSearch && matchesRead;
+    });
+  }, [hrSops, sopSearch, sopReadFilter]);
+
+  const paginatedHrSops = filteredHrSops.slice((sopPage - 1) * pageSize, sopPage * pageSize);
+
+  const handleMarkAsRead = async (sop: any) => {
+    try {
+      await createSOPReadRecord(headers, { sop: sop.title });
+      toast.success("SOP marked as read successfully!");
+      refetchAccount();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to mark SOP as read.");
+    }
+  };
 
   return (
     <div className="p-8  mx-auto space-y-8">
@@ -177,17 +214,59 @@ export default function HRDashboard() {
         </Card>
       </div>
 
-      <div className="bg-zinc-50 border border-zinc-200 rounded p-12 flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 bg-white rounded shadow-sm flex items-center justify-center text-[#004d40] mb-4">
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4z" />
-          </svg>
+      {!hrDept && (
+        <div className="bg-zinc-50 border border-zinc-200 rounded p-12 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 bg-white rounded shadow-sm flex items-center justify-center text-[#004d40] mb-4">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-zinc-900 mb-2">Welcome, HR Manager</h2>
+          <p className="text-zinc-600 max-w-md mx-auto">
+            This is your central hub for managing Tamarind Group&apos;s learning courses, SOPs, and employee certifications.
+          </p>
         </div>
-        <h2 className="text-xl font-semibold text-zinc-900 mb-2">Welcome, HR Manager</h2>
-        <p className="text-zinc-600 max-w-md mx-auto">
-          This is your central hub for managing Tamarind Group&apos;s learning courses, SOPs, and employee certifications.
-        </p>
-      </div>
+      )}
+
+      {hrDept && (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-zinc-900 flex items-center gap-2">
+                My Department Documents
+              </h2>
+              <p className="text-sm text-zinc-500 font-medium mt-1">
+                SOPs assigned to <span className="text-[#004d40] font-semibold">{hrDept.name}</span>
+              </p>
+            </div>
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+              <Input 
+                placeholder="Search SOPs..." 
+                value={sopSearch}
+                onChange={(e) => setSopSearch(e.target.value)}
+                className="pl-10 h-10 rounded bg-white border-zinc-200 focus:bg-white transition-all text-sm shadow-sm"
+              />
+            </div>
+          </div>
+
+          <Card className="border-zinc-200 shadow-xl rounded overflow-hidden bg-white">
+            <SOPSTable
+              data={paginatedHrSops}
+              isLoading={isLoadingHr}
+              search={sopSearch}
+              onSearch={setSopSearch}
+              page={sopPage}
+              onPageChange={setSopPage}
+              totalCount={filteredHrSops.length}
+              pageSize={pageSize}
+              onMarkAsRead={handleMarkAsRead}
+              readFilter={sopReadFilter}
+              onReadFilterChange={setSopReadFilter}
+            />
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
