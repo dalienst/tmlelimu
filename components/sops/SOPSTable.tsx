@@ -228,7 +228,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                     </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
                       <div className="flex items-center justify-end gap-2">
-                        {detailBasePath ? (
+                        {detailBasePath && (
                           sop.has_read ? (
                             <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
                               <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
@@ -239,60 +239,6 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                               Pending
                             </Badge>
                           )
-                        ) : onMarkAsRead ? (
-                          <>
-                            <a 
-                              href={sop.file} 
-                              target="_blank" 
-                              rel="noreferrer"
-                              onClick={() => setViewedSops(prev => new Set(prev).add(sop.reference))}
-                            >
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
-                              >
-                                <Download className="w-3.5 h-3.5 mr-2" />
-                                View
-                              </Button>
-                            </a>
-                            {!sop.has_read ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className={`h-9 px-3 rounded font-semibold text-[10px] uppercase tracking-wider transition-colors ${
-                                  viewedSops.has(sop.reference)
-                                    ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
-                                    : "border-zinc-200 text-zinc-400"
-                                }`}
-                                disabled={!viewedSops.has(sop.reference) || loadingReadSops.has(sop.reference)}
-                                onClick={() => handleMarkAsReadClick(sop)}
-                              >
-                                {loadingReadSops.has(sop.reference) ? (
-                                  <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                                ) : (
-                                  <CheckCircle2 className="w-3.5 h-3.5 mr-2" />
-                                )}
-                                {loadingReadSops.has(sop.reference) ? "Marking..." : "Mark as Read"}
-                              </Button>
-                            ) : (
-                              <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
-                                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                                Read
-                              </Badge>
-                            )}
-                          </>
-                        ) : (
-                          <a href={sop.file} target="_blank" rel="noreferrer">
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
-                            >
-                              <Download className="w-3.5 h-3.5 mr-2" />
-                              View
-                            </Button>
-                          </a>
                         )}
 
                         {(onEdit || onToggle || onRemove) && (

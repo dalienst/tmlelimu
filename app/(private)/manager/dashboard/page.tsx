@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { useFetchAccount } from "@/hooks/accounts/actions";
 import { 
   Building2, 
@@ -60,7 +61,6 @@ import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { createSOPReadRecord } from "@/services/sopsreadrecords";
 import SOPReadersModal from "@/components/sops/SOPReadersModal";
 import toast from "react-hot-toast";
-import Link from "next/link";
 
 export default function ManagerDashboard() {
   const { data: manager, isLoading: isLoadingManager, refetch: refetchAccount } = useFetchAccount();
@@ -457,9 +457,11 @@ export default function ManagerDashboard() {
                                 <FileText className="w-5 h-5" />
                               </div>
                               <div className="flex flex-col">
-                                <span className="text-sm font-semibold text-zinc-900 leading-tight group-hover:text-[#004d40] transition-colors">
-                                  {sop.title}
-                                </span>
+                                <Link href={`/manager/sops/${sop.reference}`}>
+                                  <span className="text-sm font-semibold text-zinc-900 leading-tight group-hover:text-[#004d40] transition-colors hover:underline">
+                                    {sop.title}
+                                  </span>
+                                </Link>
                                 <span className="text-[10px] font-medium text-zinc-400 mt-0.5">
                                   {new Date(sop.created_at).toLocaleDateString()}
                                 </span>
@@ -511,16 +513,11 @@ export default function ManagerDashboard() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <a 
-                                href={sop.file} 
-                                target="_blank" 
-                                rel="noreferrer"
-                                onClick={() => setViewedSops(prev => new Set(prev).add(sop.reference))}
-                              >
+                              <Link href={`/manager/sops/${sop.reference}`}>
                                 <Button variant="ghost" size="sm" className="h-8 px-2 rounded text-zinc-400 hover:text-[#004d40] hover:bg-emerald-50 text-[10px] uppercase font-semibold">
-                                  <Download className="w-3.5 h-3.5 mr-1" /> View
+                                  <Eye className="w-4 h-4 mr-1.5" /> View
                                 </Button>
-                              </a>
+                              </Link>
 
                               {!sop.has_read ? (
                                 <Button
