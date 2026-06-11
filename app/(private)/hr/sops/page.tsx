@@ -10,6 +10,7 @@ import { Category, updateCategory } from "@/services/categories";
 import { createSOPReadRecord } from "@/services/sopsreadrecords";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useFetchEmployees } from "@/hooks/accounts/actions";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,7 @@ export default function HRSopsPage() {
     page_size: pageSize
   });
   const { data: categoriesData, isLoading: isCategoriesLoading, refetch: refetchCategories } = useFetchCategories();
+  const { data: employeesData } = useFetchEmployees();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
@@ -173,6 +175,8 @@ export default function HRSopsPage() {
               pageSize={pageSize}
               onMarkAsRead={handleMarkAsRead}
               detailBasePath="/hr/sops"
+              showReaders={true}
+              departmentStaff={employeesData}
             />
           </div>
         </div>
