@@ -7,12 +7,14 @@ import { Department } from "./departments";
 import { Sops } from "./sops";
 
 
-export interface SOPProgress {
- id: string;
- reference: string;
- sop: Sops;
- user: string;
- status: string;
+ export interface SOPProgress {
+  id: string;
+  reference: string;
+  sop: Sops;
+  user: string;
+  first_name: string;
+  last_name: string;
+  status: string;
  highest_page_read: number;
  max_scroll_percent: number;
  first_opened_at: string;
@@ -29,10 +31,11 @@ export interface SOPProgressPayload {
 }
 
 export const getSOPsProgresses = async (
-    headers: { headers: { Authorization: string } }
+    headers: { headers: { Authorization: string } },
+    params?: { sop_reference?: string }
 ): Promise<SOPProgress[]> => {
     const response: AxiosResponse<PaginatedResponse<SOPProgress>> =
-        await apiActions.get(`/api/v1/sopprogress/`, headers);
+        await apiActions.get(`/api/v1/sopprogress/`, { ...headers, params });
     return response.data.results ?? [];
 };
 
