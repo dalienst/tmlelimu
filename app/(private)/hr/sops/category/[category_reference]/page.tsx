@@ -131,7 +131,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
   }
 
   // Filter category.sops_detail based on search/page locally
-  const filteredCategorySops: Sops[] = (category.sops_detail || [])
+  const filteredCategorySops = (category.sops_detail || [])
     .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
     .map(sop => ({
       ...sop,
@@ -140,7 +140,7 @@ export default function CategoryDetailPage({ params }: { params: Promise<{ categ
       updated_by: "",
       departments: [],
       categories: [],
-    }));
+    })) as unknown as Sops[];
 
   return (
     <div className="p-8 mx-auto space-y-8">

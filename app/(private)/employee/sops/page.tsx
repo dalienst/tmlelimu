@@ -111,6 +111,7 @@ export default function EmployeeSopsPage() {
             onMarkAsRead={handleMarkAsRead}
             readFilter={deptReadFilter}
             onReadFilterChange={setDeptReadFilter}
+            detailBasePath="/employee/sops"
           />
         </Card>
       </section>
@@ -152,6 +153,7 @@ export default function EmployeeSopsPage() {
             totalCount={exploreData?.count || 0}
             pageSize={explorePageSize}
             onMarkAsRead={handleMarkAsRead}
+            detailBasePath="/employee/sops"
           />
         </Card>
       </section>

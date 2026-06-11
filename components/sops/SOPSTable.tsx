@@ -1,5 +1,6 @@
-import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download, Trash2, CheckCircle2, Loader2, Users } from "lucide-react";
+import { Pencil, EyeOff, Eye, MoreHorizontal, Settings2, Search, ChevronLeft, ChevronRight, Download, Trash2, CheckCircle2, Loader2, Users, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Sops, SopsMinified } from "@/services/sops";
 import { StaffMinified } from "@/services/accounts";
 import SOPReadersModal from "@/components/sops/SOPReadersModal";
@@ -40,6 +41,7 @@ interface SOPSTableProps<T extends Sops | SopsMinified> {
   onPageChange: (page: number) => void;
   totalCount: number;
   pageSize: number;
+  detailBasePath?: string;
 }
 
 export default function SOPSTable<T extends Sops | SopsMinified>({
@@ -58,7 +60,8 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
   page,
   onPageChange,
   totalCount,
-  pageSize
+  pageSize,
+  detailBasePath
 }: SOPSTableProps<T>) {
   const [localSearch, setLocalSearch] = useState(search);
   const [loadingReadSops, setLoadingReadSops] = useState<Set<string>>(new Set());
@@ -160,7 +163,14 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                   <TableRow key={sop.reference} className="group border-zinc-100 hover:bg-zinc-50/50 transition-colors">
                     <TableCell className="px-6 py-5 align-top">
                       <div className="font-semibold text-[#004d40] leading-tight mb-1">
-                        {sop.title}
+                        {detailBasePath ? (
+                          <Link href={`${detailBasePath}/${sop.reference}`} className="hover:text-amber-600 hover:underline transition-colors flex items-center gap-1 group/link">
+                            {sop.title}
+                            <ExternalLink className="w-3 h-3 opacity-0 group-hover/link:opacity-100 transition-opacity" />
+                          </Link>
+                        ) : (
+                          sop.title
+                        )}
                       </div>
                       <div className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100 inline-block">
                         {sop.code}
@@ -218,60 +228,17 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                     </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
                       <div className="flex items-center justify-end gap-2">
-                        {onMarkAsRead ? (
-                          <>
-                            <a 
-                              href={sop.file} 
-                              target="_blank" 
-                              rel="noreferrer"
-                              onClick={() => setViewedSops(prev => new Set(prev).add(sop.reference))}
-                            >
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
-                              >
-                                <Download className="w-3.5 h-3.5 mr-2" />
-                                View
-                              </Button>
-                            </a>
-                            {!sop.has_read ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className={`h-9 px-3 rounded font-semibold text-[10px] uppercase tracking-wider transition-colors ${
-                                  viewedSops.has(sop.reference)
-                                    ? "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
-                                    : "border-zinc-200 text-zinc-400"
-                                }`}
-                                disabled={!viewedSops.has(sop.reference) || loadingReadSops.has(sop.reference)}
-                                onClick={() => handleMarkAsReadClick(sop)}
-                              >
-                                {loadingReadSops.has(sop.reference) ? (
-                                  <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                                ) : (
-                                  <CheckCircle2 className="w-3.5 h-3.5 mr-2" />
-                                )}
-                                {loadingReadSops.has(sop.reference) ? "Marking..." : "Mark as Read"}
-                              </Button>
-                            ) : (
-                              <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
-                                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                                Read
-                              </Badge>
-                            )}
-                          </>
-                        ) : (
-                          <a href={sop.file} target="_blank" rel="noreferrer">
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-9 px-3 rounded text-[#004d40] hover:bg-emerald-50 font-semibold text-[10px] uppercase tracking-wider"
-                            >
-                              <Download className="w-3.5 h-3.5 mr-2" />
-                              View
-                            </Button>
-                          </a>
+                        {detailBasePath && (
+                          sop.has_read ? (
+                            <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                              <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
+                              Completed
+                            </Badge>
+                          ) : (
+                            <Badge className="h-9 px-3 bg-amber-50 text-amber-700 border-amber-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                              Pending
+                            </Badge>
+                          )
                         )}
 
                         {(onEdit || onToggle || onRemove) && (

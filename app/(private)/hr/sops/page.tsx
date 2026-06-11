@@ -172,6 +172,7 @@ export default function HRSopsPage() {
               totalCount={sopsData?.count || 0}
               pageSize={pageSize}
               onMarkAsRead={handleMarkAsRead}
+              detailBasePath="/hr/sops"
             />
           </div>
         </div>

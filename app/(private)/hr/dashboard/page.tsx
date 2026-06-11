@@ -263,6 +263,7 @@ export default function HRDashboard() {
               onMarkAsRead={handleMarkAsRead}
               readFilter={sopReadFilter}
               onReadFilterChange={setSopReadFilter}
+              detailBasePath="/hr/sops"
             />
           </Card>
         </div>

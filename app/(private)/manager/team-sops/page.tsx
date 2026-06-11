@@ -183,6 +183,7 @@ export default function TeamSopsPage() {
               }}
               page={page}
               onPageChange={setPage}
+              detailBasePath="/manager/sops"
               totalCount={filteredSops.length}
               pageSize={pageSize}
               onMarkAsRead={handleMarkAsRead}
