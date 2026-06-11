@@ -56,29 +56,31 @@ export default function PDFViewer({
       </div>
 
       {/* Pagination Controls */}
-      <div className="bg-white border-t border-gray-200 p-4 flex items-center justify-between z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <button
-          onClick={() => handlePageChange(pageNumber - 1)}
-          disabled={pageNumber <= 1}
-          className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 disabled:hover:bg-gray-100 transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5 mr-1" /> Previous
-        </button>
-        
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-600">
-            Page {pageNumber} of {numPages || '-'}
-          </span>
-          {isUpdatingProgress && <Loader2 className="w-3 h-3 animate-spin text-[#004d40]" />}
-        </div>
+      <div className="bg-white border-t border-gray-200 p-3 flex items-center justify-center z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div className="flex items-center gap-4 bg-zinc-50 border border-zinc-100 p-1.5 rounded-xl shadow-sm">
+          <button
+            onClick={() => handlePageChange(pageNumber - 1)}
+            disabled={pageNumber <= 1}
+            className="flex items-center px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-700 rounded-lg disabled:opacity-50 disabled:hover:bg-white transition-colors shadow-sm text-sm font-semibold border border-zinc-100"
+          >
+            <ChevronLeft className="w-4 h-4 mr-1" /> Prev
+          </button>
+          
+          <div className="flex items-center gap-2 px-2">
+            <span className="text-xs font-bold text-gray-600 uppercase tracking-widest">
+              Page {pageNumber} of {numPages || '-'}
+            </span>
+            {isUpdatingProgress && <Loader2 className="w-3 h-3 animate-spin text-[#004d40]" />}
+          </div>
 
-        <button
-          onClick={() => handlePageChange(pageNumber + 1)}
-          disabled={pageNumber >= numPages || numPages === 0}
-          className="flex items-center px-4 py-2 bg-[#004d40] hover:bg-[#00332b] text-white rounded-lg disabled:opacity-50 disabled:hover:bg-[#004d40] transition-colors shadow-sm"
-        >
-          Next <ChevronRight className="w-5 h-5 ml-1" />
-        </button>
+          <button
+            onClick={() => handlePageChange(pageNumber + 1)}
+            disabled={pageNumber >= numPages || numPages === 0}
+            className="flex items-center px-3 py-1.5 bg-[#004d40] hover:bg-[#00332b] text-white rounded-lg disabled:opacity-50 disabled:hover:bg-[#004d40] transition-colors shadow-sm text-sm font-semibold"
+          >
+            Next <ChevronRight className="w-4 h-4 ml-1" />
+          </button>
+        </div>
       </div>
     </div>
   );

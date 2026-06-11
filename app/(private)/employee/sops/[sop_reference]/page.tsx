@@ -125,48 +125,50 @@ export default function SopDetailPage() {
   }
 
   return (
-    <div className="p-6 mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 h-[calc(100vh-64px)] flex flex-col">
+    <div className="p-3 md:p-4 mx-auto space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700 h-[calc(100vh-64px)] flex flex-col">
       {/* Strategic Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 flex-shrink-0">
+      <div className="flex justify-between items-end flex-shrink-0">
         <div>
-          <button 
-            onClick={() => router.back()} 
-            className="text-zinc-400 hover:text-[#004d40] mb-3 flex items-center text-[10px] font-semibold uppercase tracking-widest transition-colors group"
-          >
-            <div className="w-6 h-6 rounded bg-zinc-100 flex items-center justify-center mr-2 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition-colors">
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </div>
-            Return to Library
-          </button>
-          <div className="flex items-center gap-2 mb-2">
-            <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
-              Document Viewer
+          <div className="flex items-center gap-3 mb-1.5">
+            <button 
+              onClick={() => router.back()} 
+              className="text-zinc-400 hover:text-[#004d40] flex items-center text-[10px] font-semibold uppercase tracking-widest transition-colors group"
+            >
+              <div className="w-5 h-5 rounded bg-zinc-100 flex items-center justify-center mr-1.5 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition-colors">
+                <ArrowLeft className="h-3 w-3" />
+              </div>
+              Back
+            </button>
+            <div className="h-3 w-px bg-zinc-200"></div>
+            <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-bold uppercase tracking-wider text-[9px] px-1.5 py-0 rounded">
+              Viewer
             </Badge>
-            <span className="text-zinc-300">•</span>
             <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">
               {sop.code}
             </span>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight text-[#004d40]">
-            {sop.title}
-          </h1>
-          <p className="text-zinc-500 font-medium mt-1 text-sm">
-            {sop.description}
-          </p>
+          <div className="flex items-baseline gap-2">
+            <h1 className="text-lg font-semibold tracking-tight text-[#004d40] leading-none">
+              {sop.title}
+            </h1>
+            <p className="text-zinc-500 font-medium text-xs truncate max-w-sm hidden md:block">
+              {sop.description}
+            </p>
+          </div>
         </div>
         
-        <div className="flex items-center gap-4 bg-white p-3 pr-5 border border-zinc-100 rounded shadow-sm hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded flex items-center justify-center font-semibold text-xl border border-amber-100">
-            <FileText className="w-6 h-6" />
+        <div className="flex items-center gap-3 bg-white px-3 py-1.5 border border-zinc-100 rounded shadow-sm hover:shadow-md transition-all">
+          <div className="w-8 h-8 bg-amber-50 text-amber-600 rounded flex items-center justify-center font-semibold border border-amber-100">
+            <FileText className="w-4 h-4" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] uppercase font-semibold text-zinc-400 tracking-wider mb-0.5">
-              Reading Progress
+            <span className="text-[9px] uppercase font-bold text-zinc-400 tracking-wider mb-0.5 leading-none">
+              Progress
             </span>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-[#004d40] leading-tight">{currentPercent}%</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm font-extrabold text-[#004d40] leading-none">{currentPercent}%</span>
               {currentPercent === 100 && (
-                <CheckCircle className="w-4 h-4 text-emerald-500" />
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
               )}
             </div>
           </div>
