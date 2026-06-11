@@ -30,7 +30,7 @@ export default function PDFViewer({
     <div className="flex-1 bg-gray-50 rounded-2xl shadow-inner border border-gray-200 overflow-hidden flex flex-col relative">
       <div className="flex-1 overflow-auto flex justify-center p-4">
         <Document
-          file={file}
+          file={file?.replace('http://', 'https://')}
           onLoadSuccess={onDocumentLoadSuccess}
           loading={
             <div className="flex items-center justify-center h-full text-gray-400">
