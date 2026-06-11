@@ -19,6 +19,13 @@ export interface Sops {
   created_by: string;
   updated_by: string;
   code: string;
+  max_scroll_percent: number;
+  total_pages: number;
+  progress: {
+    status: string;
+    highest_page_read: number;
+    max_scroll_percent: number;
+  };
   is_active: boolean;
   is_all_departments: boolean;
   departments: Department[];
@@ -32,6 +39,7 @@ export interface SopsMinified {
   description: string;
   file: string;
   has_read: boolean;
+  total_pages: number;
   read_by: StaffMinified[];
   is_active: boolean;
   is_all_departments: boolean;
