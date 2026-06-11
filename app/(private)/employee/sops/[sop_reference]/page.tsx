@@ -5,7 +5,8 @@ import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { getAuthSop, Sops } from "@/services/sops";
 import { updateSOPProgressBySOP } from "@/services/sopprogress";
-import { ArrowLeft, Loader2, CheckCircle } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle, FileText } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import dynamic from "next/dynamic";
 
 const PDFViewer = dynamic(() => import("@/components/sops/PDFViewer"), {
@@ -124,52 +125,80 @@ export default function SopDetailPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-8 flex flex-col h-[calc(100vh-64px)]">
-      {/* Header & Progress */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6 flex-shrink-0">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-          <div>
-            <button 
-              onClick={() => router.push('/employee/dashboard')} 
-              className="text-gray-500 hover:text-gray-900 mb-2 flex items-center text-sm transition-colors"
-            >
-              <ArrowLeft className="mr-1 h-4 w-4" /> Back to Dashboard
-            </button>
-            <h1 className="text-2xl font-bold text-gray-900">{sop.title}</h1>
-            <p className="text-gray-500 text-sm mt-1">{sop.description}</p>
+    <div className="p-6 mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 h-[calc(100vh-64px)] flex flex-col">
+      {/* Strategic Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 flex-shrink-0">
+        <div>
+          <button 
+            onClick={() => router.back()} 
+            className="text-zinc-400 hover:text-[#004d40] mb-3 flex items-center text-[10px] font-semibold uppercase tracking-widest transition-colors group"
+          >
+            <div className="w-6 h-6 rounded bg-zinc-100 flex items-center justify-center mr-2 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition-colors">
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </div>
+            Return to Library
+          </button>
+          <div className="flex items-center gap-2 mb-2">
+            <Badge className="bg-emerald-50 text-[#004d40] border-emerald-100 font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded">
+              Document Viewer
+            </Badge>
+            <span className="text-zinc-300">•</span>
+            <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">
+              {sop.code}
+            </span>
           </div>
-          
-          <div className="flex items-center gap-3">
-            {currentPercent === 100 && (
-              <div className="flex items-center text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full text-sm font-medium">
-                <CheckCircle className="w-4 h-4 mr-1.5" /> Completed
-              </div>
-            )}
-            <div className="text-right">
-              <span className="text-sm font-medium text-gray-700">{currentPercent}% Read</span>
+          <h1 className="text-xl font-semibold tracking-tight text-[#004d40]">
+            {sop.title}
+          </h1>
+          <p className="text-zinc-500 font-medium mt-1 text-sm">
+            {sop.description}
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-4 bg-white p-3 pr-5 border border-zinc-100 rounded shadow-sm hover:shadow-md transition-all">
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded flex items-center justify-center font-semibold text-xl border border-amber-100">
+            <FileText className="w-6 h-6" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] uppercase font-semibold text-zinc-400 tracking-wider mb-0.5">
+              Reading Progress
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold text-[#004d40] leading-tight">{currentPercent}%</span>
+              {currentPercent === 100 && (
+                <CheckCircle className="w-4 h-4 text-emerald-500" />
+              )}
             </div>
           </div>
         </div>
-
-        {/* Progress Bar */}
-        <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-          <div 
-            className="bg-[#004d40] h-2.5 rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${currentPercent}%` }}
-          ></div>
-        </div>
       </div>
 
-      {/* PDF Viewer */}
-      <PDFViewer 
-        file={sop.file}
-        numPages={numPages}
-        pageNumber={pageNumber}
-        windowWidth={windowWidth}
-        isUpdatingProgress={isUpdatingProgress}
-        onDocumentLoadSuccess={onDocumentLoadSuccess}
-        handlePageChange={handlePageChange}
-      />
+      <div className="bg-white rounded border border-zinc-100 shadow-xl overflow-hidden flex flex-col flex-1 relative">
+        {/* Progress Bar Header */}
+        <div className="bg-zinc-50/80 border-b border-zinc-100 p-3 flex-shrink-0">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">Completion Tracker</span>
+            <span className="text-[9px] font-bold text-[#004d40]">{currentPercent}%</span>
+          </div>
+          <div className="w-full bg-zinc-200/50 rounded-full h-1.5 overflow-hidden">
+            <div 
+              className="bg-amber-500 h-1.5 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${currentPercent}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* PDF Viewer */}
+        <PDFViewer 
+          file={sop.file}
+          numPages={numPages}
+          pageNumber={pageNumber}
+          windowWidth={windowWidth}
+          isUpdatingProgress={isUpdatingProgress}
+          onDocumentLoadSuccess={onDocumentLoadSuccess}
+          handlePageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 }

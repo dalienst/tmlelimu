@@ -228,7 +228,18 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                     </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
                       <div className="flex items-center justify-end gap-2">
-                        {onMarkAsRead ? (
+                        {detailBasePath ? (
+                          sop.has_read ? (
+                            <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                              <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
+                              Completed
+                            </Badge>
+                          ) : (
+                            <Badge className="h-9 px-3 bg-amber-50 text-amber-700 border-amber-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                              Pending
+                            </Badge>
+                          )
+                        ) : onMarkAsRead ? (
                           <>
                             <a 
                               href={sop.file} 
