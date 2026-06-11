@@ -266,7 +266,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
   }
 
   // Filter department.sops_detail based on search/page locally
-  const filteredDeptSops: Sops[] = (department.sops_detail || [])
+  const filteredDeptSops = (department.sops_detail || [])
     .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
     .map(sop => ({
       ...sop,
@@ -275,7 +275,7 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
       updated_by: "",
       departments: [],
       categories: [],
-    }));
+    })) as unknown as Sops[];
 
   return (
     <div className="p-8 mx-auto space-y-8">
