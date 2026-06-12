@@ -48,6 +48,12 @@ export interface SopsMinified {
   created_at: string;
   updated_at: string;
   created_by: string;
+  progress?: {
+    status: string;
+    highest_page_read: number;
+    max_scroll_percent: number;
+  };
+  max_scroll_percent?: number;
 }
 
 interface createSops {
