@@ -26,7 +26,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="bg-white/5 p-2 rounded border border-white/10 backdrop-blur-md transition-all duration-500 group-hover:bg-white/10 group-hover:scale-105 shadow-inner">
-            <Image src="/logo.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" priority />
+            <Image src="/logo2.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" priority />
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
             Tamarind <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600">Elimu</span>

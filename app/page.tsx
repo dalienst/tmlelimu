@@ -141,7 +141,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-4">
             <div className="bg-white/5 p-2 rounded border border-white/10 backdrop-blur-md shadow-inner">
-              <Image src="/logo.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" />
+              <Image src="/logo2.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">Tamarind Elimu</span>
           </div>

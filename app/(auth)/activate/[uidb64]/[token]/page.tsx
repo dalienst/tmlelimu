@@ -68,7 +68,7 @@ export default function ActivateAccount() {
         
         <div className="relative z-10 max-w-lg">
           <div className="flex items-center gap-3 mb-8">
-            <Image src="/logo.png" alt="Tamarind Logo" width={55} height={55} className="object-contain invert brightness-0" />
+            <Image src="/logo2.png" alt="Tamarind Logo" width={55} height={55} className="object-contain invert brightness-0" />
             <div>
               <span className="font-bold text-2xl tracking-tight block leading-none">TAMARIND</span>
               <span className="text-[11px] tracking-wider text-white/70 font-bold uppercase">Elimu System</span>
@@ -113,7 +113,7 @@ export default function ActivateAccount() {
           
           {/* Logo Header for Mobile */}
           <div className="flex md:hidden items-center gap-3 mb-6 justify-center">
-            <Image src="/logo.png" alt="Tamarind Logo" width={40} height={40} className="object-contain" />
+            <Image src="/logo2.png" alt="Tamarind Logo" width={40} height={40} className="object-contain" />
             <div>
               <span className="font-bold text-lg text-[#004d40] tracking-tight block leading-none">TAMARIND</span>
               <span className="text-[10px] tracking-wider text-zinc-500 font-bold uppercase">Elimu System</span>
