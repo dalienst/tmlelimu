@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { addHeadToDepartment, addStaffToDepartment, addSOPToDepartment } from "@/services/departments";
 import { useFetchEmployees } from "@/hooks/accounts/actions";
@@ -277,6 +277,10 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
       categories: [],
     })) as unknown as Sops[];
 
+  const departmentStaff = useMemo(() => {
+    return employees?.filter(emp => department?.staff?.includes(emp.email)) || [];
+  }, [employees, department?.staff]);
+
   return (
     <div className="p-8 mx-auto space-y-8">
       {/* Header */}
@@ -429,6 +433,8 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
               onPageChange={setPage}
               totalCount={filteredDeptSops.length}
               pageSize={pageSize}
+              showReaders={true}
+              departmentStaff={departmentStaff}
             />
           </div>
         </div>

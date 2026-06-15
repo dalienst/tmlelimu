@@ -1,99 +1,135 @@
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/public/Navbar";
+import { BookOpen, TrendingUp, ShieldCheck, ArrowRight } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      {/* Navigation */}
+    <div className="flex flex-col min-h-screen bg-zinc-950 text-white selection:bg-emerald-500/30">
       <Navbar />
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative px-6 py-20 md:px-12 lg:py-32 overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full -z-10 opacity-5">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#004d40] rounded blur-[120px]"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-600 rounded blur-[120px]"></div>
+        <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden px-6 pt-20 pb-32">
+          {/* Background Image & Overlay */}
+          <div className="absolute inset-0 z-0">
+            <Image 
+              src="/tamarind_hero_bg.png" 
+              alt="Tamarind Academy" 
+              fill 
+              className="object-cover opacity-50 scale-105 animate-[pulse_20s_ease-in-out_infinite]"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-[#004d40]/40 mix-blend-multiply"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/40 to-zinc-950"></div>
+            <div className="absolute inset-0 bg-[#004d40]/10 backdrop-blur-[2px]"></div>
           </div>
 
-          <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12">
-            <div className="flex-1 text-center lg:text-left">
-              <div className="inline-flex items-center rounded px-3 py-1 text-sm font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
-                Official Learning Portal
-              </div>
-              <h1 className="text-xl md:text-7xl font-extrabold text-[#004d40] leading-tight mb-6">
-                Excellence Through <span className="text-amber-600 underline decoration-amber-200">Knowledge</span>
-              </h1>
-              <p className="text-lg md:text-xl text-zinc-600 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Welcome to Tamarind Elimu System. Access world-class courses, master company SOPs, and accelerate your career within the Tamarind Group.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                <Link href="/login" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-white bg-[#004d40] rounded hover:bg-[#00332b] transition-all shadow-xl hover:-translate-y-1">
-                  Start Learning Now
-                </Link>
-                <Link href="#features" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-[#004d40] border-2 border-[#004d40]/10 rounded hover:bg-zinc-50 transition-all">
-                  Explore Courses
-                </Link>
-              </div>
+          <div className="relative z-10 max-w-5xl mx-auto w-full flex flex-col items-center text-center space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 mt-12">
+            {/* Tagline */}
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-emerald-950/40 border border-emerald-500/20 backdrop-blur-md shadow-2xl">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_10px_rgba(245,158,11,1)]"></span>
+              <span className="text-sm font-semibold tracking-widest text-emerald-300 uppercase">The Official Knowledge Portal</span>
             </div>
 
-            <div className="flex-1 relative">
-              <div className="relative z-10 rounded overflow-hidden shadow-2xl border-8 border-white">
-                <div className="aspect-[4/3] bg-zinc-100 flex items-center justify-center group">
-                  {/* Placeholder for Hero Image */}
-                  <div className="flex flex-col items-center gap-4 text-[#004d40]/40 group-hover:scale-105 transition-transform duration-500">
-                    <svg className="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                    <span className="font-medium">Tamarind Academy</span>
-                  </div>
-                </div>
-              </div>
-              {/* Decorative elements */}
-              <div className="absolute -top-6 -right-6 w-24 h-24 bg-amber-100 rounded -z-10 animate-pulse"></div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-emerald-50 rounded -z-10 animate-bounce transition-all duration-1000"></div>
+            {/* Main Headline */}
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-white leading-[1.1] drop-shadow-2xl">
+              Excellence Through <br className="hidden md:block"/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-500 to-amber-600 drop-shadow-none">
+                Knowledge
+              </span>
+            </h1>
+
+            {/* Subheadline */}
+            <p className="text-lg md:text-2xl text-zinc-300 max-w-2xl font-light leading-relaxed drop-shadow-lg">
+              Master company standards, accelerate your career, and deliver world-class hospitality with Tamarind Group.
+            </p>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row items-center gap-6 pt-6 w-full sm:w-auto">
+              <Link 
+                href="/login" 
+                className="w-full sm:w-auto px-10 py-5 text-lg font-bold text-zinc-950 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded hover:from-emerald-300 hover:to-emerald-500 transition-all duration-300 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-15px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-3 group"
+              >
+                Log In Securely
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="relative z-20 -mt-24 px-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-zinc-900/60 backdrop-blur-2xl border border-zinc-800/80 rounded-3xl p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
+            <div className="text-center space-y-2 p-2">
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">100<span className="text-amber-500">+</span></p>
+              <p className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-semibold">Active SOPs</p>
+            </div>
+            <div className="text-center space-y-2 p-2 border-l border-zinc-800/50">
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">12</p>
+              <p className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-semibold">Departments</p>
+            </div>
+            <div className="text-center space-y-2 p-2 border-l-0 md:border-l border-zinc-800/50">
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">24<span className="text-amber-500">/</span>7</p>
+              <p className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-semibold">Secure Access</p>
+            </div>
+            <div className="text-center space-y-2 p-2 border-l border-zinc-800/50">
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">99<span className="text-amber-500">%</span></p>
+              <p className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-semibold">Compliance</p>
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-24 bg-zinc-50">
-          <div className="max-w-6xl mx-auto px-6 md:px-12 text-center">
-            <h2 className="text-xl md:text-xl font-semibold text-zinc-900 mb-16">
-              Everything You Need to <span className="text-[#004d40]">Excel</span>
-            </h2>
+        <section id="features" className="py-32 px-6 relative bg-zinc-950">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[600px] bg-[#004d40]/20 blur-[150px] rounded-full pointer-events-none"></div>
+          
+          <div className="max-w-6xl mx-auto relative z-10">
+            <div className="text-center mb-24 space-y-6">
+              <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
+                Empowering the <br className="hidden sm:block"/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600">Tamarind standard</span>
+              </h2>
+              <p className="text-zinc-400 max-w-2xl mx-auto text-lg md:text-xl font-light">
+                Everything you need to master your role, centralized in one premium learning platform designed for excellence.
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="bg-white p-8 rounded shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
-                <div className="w-14 h-14 bg-emerald-100 rounded flex items-center justify-center text-[#004d40] mb-6 mx-auto">
-                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
+              <div className="group relative bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 hover:border-emerald-500/50 p-10 rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.15)] overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 w-16 h-16 bg-zinc-950 border border-zinc-800 rounded-2xl flex items-center justify-center text-emerald-400 mb-8 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                  <BookOpen className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-semibold text-zinc-900 mb-3">Professional Courses</h3>
-                <p className="text-zinc-600">Specially curated content for hospitality, management, and food safety standards.</p>
+                <h3 className="relative z-10 text-2xl font-bold text-white mb-4">SOP Mastery</h3>
+                <p className="relative z-10 text-zinc-400 leading-relaxed text-lg">
+                  Access and master Standard Operating Procedures securely. Ensure you are always aligned with the latest company standards.
+                </p>
               </div>
 
               {/* Feature 2 */}
-              <div className="bg-white p-8 rounded shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
-                <div className="w-14 h-14 bg-amber-100 rounded flex items-center justify-center text-amber-700 mb-6 mx-auto">
-                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
+              <div className="group relative bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 hover:border-amber-500/50 p-10 rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.15)] overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 w-16 h-16 bg-zinc-950 border border-zinc-800 rounded-2xl flex items-center justify-center text-amber-500 mb-8 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                  <TrendingUp className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-semibold text-zinc-900 mb-3">Company SOPs</h3>
-                <p className="text-zinc-600">Access and master all Standard Operating Procedures to ensure consistent excellence.</p>
+                <h3 className="relative z-10 text-2xl font-bold text-white mb-4">Real-time Progress</h3>
+                <p className="relative z-10 text-zinc-400 leading-relaxed text-lg">
+                  Track your learning journey accurately. Management can monitor compliance and identify areas for team improvement instantly.
+                </p>
               </div>
 
               {/* Feature 3 */}
-              <div className="bg-white p-8 rounded shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
-                <div className="w-14 h-14 bg-blue-100 rounded flex items-center justify-center text-blue-700 mb-6 mx-auto">
-                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+              <div className="group relative bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 hover:border-blue-500/50 p-10 rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(59,130,246,0.15)] overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 w-16 h-16 bg-zinc-950 border border-zinc-800 rounded-2xl flex items-center justify-center text-blue-400 mb-8 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                  <ShieldCheck className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-semibold text-zinc-900 mb-3">Real-time Progress</h3>
-                <p className="text-zinc-600">Track your learning journey and earn certificates as you complete training modules.</p>
+                <h3 className="relative z-10 text-2xl font-bold text-white mb-4">Enterprise Security</h3>
+                <p className="relative z-10 text-zinc-400 leading-relaxed text-lg">
+                  All documents are protected with dynamic watermarking, restricted downloads, and secure authenticated access protocols.
+                </p>
               </div>
             </div>
           </div>
@@ -101,19 +137,21 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white py-12 border-t border-zinc-100">
+      <footer className="bg-zinc-950 py-16 border-t border-zinc-900 relative z-10">
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2 text-[#004d40]">
-            <div className="w-8 h-8 bg-[#004d40] rounded flex items-center justify-center text-white font-semibold">T</div>
-            <span className="font-semibold tracking-tight">Tamarind Elimu System</span>
+          <div className="flex items-center gap-4">
+            <div className="bg-white/5 p-2 rounded border border-white/10 backdrop-blur-md shadow-inner">
+              <Image src="/logo2.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white">Tamarind Elimu</span>
           </div>
-          <div className="text-zinc-400 text-sm">
+          <div className="text-zinc-500 text-sm font-medium">
             &copy; {new Date().getFullYear()} Tamarind Group. All rights reserved.
           </div>
-          <div className="flex gap-6">
-            <Link href="#" className="text-zinc-400 hover:text-[#004d40] transition-colors">Privacy</Link>
-            <Link href="#" className="text-zinc-400 hover:text-[#004d40] transition-colors">Terms</Link>
-            <Link href="#" className="text-zinc-400 hover:text-[#004d40] transition-colors">Help</Link>
+          <div className="flex gap-8">
+            <Link href="#" className="text-sm font-medium text-zinc-500 hover:text-emerald-400 transition-colors">Privacy</Link>
+            <Link href="#" className="text-sm font-medium text-zinc-500 hover:text-emerald-400 transition-colors">Terms</Link>
+            <Link href="#" className="text-sm font-medium text-zinc-500 hover:text-emerald-400 transition-colors">Support</Link>
           </div>
         </div>
       </footer>

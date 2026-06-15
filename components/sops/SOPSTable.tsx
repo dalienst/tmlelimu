@@ -146,10 +146,8 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
           <Table>
             <TableHeader className="bg-zinc-50/50">
               <TableRow className="hover:bg-transparent border-zinc-100">
-                <TableHead className="w-[30%] px-6 py-4 font-semibold text-zinc-900">Title</TableHead>
-                <TableHead className="w-[35%] px-6 py-4 font-semibold text-zinc-900">Description</TableHead>
+                <TableHead className="w-[50%] px-6 py-4 font-semibold text-zinc-900">Title</TableHead>
                 <TableHead className="px-6 py-4 font-semibold text-zinc-900 text-center">Status</TableHead>
-                <TableHead className="px-6 py-4 font-semibold text-zinc-900">Uploaded</TableHead>
                 {(onEdit || onToggle || onRemove || onMarkAsRead) ? (
                   <TableHead className="text-right px-6 py-4 font-semibold text-zinc-900">Actions</TableHead>
                 ) : (
@@ -175,11 +173,6 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                       <div className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100 inline-block">
                         {sop.code}
                       </div>
-                    </TableCell>
-                    <TableCell className="px-6 py-5 text-zinc-600 align-top">
-                      <p className="line-clamp-2 text-sm leading-relaxed max-w-[400px]">
-                        {sop.description || "No description provided."}
-                      </p>
                     </TableCell>
                     <TableCell className="px-6 py-5 text-center align-top">
                       <div className="flex flex-col items-center gap-2">
@@ -219,29 +212,42 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-6 py-5 text-zinc-500 text-sm align-top font-medium">
-                      {new Date(sop.created_at).toLocaleDateString(undefined, {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                      })}
-                    </TableCell>
                     <TableCell className="px-6 py-5 text-right align-top">
                       <div className="flex items-center justify-end gap-2">
                         {detailBasePath && (
                           sop.progress?.status === "Completed" ? (
-                            <Badge className="h-9 px-3 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
-                              <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                              Completed
-                            </Badge>
+                            <div className="w-28 flex flex-col gap-1 justify-center select-none text-left">
+                              <div className="flex justify-between items-center text-[10px] text-emerald-700 font-semibold leading-none mb-0.5">
+                                <span>Completed</span>
+                                <span>100%</span>
+                              </div>
+                              <div className="w-full bg-emerald-100 rounded-full h-1.5 overflow-hidden">
+                                <div className="bg-emerald-600 h-1.5 rounded-full" style={{ width: "100%" }} />
+                              </div>
+                            </div>
                           ) : sop.progress?.status === "Reading" ? (
-                            <Badge className="h-9 px-3 bg-sky-50 text-sky-700 border-sky-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
-                              {sop.progress.max_scroll_percent}% Read
-                            </Badge>
+                            <div className="w-28 flex flex-col gap-1 justify-center select-none text-left">
+                              <div className="flex justify-between items-center text-[10px] text-[#004d40] font-semibold leading-none mb-0.5">
+                                <span>Reading</span>
+                                <span>{sop.progress.max_scroll_percent}%</span>
+                              </div>
+                              <div className="w-full bg-zinc-100 rounded-full h-1.5 overflow-hidden">
+                                <div 
+                                  className="bg-emerald-600 h-1.5 rounded-full transition-all duration-300"
+                                  style={{ width: `${Math.min(100, Math.max(0, sop.progress.max_scroll_percent))}%` }}
+                                />
+                              </div>
+                            </div>
                           ) : (
-                            <Badge className="h-9 px-3 bg-amber-50 text-amber-700 border-amber-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
-                              Pending
-                            </Badge>
+                            <div className="w-28 flex flex-col gap-1 justify-center select-none text-left">
+                              <div className="flex justify-between items-center text-[10px] text-amber-700 font-semibold leading-none mb-0.5">
+                                <span>Pending</span>
+                                <span>0%</span>
+                              </div>
+                              <div className="w-full bg-zinc-100 rounded-full h-1.5 overflow-hidden">
+                                <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: "0%" }} />
+                              </div>
+                            </div>
                           )
                         )}
 
@@ -308,7 +314,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center text-zinc-500">
+                  <TableCell colSpan={3} className="h-32 text-center text-zinc-500">
                     No Standard Operating Procedures found.
                   </TableCell>
                 </TableRow>

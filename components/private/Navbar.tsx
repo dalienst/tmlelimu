@@ -10,6 +10,7 @@ import {
   Shield, GraduationCap, Briefcase, BarChart3, Settings, Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -115,52 +116,51 @@ export default function Navbar() {
   return (
     <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
       <div className=" mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Left side: Logo and Desktop Links */}
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link href={`/${rolePrefix}/dashboard`} className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#004d40] rounded flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg leading-none">T</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold tracking-tight text-[#004d40] leading-tight hidden sm:block">
-                    Tamarind <span className="text-amber-600">Elimu</span>
-                  </span>
-                  <span className="text-[10px] uppercase font-semibold text-zinc-400 tracking-wider leading-tight hidden sm:block">
-                    {roleName}
-                  </span>
-                </div>
-              </Link>
-            </div>
+        <div className="flex justify-between h-16 relative">
+          {/* Left side: Logo */}
+          <div className="flex-shrink-0 flex items-center">
+            <Link href={`/${rolePrefix}/dashboard`} className="flex items-center gap-2">
+              <div className="w-12 h-12  rounded flex items-center justify-center">
+                <Image src="/logo2.png" alt="Logo" width={85} height={85} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold tracking-tight text-[#004d40] leading-tight hidden sm:block">
+                  Tamarind <span className="text-amber-600">Elimu</span>
+                </span>
+                <span className="text-[10px] uppercase font-semibold text-zinc-400 tracking-wider leading-tight hidden sm:block">
+                  {roleName}
+                </span>
+              </div>
+            </Link>
+          </div>
 
-            <div className="hidden sm:ml-8 sm:flex sm:space-x-4">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={cn(
-                      "inline-flex items-center px-3 py-2 text-sm font-medium rounded transition-all h-10 mt-3",
-                      isActive
-                        ? "bg-emerald-50 text-[#004d40]"
-                        : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
-                    )}
-                  >
-                    <Icon className={cn("w-4 h-4 mr-2", isActive ? "text-emerald-600" : "text-zinc-400")} />
-                    {link.name}
-                  </Link>
-                );
-              })}
-            </div>
+          {/* Center side: Desktop Navigation links centered */}
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center justify-center space-x-1 lg:space-x-2 xl:space-x-4 h-full">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={cn(
+                    "inline-flex items-center px-3 py-2 text-sm font-medium rounded transition-all duration-200 h-10 hover:scale-[1.02]",
+                    isActive
+                      ? "bg-emerald-50 text-[#004d40] shadow-sm font-semibold"
+                      : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+                  )}
+                >
+                  <Icon className={cn("w-4 h-4 mr-2 transition-colors duration-200", isActive ? "text-emerald-600 animate-pulse-slow" : "text-zinc-400")} />
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right side: Profile and Mobile menu button */}
-          <div className="flex items-center">
+          <div className="flex items-center z-10">
             {/* Desktop Profile Dropdown */}
-            <div className="hidden sm:ml-6 sm:flex sm:items-center relative" ref={profileRef}>
+            <div className="hidden md:ml-6 md:flex md:items-center relative" ref={profileRef}>
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 p-1.5 rounded hover:bg-zinc-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#004d40] focus:ring-offset-2"
@@ -171,7 +171,7 @@ export default function Navbar() {
                 )}>
                   {userInitial}
                 </div>
-                <div className="flex flex-col items-start ml-1">
+                <div className="hidden lg:flex flex-col items-start ml-1">
                   <span className="text-sm font-medium text-zinc-700 max-w-[120px] truncate leading-none">
                     {userName}
                   </span>
@@ -223,7 +223,7 @@ export default function Navbar() {
             </div>
 
             {/* Mobile menu button */}
-            <div className="flex items-center justify-center sm:hidden">
+            <div className="flex items-center justify-center md:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="inline-flex items-center justify-center p-2 rounded text-zinc-400 hover:text-zinc-500 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#004d40]"
@@ -241,7 +241,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      <div className={cn("sm:hidden", isMobileMenuOpen ? "block border-b border-zinc-200" : "hidden")}>
+      <div className={cn("md:hidden", isMobileMenuOpen ? "block border-b border-zinc-200" : "hidden")}>
         <div className="pt-2 pb-3 space-y-1 px-4">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || pathname.startsWith(link.href + "/");

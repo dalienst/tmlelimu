@@ -85,7 +85,7 @@ export default function EmployeeDashboard() {
   };
 
   return (
-    <div className="p-6 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="p-6 w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Strategic Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -107,7 +107,7 @@ export default function EmployeeDashboard() {
         </div>
         
         <div className="flex items-center gap-3 bg-white p-2 pr-5 border border-zinc-100 rounded shadow-sm hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-semibold text-xl shadow-lg shadow-emerald-900/10">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-semibold text-lg shadow-lg shadow-emerald-900/10">
             {userInitial}
           </div>
           <div className="flex flex-col">
@@ -122,56 +122,43 @@ export default function EmployeeDashboard() {
       </div>
 
       {/* Performance Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-none shadow-xl bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-8 opacity-10">
-            <Building2 className="w-24 h-24" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        
+        {/* Assigned Department */}
+        <div className="bg-white border border-zinc-150 rounded p-4 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300 flex items-center gap-3.5 group">
+          <div className="p-2.5 rounded bg-emerald-50 text-[#004d40] group-hover:scale-105 transition-transform duration-300">
+            <Building2 className="w-5 h-5" />
           </div>
-          <CardContent className="pt-4 pb-4 relative z-10">
-            <p className="text-emerald-100/70 text-[10px] font-semibold uppercase tracking-widest mb-1">Assigned Department</p>
-            <h3 className="text-2xl font-semibold leading-tight line-clamp-2 pr-12">{department?.name || "N/A"}</h3>
-            <div className="mt-6 flex items-center gap-2">
-              <div className="h-1.5 flex-1 bg-white/10 rounded overflow-hidden">
-                <div className="h-full bg-amber-400 w-full rounded" />
-              </div>
-              <span className="text-[10px] font-semibold text-emerald-100/60 uppercase">Active</span>
-            </div>
-          </CardContent>
-        </Card>
+          <div>
+            <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest leading-none">Assigned Department</p>
+            <h3 className="text-xl font-semibold text-zinc-800 mt-1 truncate max-w-[200px]" title={department?.name}>
+              {department?.name || "N/A"}
+            </h3>
+          </div>
+        </div>
 
-        <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-4 pb-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Available Documents</p>
-                <div className="flex items-baseline gap-2">
-                  <h3 className="text-2xl font-semibold text-[#004d40] group-hover:text-amber-600 transition-colors">{sops.length}</h3>
-                  <span className="text-xs font-semibold text-zinc-400">SOPs</span>
-                </div>
-              </div>
-              <div className="bg-emerald-50 p-3 rounded group-hover:rotate-12 transition-transform">
-                <FileText className="w-6 h-6 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Available SOPs */}
+        <div className="bg-white border border-zinc-150 rounded p-4 shadow-sm hover:shadow-md hover:border-teal-100 transition-all duration-300 flex items-center gap-3.5 group">
+          <div className="p-2.5 rounded bg-teal-50 text-teal-600 group-hover:scale-105 transition-transform duration-300">
+            <FileText className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest leading-none">Available SOPs</p>
+            <h3 className="text-xl font-semibold text-zinc-800 mt-1">{sops.length}</h3>
+          </div>
+        </div>
 
-        <Card className="border-zinc-100 shadow-sm hover:shadow-md transition-all rounded bg-white border-2 hover:border-emerald-100 group">
-          <CardContent className="pt-4 pb-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-zinc-400 text-[10px] font-semibold uppercase tracking-widest mb-1">Collaborators</p>
-                <div className="flex items-baseline gap-2">
-                  <h3 className="text-2xl font-semibold text-[#004d40] group-hover:text-amber-600 transition-colors">{team.length}</h3>
-                  <span className="text-xs font-semibold text-zinc-400">Members</span>
-                </div>
-              </div>
-              <div className="bg-amber-50 p-3 rounded group-hover:scale-110 transition-transform">
-                <Users className="w-6 h-6 text-amber-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Collaborators */}
+        <div className="bg-white border border-zinc-150 rounded p-4 shadow-sm hover:shadow-md hover:border-amber-100 transition-all duration-300 flex items-center gap-3.5 group">
+          <div className="p-2.5 rounded bg-amber-50 text-amber-600 group-hover:scale-105 transition-transform duration-300">
+            <Users className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest leading-none">Collaborators</p>
+            <h3 className="text-xl font-semibold text-zinc-800 mt-1">{team.length}</h3>
+          </div>
+        </div>
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
