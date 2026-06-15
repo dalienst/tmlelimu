@@ -535,15 +535,18 @@ export default function ManagerDashboard() {
                                     <CheckCircle2 className="w-3 h-3 mr-1" /> Read
                                   </Badge>
                                   {sop.progress?.certificate_reference && (
-                                    <a 
-                                      href={getSOPCertificateDownloadUrl(sop.progress.certificate_reference)}
-                                      target="_blank" 
-                                      rel="noopener noreferrer"
-                                      className="h-8 w-8 bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors rounded flex items-center justify-center shrink-0"
+                                    <button 
+                                      onClick={() => handleDownloadCertificate(sop.progress.certificate_reference!)}
+                                      disabled={downloadingCert === sop.progress.certificate_reference}
+                                      className="h-8 w-8 bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 disabled:opacity-50 transition-colors rounded flex items-center justify-center shrink-0"
                                       title="Download Certificate"
                                     >
-                                      <Download className="w-4 h-4" />
-                                    </a>
+                                      {downloadingCert === sop.progress.certificate_reference ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                      ) : (
+                                        <Download className="w-4 h-4" />
+                                      )}
+                                    </button>
                                   )}
                                 </div>
                               )}

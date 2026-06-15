@@ -243,12 +243,12 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                               </div>
                               {sop.progress?.certificate_reference && (
                                 <button 
-                                  onClick={() => handleDownloadCertificate(sop.progress.certificate_reference!)}
-                                  disabled={downloadingCert === sop.progress.certificate_reference}
+                                  onClick={() => handleDownloadCertificate(sop.progress?.certificate_reference!)}
+                                  disabled={downloadingCert === sop.progress?.certificate_reference}
                                   className="h-8 w-8 bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 disabled:opacity-50 transition-colors rounded flex items-center justify-center shrink-0"
                                   title="Download Certificate"
                                 >
-                                  {downloadingCert === sop.progress.certificate_reference ? (
+                                  {downloadingCert === sop.progress?.certificate_reference ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />
                                   ) : (
                                     <Download className="w-4 h-4" />
