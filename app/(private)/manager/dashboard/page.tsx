@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useFetchAccount } from "@/hooks/accounts/actions";
+import { downloadSOPCertificate } from "@/services/sopcertificates";
 import { 
   Building2, 
   FileText, 
@@ -80,8 +81,20 @@ export default function ManagerDashboard() {
 
   // Staff Detail State
   const [selectedStaffReference, setSelectedStaffReference] = useState<string | null>(null);
+  const [downloadingCert, setDownloadingCert] = useState<string | null>(null);
 
   const headers = useAxiosAuth();
+
+  const handleDownloadCertificate = async (reference: string) => {
+    setDownloadingCert(reference);
+    try {
+      await downloadSOPCertificate(reference, headers);
+    } catch (err) {
+      console.error("Failed to download certificate:", err);
+    } finally {
+      setDownloadingCert(null);
+    }
+  };
 
   const managedDept = manager?.departments_headed?.[0];
   const sops = managedDept?.sops || [];
@@ -496,6 +509,7 @@ export default function ManagerDashboard() {
                                 </Button>
                               </Link>
 
+                              {/* Verify if HOD / Manager has already read this SOP */}
                               {!sop.has_read ? (
                                 <Button
                                   variant="outline"
@@ -516,9 +530,25 @@ export default function ManagerDashboard() {
                                   Mark
                                 </Button>
                               ) : (
-                                <Badge className="h-8 px-2 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
-                                  <CheckCircle2 className="w-3 h-3 mr-1" /> Read
-                                </Badge>
+                                <div className="flex items-center gap-1.5 justify-end">
+                                  <Badge className="h-8 px-2 bg-emerald-50 text-emerald-700 border-emerald-200 pointer-events-none text-[10px] uppercase tracking-wider font-semibold rounded flex items-center justify-center">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" /> Read
+                                  </Badge>
+                                  {sop.progress?.certificate_reference && (
+                                    <button 
+                                      onClick={() => handleDownloadCertificate(sop.progress.certificate_reference!)}
+                                      disabled={downloadingCert === sop.progress.certificate_reference}
+                                      className="h-8 w-8 bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 disabled:opacity-50 transition-colors rounded flex items-center justify-center shrink-0"
+                                      title="Download Certificate"
+                                    >
+                                      {downloadingCert === sop.progress.certificate_reference ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                      ) : (
+                                        <Download className="w-4 h-4" />
+                                      )}
+                                    </button>
+                                  )}
+                                </div>
                               )}
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>

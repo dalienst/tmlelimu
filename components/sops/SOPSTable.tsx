@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Sops, SopsMinified } from "@/services/sops";
 import { StaffMinified } from "@/services/accounts";
 import SOPReadersModal from "@/components/sops/SOPReadersModal";
+import { downloadSOPCertificate } from "@/services/sopcertificates";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,10 +65,23 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
   pageSize,
   detailBasePath
 }: SOPSTableProps<T>) {
+  const headers = useAxiosAuth();
+  const [downloadingCert, setDownloadingCert] = useState<string | null>(null);
   const [localSearch, setLocalSearch] = useState(search);
   const [loadingReadSops, setLoadingReadSops] = useState<Set<string>>(new Set());
   const [viewedSops, setViewedSops] = useState<Set<string>>(new Set());
   const [viewingReaders, setViewingReaders] = useState<T | null>(null);
+
+  const handleDownloadCertificate = async (reference: string) => {
+    setDownloadingCert(reference);
+    try {
+      await downloadSOPCertificate(reference, headers);
+    } catch (err) {
+      console.error("Failed to download certificate:", err);
+    } finally {
+      setDownloadingCert(null);
+    }
+  };
 
   const handleMarkAsReadClick = async (sop: T) => {
     if (!onMarkAsRead) return;
@@ -135,7 +150,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
         )}
       </div>
 
-      <div className="overflow-hidden">
+      <div className="overflow-x-auto">
         {isLoading ? (
           <div className="p-8 space-y-4">
             {[1, 2, 3, 4].map((i) => (
@@ -216,14 +231,30 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
                       <div className="flex items-center justify-end gap-2">
                         {detailBasePath && (
                           sop.progress?.status === "Completed" ? (
-                            <div className="w-28 flex flex-col gap-1 justify-center select-none text-left">
-                              <div className="flex justify-between items-center text-[10px] text-emerald-700 font-semibold leading-none mb-0.5">
-                                <span>Completed</span>
-                                <span>100%</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-28 flex flex-col gap-1 justify-center select-none text-left">
+                                <div className="flex justify-between items-center text-[10px] text-emerald-700 font-semibold leading-none mb-0.5">
+                                  <span>Completed</span>
+                                  <span>100%</span>
+                                </div>
+                                <div className="w-full bg-emerald-100 rounded-full h-1.5 overflow-hidden">
+                                  <div className="bg-emerald-600 h-1.5 rounded-full" style={{ width: "100%" }} />
+                                </div>
                               </div>
-                              <div className="w-full bg-emerald-100 rounded-full h-1.5 overflow-hidden">
-                                <div className="bg-emerald-600 h-1.5 rounded-full" style={{ width: "100%" }} />
-                              </div>
+                              {sop.progress?.certificate_reference && (
+                                <button 
+                                  onClick={() => handleDownloadCertificate(sop.progress?.certificate_reference!)}
+                                  disabled={downloadingCert === sop.progress?.certificate_reference}
+                                  className="h-8 w-8 bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 disabled:opacity-50 transition-colors rounded flex items-center justify-center shrink-0"
+                                  title="Download Certificate"
+                                >
+                                  {downloadingCert === sop.progress?.certificate_reference ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <Download className="w-4 h-4" />
+                                  )}
+                                </button>
+                              )}
                             </div>
                           ) : sop.progress?.status === "Reading" ? (
                             <div className="w-28 flex flex-col gap-1 justify-center select-none text-left">

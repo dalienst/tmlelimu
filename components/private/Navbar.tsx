@@ -7,7 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import {
   Menu, X, LogOut, User, LayoutDashboard, FileText,
   ChevronDown, CheckCircle, Users, Building2,
-  Shield, GraduationCap, Briefcase, BarChart3, Settings, Bot
+  Shield, GraduationCap, Briefcase, BarChart3, Settings, Bot, Award
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -61,41 +61,47 @@ export default function Navbar() {
       { name: "Dashboard", href: "/hr/dashboard", icon: LayoutDashboard },
       { name: "User Management", href: "/hr/employees", icon: Users },
       { name: "System Settings", href: "/hr/settings", icon: Settings },
-      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
+      { name: "Certificates", href: "/hr/certificates", icon: Award },
+      // { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isHR) {
     navLinks = [
       { name: "Dashboard", href: "/hr/dashboard", icon: LayoutDashboard },
       { name: "Departments", href: "/hr/departments", icon: Building2 },
       { name: "Employees", href: "/hr/employees", icon: Users },
-      { name: "SOP Management", href: "/hr/sops", icon: FileText },
-      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
+      { name: "SOPs", href: "/hr/sops", icon: FileText },
+      { name: "Certificates", href: "/hr/certificates", icon: Award },
+      // { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isManager) {
     navLinks = [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
-      { name: "Team SOPs", href: "/manager/team-sops", icon: Briefcase },
-      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
+      { name: "SOPs", href: "/manager/team-sops", icon: Briefcase },
+      { name: "Certificates", href: "/manager/certificates", icon: Award },
+      // { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isHOD) {
     navLinks = [
       { name: "Dashboard", href: "/hod/dashboard", icon: LayoutDashboard },
-      { name: "Dept Analytics", href: "/hod/analytics", icon: BarChart3 },
+      // { name: "Dept Analytics", href: "/hod/analytics", icon: BarChart3 },
       { name: "Resources", href: "/hod/resources", icon: FileText },
-      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
+      { name: "Certificates", href: "/manager/certificates", icon: Award },
+      // { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   } else if (isTrainer) {
     navLinks = [
       { name: "Dashboard", href: "/trainer/dashboard", icon: LayoutDashboard },
       { name: "Courses", href: "/trainer/courses", icon: GraduationCap },
       { name: "Students", href: "/trainer/students", icon: Users },
+      { name: "My Certificates", href: "/employee/certificates", icon: Award },
     ];
   } else {
     // Default employee or fallback links
     navLinks = [
       { name: "Dashboard", href: "/employee/dashboard", icon: LayoutDashboard },
       { name: "SOP Library", href: "/employee/sops", icon: FileText },
-      { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
+      { name: "Certificates", href: "/employee/certificates", icon: Award },
+      // { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
   }
 
@@ -112,6 +118,7 @@ export default function Navbar() {
   else if (isTrainer) rolePath = "/trainer";
 
   const profileHref = `${rolePath}/profile`;
+  const certificatesHref = isTrainer ? "/employee/certificates" : isHOD ? "/manager/certificates" : `${rolePath}/certificates`;
 
   return (
     <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
@@ -210,6 +217,14 @@ export default function Navbar() {
                       <User className="w-4 h-4 mr-2 text-zinc-400" />
                       Your Profile
                     </Link>
+                    <Link
+                      href={certificatesHref}
+                      className="flex items-center px-3 py-2 text-sm text-zinc-700 rounded hover:bg-zinc-50 hover:text-zinc-900 transition-colors mt-1"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <Award className="w-4 h-4 mr-2 text-zinc-400" />
+                      Certificates
+                    </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: "/login" })}
                       className="flex w-full items-center px-3 py-2 text-sm text-red-600 rounded hover:bg-red-50 transition-colors mt-1"
@@ -283,12 +298,20 @@ export default function Navbar() {
           </div>
           <div className="mt-4 space-y-1 px-4">
             <Link
-              href="/profile"
+              href={profileHref}
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center px-3 py-2.5 rounded text-base font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
             >
               <User className="w-5 h-5 mr-3 text-zinc-400" />
               Your Profile
+            </Link>
+            <Link
+              href={certificatesHref}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center px-3 py-2.5 rounded text-base font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+            >
+              <Award className="w-5 h-5 mr-3 text-zinc-400" />
+              Certificates
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}

@@ -25,6 +25,7 @@ export interface Sops {
     status: string;
     highest_page_read: number;
     max_scroll_percent: number;
+    certificate_reference?: string;
   };
   is_active: boolean;
   is_all_departments: boolean;
@@ -52,6 +53,7 @@ export interface SopsMinified {
     status: string;
     highest_page_read: number;
     max_scroll_percent: number;
+    certificate_reference?: string;
   };
   max_scroll_percent?: number;
 }
