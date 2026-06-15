@@ -8,6 +8,7 @@ import { updateSOPProgressBySOP } from "@/services/sopprogress";
 import { ArrowLeft, Loader2, CheckCircle, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import dynamic from "next/dynamic";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PDFViewer = dynamic(() => import("@/components/sops/PDFViewer"), {
   ssr: false,
@@ -28,6 +29,7 @@ export default function SopDetailPage() {
   const { sop_reference } = useParams();
   const { data: session } = useSession() as { data: CustomSession | null };
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [sop, setSop] = useState<Sops | null>(null);
   const [loading, setLoading] = useState(true);
@@ -92,6 +94,10 @@ export default function SopDetailPage() {
           { highest_page_read: newPage },
           { headers: { Authorization: `Token ${session.user.token}` } }
         );
+        queryClient.invalidateQueries({ queryKey: ["account"] });
+        queryClient.invalidateQueries({ queryKey: ["auth-sops"] });
+        queryClient.invalidateQueries({ queryKey: ["sops"] });
+        queryClient.invalidateQueries({ queryKey: ["employees"] });
       } catch (err) {
         console.error("Failed to sync progress:", err);
       } finally {
