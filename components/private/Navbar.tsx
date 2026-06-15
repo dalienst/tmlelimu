@@ -118,6 +118,7 @@ export default function Navbar() {
   else if (isTrainer) rolePath = "/trainer";
 
   const profileHref = `${rolePath}/profile`;
+  const certificatesHref = isTrainer ? "/employee/certificates" : isHOD ? "/manager/certificates" : `${rolePath}/certificates`;
 
   return (
     <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
@@ -217,12 +218,12 @@ export default function Navbar() {
                       Your Profile
                     </Link>
                     <Link
-                      href="/employee/certificates"
+                      href={certificatesHref}
                       className="flex items-center px-3 py-2 text-sm text-zinc-700 rounded hover:bg-zinc-50 hover:text-zinc-900 transition-colors mt-1"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <Award className="w-4 h-4 mr-2 text-zinc-400" />
-                      My Certificates
+                      Certificates
                     </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: "/login" })}
@@ -297,7 +298,7 @@ export default function Navbar() {
           </div>
           <div className="mt-4 space-y-1 px-4">
             <Link
-              href="/profile"
+              href={profileHref}
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center px-3 py-2.5 rounded text-base font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
             >
@@ -305,12 +306,12 @@ export default function Navbar() {
               Your Profile
             </Link>
             <Link
-              href="/employee/certificates"
+              href={certificatesHref}
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center px-3 py-2.5 rounded text-base font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
             >
               <Award className="w-5 h-5 mr-3 text-zinc-400" />
-              My Certificates
+              Certificates
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}

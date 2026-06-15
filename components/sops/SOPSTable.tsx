@@ -150,7 +150,7 @@ export default function SOPSTable<T extends Sops | SopsMinified>({
         )}
       </div>
 
-      <div className="overflow-hidden">
+      <div className="overflow-x-auto">
         {isLoading ? (
           <div className="p-8 space-y-4">
             {[1, 2, 3, 4].map((i) => (
