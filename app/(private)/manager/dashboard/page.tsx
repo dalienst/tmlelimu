@@ -168,7 +168,7 @@ export default function ManagerDashboard() {
   }
 
   return (
-    <div className="p-6 mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="p-6 w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Strategic Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -190,7 +190,7 @@ export default function ManagerDashboard() {
         </div>
         
         <div className="flex items-center gap-3 bg-white p-2 pr-5 border border-zinc-100 rounded shadow-sm hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-semibold text-xl shadow-lg shadow-emerald-900/10">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00332b] text-white rounded flex items-center justify-center font-semibold text-lg shadow-lg shadow-emerald-900/10">
             {managerInitial}
           </div>
           <div className="flex flex-col">
