@@ -3,6 +3,7 @@
 import "./globals.css";
 
 import NextAuthProvider from "@/providers/NextAuthProvider";
+import SessionTimeoutProvider from "@/providers/SessionTimeoutProvider";
 import TanstackQueryProvider from "@/providers/TanstackQueryProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "react-hot-toast";
@@ -27,11 +28,13 @@ export default function RootLayout({
       <body className="min-h-screen antialiased">
         <Toaster position="top-center" />
         <NextAuthProvider>
-          <TanstackQueryProvider>
-           
-            <main className="relative">{children}</main>
-            
-          </TanstackQueryProvider>
+          <SessionTimeoutProvider>
+            <TanstackQueryProvider>
+             
+              <main className="relative">{children}</main>
+              
+            </TanstackQueryProvider>
+          </SessionTimeoutProvider>
         </NextAuthProvider>
         <Analytics />
       </body>
