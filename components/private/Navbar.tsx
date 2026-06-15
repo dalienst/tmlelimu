@@ -7,7 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import {
   Menu, X, LogOut, User, LayoutDashboard, FileText,
   ChevronDown, CheckCircle, Users, Building2,
-  Shield, GraduationCap, Briefcase, BarChart3, Settings, Bot
+  Shield, GraduationCap, Briefcase, BarChart3, Settings, Bot, Award
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -210,6 +210,14 @@ export default function Navbar() {
                       <User className="w-4 h-4 mr-2 text-zinc-400" />
                       Your Profile
                     </Link>
+                    <Link
+                      href="/employee/certificates"
+                      className="flex items-center px-3 py-2 text-sm text-zinc-700 rounded hover:bg-zinc-50 hover:text-zinc-900 transition-colors mt-1"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <Award className="w-4 h-4 mr-2 text-zinc-400" />
+                      My Certificates
+                    </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: "/login" })}
                       className="flex w-full items-center px-3 py-2 text-sm text-red-600 rounded hover:bg-red-50 transition-colors mt-1"
@@ -289,6 +297,14 @@ export default function Navbar() {
             >
               <User className="w-5 h-5 mr-3 text-zinc-400" />
               Your Profile
+            </Link>
+            <Link
+              href="/employee/certificates"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center px-3 py-2.5 rounded text-base font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+            >
+              <Award className="w-5 h-5 mr-3 text-zinc-400" />
+              My Certificates
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
