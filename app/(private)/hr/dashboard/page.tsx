@@ -264,6 +264,8 @@ export default function HRDashboard() {
               readFilter={sopReadFilter}
               onReadFilterChange={setSopReadFilter}
               detailBasePath="/hr/sops"
+              showReaders={true}
+              departmentStaff={employeesData}
             />
           </Card>
         </div>
