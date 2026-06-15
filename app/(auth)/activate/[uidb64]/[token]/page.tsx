@@ -121,7 +121,7 @@ export default function ActivateAccount() {
           </div>
 
           <div className="text-center md:text-left mb-8">
-            <h1 className="text-2xl font-bold text-zinc-900 mb-2">Activate Account</h1>
+            <h1 className="text-xl font-semibold text-zinc-900 mb-2">Activate Account</h1>
             <p className="text-xs font-medium text-zinc-500">Set your password to secure and activate your account.</p>
           </div>
 

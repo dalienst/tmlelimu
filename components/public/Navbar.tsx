@@ -25,7 +25,7 @@ export default function Navbar() {
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-zinc-950/80 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="bg-white/5 p-2 rounded-xl border border-white/10 backdrop-blur-md transition-all duration-500 group-hover:bg-white/10 group-hover:scale-105 shadow-inner">
+          <div className="bg-white/5 p-2 rounded border border-white/10 backdrop-blur-md transition-all duration-500 group-hover:bg-white/10 group-hover:scale-105 shadow-inner">
             <Image src="/logo.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" priority />
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
@@ -78,7 +78,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center w-full px-5 py-4 text-base font-bold text-zinc-950 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-xl shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]"
+                className="flex items-center justify-center w-full px-5 py-4 text-base font-bold text-zinc-950 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]"
               >
                 Log In Securely
               </Link>

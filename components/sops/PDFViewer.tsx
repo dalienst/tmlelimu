@@ -57,7 +57,7 @@ export default function PDFViewer({
 
       {/* Pagination Controls */}
       <div className="bg-white border-t border-gray-200 p-3 flex items-center justify-center z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div className="flex items-center gap-4 bg-zinc-50 border border-zinc-100 p-1.5 rounded-xl shadow-sm">
+        <div className="flex items-center gap-4 bg-zinc-50 border border-zinc-100 p-1.5 rounded shadow-sm">
           <button
             onClick={() => handlePageChange(pageNumber - 1)}
             disabled={pageNumber <= 1}

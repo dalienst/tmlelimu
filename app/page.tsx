@@ -49,7 +49,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-6 w-full sm:w-auto">
               <Link 
                 href="/login" 
-                className="w-full sm:w-auto px-10 py-5 text-lg font-bold text-zinc-950 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-xl hover:from-emerald-300 hover:to-emerald-500 transition-all duration-300 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-15px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-3 group"
+                className="w-full sm:w-auto px-10 py-5 text-lg font-bold text-zinc-950 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded hover:from-emerald-300 hover:to-emerald-500 transition-all duration-300 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-15px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-3 group"
               >
                 Log In Securely
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
@@ -140,7 +140,7 @@ export default function LandingPage() {
       <footer className="bg-zinc-950 py-16 border-t border-zinc-900 relative z-10">
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-4">
-            <div className="bg-white/5 p-2 rounded-xl border border-white/10 backdrop-blur-md shadow-inner">
+            <div className="bg-white/5 p-2 rounded border border-white/10 backdrop-blur-md shadow-inner">
               <Image src="/logo.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">Tamarind Elimu</span>

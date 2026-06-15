@@ -106,7 +106,7 @@ export default function ResetPassword() {
           </div>
 
           <div className="text-center md:text-left mb-8">
-            <h1 className="text-2xl font-bold text-zinc-900 mb-2">Create New Password</h1>
+            <h1 className="text-xl font-semibold text-zinc-900 mb-2">Create New Password</h1>
             <p className="text-xs font-medium text-zinc-500">Enter the code sent to your email and choose a new password.</p>
           </div>
 

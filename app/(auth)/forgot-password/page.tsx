@@ -62,19 +62,19 @@ export default function ForgotPassword() {
           <div className="space-y-4 pt-6 border-t border-white/10">
             <h4 className="text-xs font-bold text-white/60 uppercase tracking-wider">Platform Capabilities</h4>
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col gap-1">
+              <div className="bg-white/5 border border-white/10 rounded p-3 flex flex-col gap-1">
                 <span className="text-emerald-400 font-bold">Employee Portal</span>
                 <span className="text-white/60">Complete courses & track progress</span>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col gap-1">
+              <div className="bg-white/5 border border-white/10 rounded p-3 flex flex-col gap-1">
                 <span className="text-amber-400 font-bold">Manager View</span>
                 <span className="text-white/60">Monitor team compliance</span>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col gap-1">
+              <div className="bg-white/5 border border-white/10 rounded p-3 flex flex-col gap-1">
                 <span className="text-blue-400 font-bold">Trainer Center</span>
                 <span className="text-white/60">Manage content & assessments</span>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col gap-1">
+              <div className="bg-white/5 border border-white/10 rounded p-3 flex flex-col gap-1">
                 <span className="text-purple-400 font-bold">HR Console</span>
                 <span className="text-white/60">Full organizational overview</span>
               </div>
@@ -97,7 +97,7 @@ export default function ForgotPassword() {
           </div>
 
           <div className="text-center md:text-left mb-8">
-            <h1 className="text-2xl font-bold text-zinc-900 mb-2">Reset Password</h1>
+            <h1 className="text-xl font-semibold text-zinc-900 mb-2">Reset Password</h1>
             <p className="text-xs font-medium text-zinc-500">Enter your email to receive recovery instructions</p>
           </div>
 
@@ -114,7 +114,7 @@ export default function ForgotPassword() {
               </div>
               <button
                 onClick={() => router.push("/reset-password")}
-                className="w-full bg-[#004d40] hover:bg-[#00332b] active:scale-[0.99] text-white font-bold text-sm py-3.5 rounded-xl transition-all shadow-md mt-4"
+                className="w-full bg-[#004d40] hover:bg-[#00332b] active:scale-[0.99] text-white font-bold text-sm py-3.5 rounded transition-all shadow-md mt-4"
               >
                 Enter Reset Code
               </button>
@@ -140,7 +140,7 @@ export default function ForgotPassword() {
                       formik.touched.email && formik.errors.email
                         ? "border-red-500 focus:border-red-500"
                         : "border-zinc-200 focus:border-[#004d40]"
-                    } rounded-xl py-3 pl-11 pr-4 text-sm font-medium outline-none transition-all placeholder:text-zinc-400`}
+                    } rounded py-3 pl-11 pr-4 text-sm font-medium outline-none transition-all placeholder:text-zinc-400`}
                   />
                   <Mail className="absolute left-4 top-3.5 w-4 h-4 text-zinc-400 pointer-events-none" />
                 </div>
@@ -156,7 +156,7 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#004d40] hover:bg-[#00332b] active:scale-[0.99] disabled:opacity-50 disabled:active:scale-100 disabled:pointer-events-none text-white font-bold text-sm py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                className="w-full bg-[#004d40] hover:bg-[#00332b] active:scale-[0.99] disabled:opacity-50 disabled:active:scale-100 disabled:pointer-events-none text-white font-bold text-sm py-3.5 rounded transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
