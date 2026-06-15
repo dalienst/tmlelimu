@@ -142,8 +142,8 @@ export default function HRDashboard() {
         </div>
       </div>
 
-      {/* 6-Grid Stats Section */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+      {/* 4-Grid Stats Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Total Employees */}
         <div className="bg-white border border-zinc-150 rounded p-4 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300 flex items-center gap-3.5 group">
@@ -190,21 +190,6 @@ export default function HRDashboard() {
           </div>
         </div>
 
-        {/* Inactive SOPs */}
-        <div className="bg-white border border-zinc-150 rounded p-4 shadow-sm hover:shadow-md hover:border-rose-100 transition-all duration-300 flex items-center gap-3.5 group">
-          <div className="p-2.5 rounded bg-rose-50 text-rose-600 group-hover:scale-105 transition-transform duration-300">
-            <EyeOff className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest leading-none">Inactive SOPs</p>
-            {isSopsLoading ? (
-              <Skeleton className="h-6 w-12 mt-1" />
-            ) : (
-              <h3 className="text-xl font-semibold text-zinc-800 mt-1">{inactiveSops}</h3>
-            )}
-          </div>
-        </div>
-
         {/* HR Dept SOPs */}
         <div className="bg-white border border-zinc-150 rounded p-4 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 flex items-center gap-3.5 group">
           <div className="p-2.5 rounded bg-indigo-50 text-indigo-600 group-hover:scale-105 transition-transform duration-300">
@@ -216,21 +201,6 @@ export default function HRDashboard() {
               <Skeleton className="h-6 w-12 mt-1" />
             ) : (
               <h3 className="text-xl font-semibold text-zinc-800 mt-1">{hrSops.length}</h3>
-            )}
-          </div>
-        </div>
-
-        {/* Compliance Rate */}
-        <div className="bg-white border border-zinc-150 rounded p-4 shadow-sm hover:shadow-md hover:border-sky-100 transition-all duration-300 flex items-center gap-3.5 group">
-          <div className="p-2.5 rounded bg-sky-50 text-sky-600 group-hover:scale-105 transition-transform duration-300">
-            <CheckCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest leading-none">Compliance</p>
-            {isLoadingHr ? (
-              <Skeleton className="h-6 w-12 mt-1" />
-            ) : (
-              <h3 className="text-xl font-semibold text-zinc-800 mt-1">{complianceRate}%</h3>
             )}
           </div>
         </div>
