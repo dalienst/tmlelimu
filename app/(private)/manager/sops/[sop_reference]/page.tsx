@@ -166,7 +166,7 @@ export default function SopDetailPage() {
               Progress
             </span>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm font-extrabold text-[#004d40] leading-none">{currentPercent}%</span>
+              <span className="text-sm font-bold text-[#004d40] leading-none">{currentPercent}%</span>
               {currentPercent === 100 && (
                 <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
               )}

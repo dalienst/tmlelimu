@@ -1,88 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { name: "Features", href: "/#features" },
-    { name: "About", href: "/#about" },
   ];
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 border-b border-zinc-200/50 md:px-12 backdrop-blur-md sticky top-0 z-50 bg-white/80 transition-all duration-300">
-      <div className="flex flex-1 items-center gap-2">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-[#004d40] rounded flex items-center justify-center transform transition hover:scale-105 shadow-sm">
-            <span className="text-white font-semibold text-xl leading-none">T</span>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-zinc-950/80 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent py-6'}`}>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="bg-white/5 p-2 rounded-xl border border-white/10 backdrop-blur-md transition-all duration-500 group-hover:bg-white/10 group-hover:scale-105 shadow-inner">
+            <Image src="/logo.png" alt="Tamarind Group Logo" width={36} height={36} className="object-contain brightness-0 invert" priority />
           </div>
-          <span className="text-xl font-extrabold tracking-tight text-[#004d40]">
-            Tamarind <span className="text-amber-600">Elimu</span>
+          <span className="text-xl font-bold tracking-tight text-white">
+            Tamarind <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600">Elimu</span>
           </span>
         </Link>
-      </div>
 
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex items-center gap-8">
-        {navLinks.map((link) => {
-          const isActive = pathname === link.href || pathname.startsWith(link.href + "/") && link.href !== "/#features" && link.href !== "/#about";
-          return (
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className={`text-sm font-semibold transition-colors hover:text-[#004d40] ${isActive ? 'text-[#004d40]' : 'text-zinc-500'}`}
+              className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors"
             >
               {link.name}
             </Link>
-          );
-        })}
-        <Link href="/login" className="px-6 py-2.5 text-sm font-semibold text-white bg-[#004d40] rounded hover:bg-[#00332b] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-          Log In
-        </Link>
-      </div>
+          ))}
+          <Link href="/login" className="px-6 py-2.5 text-sm font-bold text-zinc-950 bg-white rounded-full hover:bg-zinc-200 transition-all hover:scale-105 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
+            Log In
+          </Link>
+        </div>
 
-      {/* Mobile Menu Button */}
-      <div className="flex items-center justify-end md:hidden">
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="inline-flex items-center justify-center p-2 rounded text-zinc-500 hover:text-[#004d40] hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#004d40] transition-colors"
-        >
-          <span className="sr-only">Open main menu</span>
-          {isMobileMenuOpen ? (
-            <X className="block h-6 w-6" aria-hidden="true" />
-          ) : (
-            <Menu className="block h-6 w-6" aria-hidden="true" />
-          )}
-        </button>
+        {/* Mobile Menu Button */}
+        <div className="flex items-center justify-end md:hidden">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-white border-b border-zinc-100 shadow-xl md:hidden animate-in slide-in-from-top-2 duration-200">
-          <div className="px-5 pt-4 pb-6 space-y-3">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href || pathname.startsWith(link.href + "/") && link.href !== "/#features" && link.href !== "/#about";
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block px-4 py-3 rounded text-base font-semibold transition-colors ${isActive ? 'bg-emerald-50 text-[#004d40]' : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'}`}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-            <div className="pt-4 border-t border-zinc-100">
+        <div className="absolute top-full left-0 w-full bg-zinc-950 border-b border-white/10 md:hidden animate-in slide-in-from-top-2 duration-200 shadow-2xl">
+          <div className="px-6 pt-4 pb-8 space-y-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-4 py-3 rounded-lg text-base font-semibold text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="pt-4 border-t border-white/10">
               <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center w-full px-5 py-4 text-base font-semibold text-white bg-[#004d40] rounded hover:bg-[#00332b] shadow-md transition-all active:scale-[0.98]"
+                className="flex items-center justify-center w-full px-5 py-4 text-base font-bold text-zinc-950 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-xl shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]"
               >
                 Log In Securely
               </Link>

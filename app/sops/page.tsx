@@ -41,7 +41,7 @@ export default function SOpsPortal() {
               <div className="inline-flex items-center rounded px-3 py-1 text-sm font-medium bg-white/10 text-emerald-100 border border-white/20 mb-6 backdrop-blur-sm">
                 Tamarind Group Official Docs
               </div>
-              <h1 className="text-xl md:text-xl font-extrabold tracking-tight mb-4">
+              <h1 className="text-xl md:text-xl font-bold tracking-tight mb-4">
                 Standard Operating Procedures
               </h1>
               <p className="text-lg text-emerald-100 font-medium">
