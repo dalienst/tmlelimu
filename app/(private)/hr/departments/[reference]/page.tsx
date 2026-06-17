@@ -243,6 +243,24 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
        emp.email.toLowerCase().includes(staffSearch.toLowerCase()))
   ) || [];
 
+  // Derived values — must be computed unconditionally before any early returns
+  const filteredDeptSops = useMemo(() => {
+    return (department?.sops_detail || [])
+      .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
+      .map(sop => ({
+        ...sop,
+        id: sop.reference,
+        description: sop.description || "",
+        updated_by: "",
+        departments: [],
+        categories: [],
+      })) as unknown as Sops[];
+  }, [department?.sops_detail, search]);
+
+  const departmentStaff = useMemo(() => {
+    return employees?.filter(emp => department?.staff?.includes(emp.email)) || [];
+  }, [employees, department?.staff]);
+
   if (isLoadingDept || isLoadingEmployees) {
     return (
       <div className="p-8 mx-auto space-y-8">
@@ -264,22 +282,6 @@ export default function DepartmentDetailsPage({ params }: { params: Promise<{ re
       </div>
     );
   }
-
-  // Filter department.sops_detail based on search/page locally
-  const filteredDeptSops = (department.sops_detail || [])
-    .filter(sop => sop.title.toLowerCase().includes(search.toLowerCase()))
-    .map(sop => ({
-      ...sop,
-      id: sop.reference,
-      description: sop.description || "",
-      updated_by: "",
-      departments: [],
-      categories: [],
-    })) as unknown as Sops[];
-
-  const departmentStaff = useMemo(() => {
-    return employees?.filter(emp => department?.staff?.includes(emp.email)) || [];
-  }, [employees, department?.staff]);
 
   return (
     <div className="p-8 mx-auto space-y-8">
