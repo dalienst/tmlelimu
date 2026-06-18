@@ -60,7 +60,7 @@ export default function Navbar() {
     navLinks = [
       { name: "Dashboard", href: "/hr/dashboard", icon: LayoutDashboard },
       { name: "User Management", href: "/hr/employees", icon: Users },
-      { name: "System Settings", href: "/hr/settings", icon: Settings },
+      // { name: "System Settings", href: "/hr/settings", icon: Settings },
       { name: "Certificates", href: "/hr/certificates", icon: Award },
       // { name: "AI Assistant", href: "/employee/assistant", icon: Bot },
     ];
