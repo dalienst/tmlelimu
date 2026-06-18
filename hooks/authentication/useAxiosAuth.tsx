@@ -16,6 +16,10 @@ function useAxiosAuth() {
 
   const tokens = session?.user?.token;
 
+  if (!tokens) {
+    return null as any;
+  }
+
   const authenticationHeader = {
     headers: {
       Authorization: "Token " + tokens,

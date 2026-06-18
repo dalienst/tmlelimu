@@ -46,6 +46,24 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
   };
 
   useEffect(() => {
+    // Listen to standard interaction events unconditionally.
+    // This ensures that user activity (like typing credentials on the login page)
+    // is tracked, so when they log in, the timeout key is fresh.
+    const events = ["mousedown", "mousemove", "keydown", "scroll", "touchstart"];
+    const handleActivity = () => updateActivity();
+    
+    events.forEach((event) => {
+      window.addEventListener(event, handleActivity);
+    });
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, handleActivity);
+      });
+    };
+  }, []);
+
+  useEffect(() => {
     // If the user is unauthenticated (e.g., logged out manually or via timeout),
     // clear the timeout key so the next login gets a fresh timer.
     if (status === "unauthenticated") {
@@ -71,12 +89,6 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
         lastActiveRef.current = now;
       }
     }
-
-    // Listen to standard interaction events
-    const events = ["mousedown", "mousemove", "keydown", "scroll", "touchstart"];
-    events.forEach((event) => {
-      window.addEventListener(event, updateActivity);
-    });
 
     // Main polling interval (runs every 1 second)
     const interval = setInterval(() => {
@@ -106,9 +118,6 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
 
     // Clean up
     return () => {
-      events.forEach((event) => {
-        window.removeEventListener(event, updateActivity);
-      });
       clearInterval(interval);
     };
   }, [status]);
