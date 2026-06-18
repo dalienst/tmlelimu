@@ -129,13 +129,13 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
       {showWarning && (
         <>
           {/* Overlay background */}
-          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200" />
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" />
 
-          {/* Custom modal positioned at top center */}
+          {/* Custom modal positioned at center */}
           <div 
             role="dialog"
             aria-modal="true"
-            className="fixed top-10 left-1/2 -translate-x-1/2 z-50 max-w-md w-[calc(100%-2rem)] sm:w-full bg-white border border-zinc-150 rounded p-6 shadow-2xl animate-in slide-in-from-top-4 duration-300 focus:outline-none"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100%-2rem)] max-w-md bg-white border border-zinc-150 rounded-xl p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-300 focus:outline-none"
           >
             <div className="flex flex-col items-center text-center space-y-4">
               
@@ -155,23 +155,23 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
               </div>
 
               {/* Countdown Display */}
-              <div className="flex items-center gap-2 bg-zinc-50 border border-zinc-100 rounded px-4 py-2 font-semibold text-zinc-800">
+              <div className="flex items-center gap-2 bg-zinc-50 border border-zinc-100 rounded-lg px-4 py-2 font-semibold text-zinc-800">
                 <Clock className="w-4 h-4 text-zinc-400" />
                 <span className="text-sm tabular-nums">{timeLeft} seconds</span>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 w-full pt-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full pt-2">
                 <Button
                   onClick={() => signOut({ callbackUrl: "/login" })}
                   variant="outline"
-                  className="w-full h-10 border-zinc-200 text-zinc-600 hover:text-zinc-900 rounded font-semibold text-xs uppercase tracking-wider"
+                  className="w-full h-11 sm:h-10 border-zinc-200 text-zinc-600 hover:text-zinc-900 rounded-lg font-semibold text-xs uppercase tracking-wider"
                 >
                   Log Out
                 </Button>
                 <Button
                   onClick={keepSessionActive}
-                  className="w-full h-10 bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded font-semibold text-xs uppercase tracking-wider"
+                  className="w-full h-11 sm:h-10 bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-lg font-semibold text-xs uppercase tracking-wider"
                 >
                   Keep Active
                 </Button>
