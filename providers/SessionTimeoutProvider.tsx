@@ -161,19 +161,19 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col gap-2 w-full pt-2">
+              <div className="grid grid-cols-1 gap-3 w-full pt-2">
+                <Button
+                  onClick={keepSessionActive}
+                  className="w-full h-11 sm:h-10 bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-lg font-semibold text-xs uppercase tracking-wider"
+                >
+                  Keep Active
+                </Button>
                 <Button
                   onClick={() => signOut({ callbackUrl: "/login" })}
                   variant="outline"
                   className="w-full h-11 sm:h-10 border-zinc-200 text-zinc-600 hover:text-zinc-900 rounded-lg font-semibold text-xs uppercase tracking-wider"
                 >
                   Log Out
-                </Button>
-                <Button
-                  onClick={keepSessionActive}
-                  className="w-full h-11 sm:h-10 bg-[#004d40] hover:bg-[#004d40]/90 text-white rounded-lg font-semibold text-xs uppercase tracking-wider"
-                >
-                  Keep Active
                 </Button>
               </div>
 
