@@ -161,7 +161,7 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full pt-2">
+              <div className="flex flex-col gap-2 w-full pt-2">
                 <Button
                   onClick={() => signOut({ callbackUrl: "/login" })}
                   variant="outline"
