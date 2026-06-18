@@ -46,6 +46,15 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
   };
 
   useEffect(() => {
+    // If the user is unauthenticated (e.g., logged out manually or via timeout),
+    // clear the timeout key so the next login gets a fresh timer.
+    if (status === "unauthenticated") {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem(TIMEOUT_KEY);
+      }
+      return;
+    }
+
     // Only track activity for authenticated users
     if (status !== "authenticated") {
       return;
@@ -57,7 +66,9 @@ export default function SessionTimeoutProvider({ children }: { children: React.R
       if (stored) {
         lastActiveRef.current = Number(stored);
       } else {
-        localStorage.setItem(TIMEOUT_KEY, Date.now().toString());
+        const now = Date.now();
+        localStorage.setItem(TIMEOUT_KEY, now.toString());
+        lastActiveRef.current = now;
       }
     }
 
